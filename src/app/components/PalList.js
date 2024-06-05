@@ -10,12 +10,22 @@ import Searchbar from "./Searchbar";
 import TypeDropdown from "./TypeDropDown";
 import WorkDropDown from "./WorkDropDown";
 
+/**
+ * PalList component that renders a list of pals.
+ * It provides search and filter functionality.
+ *
+ * @component
+ * @param {Object[]} pals - The list of pals to display.
+ * @returns {JSX.Element} A React component.
+ */
 export default function PalList({ pals }) {
+  // State variables for search and filter functionality
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState(null);
   const [selectedWork, setSelectedWork] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
 
+  // Effect to show a scroll to top button when the user scrolls down
   useEffect(() => {
     const checkScroll = () => {
       if (window.scrollY > 300) {
@@ -31,6 +41,7 @@ export default function PalList({ pals }) {
     };
   }, []);
 
+  // Function to scroll to the top of the page
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -38,6 +49,7 @@ export default function PalList({ pals }) {
     });
   };
 
+  // Filter the pals based on the search query and selected type and work
   const filteredPals = pals.filter((pal) => {
     const matchesSearch = pal.name
       .toLowerCase()
@@ -49,6 +61,7 @@ export default function PalList({ pals }) {
     return matchesSearch && matchesType && matchesWork;
   });
 
+  // The available types and work for the dropdowns
   const types = [
     { name: "neutral" },
     { name: "dark" },
@@ -76,6 +89,7 @@ export default function PalList({ pals }) {
     { name: "farming" },
   ];
 
+  // Render the component
   return (
     <div>
       <Searchbar onSearch={setSearchQuery} />
@@ -115,27 +129,7 @@ export default function PalList({ pals }) {
               href={`/pal/${encodeURIComponent(pal.name)}`}
               passHref
             >
-              <PalCard
-                key={pal.id}
-                palName={pal.name}
-                palId={pal.id}
-                type1={pal.type1}
-                type2={pal.type2}
-                workAttributes={{
-                  kindling: pal.kindling,
-                  watering: pal.watering,
-                  planting: pal.planting,
-                  generating_electricity: pal.generating_electricity,
-                  handiwork: pal.handiwork,
-                  gathering: pal.gathering,
-                  lumbering: pal.lumbering,
-                  mining: pal.mining,
-                  medicine_production: pal.medicine_production,
-                  cooling: pal.cooling,
-                  transporting: pal.transporting,
-                  farming: pal.farming,
-                }}
-              />{" "}
+              <PalCard pal={pal} />{" "}
             </Link>
           ))
         ) : (

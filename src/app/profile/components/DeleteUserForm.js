@@ -5,11 +5,20 @@ import { useRouter } from "next/navigation";
 import { deleteUser } from "../actions";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
+/**
+ * DeleteUserForm component that renders a form for deleting a user.
+ * It displays an error message if there is an error deleting the user.
+ * It also displays a confirmation button before deleting the user.
+ *
+ * @component
+ * @returns {JSX.Element} A React component.
+ */
 export default function DeleteUserForm() {
     const router = useRouter();
     const [error, setError] = useState(null);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   
+    // Function to handle deleting the user
     const handleUserDelete = async () => {
       setError(null);
       try {
@@ -20,8 +29,7 @@ export default function DeleteUserForm() {
       }
     };
   
-
-  
+    // Render the form
     return (
       <>
         <div className={styles.inputContainer}>
@@ -54,4 +62,4 @@ export default function DeleteUserForm() {
         </div>
       </>
     );
-  }
+}

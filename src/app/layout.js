@@ -31,9 +31,13 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={mainFont.className}>
-      <NavBar user={user} />
-      {children}
-      <div id="modal-root"></div> 
+        <header>
+          <NavBar user={user} />
+        </header>
+        <main>
+          {children}
+        </main>
+        <div id="modal-root"></div> 
       </body>
     </html>
   );

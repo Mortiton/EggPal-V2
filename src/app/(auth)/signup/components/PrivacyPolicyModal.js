@@ -2,6 +2,17 @@ import React, { useEffect } from "react";
 import Modal from "react-modal";
 import styles from "../styles/PrivacyPolicyModal.module.css";
 
+/**
+ * PrivacyPolicyModal component that renders a modal with the privacy policy.
+ * It displays a heading, the privacy policy text, and buttons to accept or close the modal.
+ *
+ * @component
+ * @param {Object} props - The props that were defined by the caller of this component.
+ * @param {boolean} props.isOpen - If true, the modal is open. If false, the modal is closed.
+ * @param {function} props.onRequestClose - Function to call when the close button is clicked.
+ * @param {function} props.onAccept - Function to call when the accept button is clicked.
+ * @returns {JSX.Element} A React component.
+ */
 const PrivacyPolicyModal = ({ isOpen, onRequestClose, onAccept }) => {
   useEffect(() => {
     Modal.setAppElement("#modal-root");

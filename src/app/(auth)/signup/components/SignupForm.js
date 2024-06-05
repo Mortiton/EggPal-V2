@@ -9,7 +9,7 @@ import SuccessModal from "@/app/components/SuccessModal";
 import { signup, checkUserExists } from "../actions";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
-//Form scheme using Yup
+// Define form validation schema using Yup
 const SignupSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string()
@@ -24,6 +24,14 @@ const SignupSchema = Yup.object().shape({
     .required("Required"),
 });
 
+/**
+ * SignupForm component that renders a signup form.
+ * It displays form fields for email, password, and confirmPassword, and buttons to submit the form or close the modals.
+ * It also displays a PrivacyPolicyModal and a SuccessModal.
+ *
+ * @component
+ * @returns {JSX.Element} A React component.
+ */
 export default function SignupForm() {
   const router = useRouter();
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
@@ -31,7 +39,7 @@ export default function SignupForm() {
   const [formData, setFormData] = useState(null);
   const [error, setError] = useState(null);
 
-
+  // Function to handle signup
   const handleSignup = async () => {
     if (formData) {
       const data = new FormData();
@@ -46,6 +54,7 @@ export default function SignupForm() {
     }
   };
 
+  // Function to handle success confirmation
   const handleSuccessConfirm = () => {
     setIsSuccessModalOpen(false);
     router.push("/");
