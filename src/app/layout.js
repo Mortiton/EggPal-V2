@@ -1,3 +1,4 @@
+import { createClient } from '@/app/utils/supabase/server'
 import localFont from 'next/font/local';
 import { cookies } from 'next/headers';
 import NavBar from './components/NavBar';
@@ -19,12 +20,20 @@ if (process.env.NODE_ENV === 'production') {
   console.warn = () => {};
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+
+    const supabase = createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   return (
     <html lang="en">
       <body className={mainFont.className}>
+      <NavBar user={user} />
       {children}
+      <div id="modal-root"></div> 
       </body>
     </html>
   );
