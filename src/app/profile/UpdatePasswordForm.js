@@ -21,7 +21,7 @@ const UpdatePasswordSchema = Yup.object().shape({
     .required("Required"),
 });
 
-export default function UpdatePasswordForm() {
+export default function UpdatePasswordForm({}) {
   const [error, setError] = useState(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
