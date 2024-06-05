@@ -1,0 +1,127 @@
+.container {
+    .cardContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around; 
+      padding: 10px; 
+    }
+  }
+  
+  
+  .card {
+    position: relative; 
+    width: 200px; 
+    padding: 10px;
+    height: 200px;
+    border-radius: 5px;
+    margin: 10px;
+    overflow: hidden;
+    background-color: #303030;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  .card:hover {
+    background-color: #515050;
+  }
+  
+  .typeIcons {
+    position: absolute;
+    top: 10px; 
+    right: 5px; 
+    display: flex;
+  }
+  
+  .typeIcon {
+    width: 24px; 
+    height: 24px; 
+    margin-left: 4px; 
+  }
+  
+  .cardImageWrapper {
+    width: 100%;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cardImage {
+    width: 50%; 
+    height: 100%;
+    max-height: 100px;
+    max-width: 100px; 
+    border-radius: 50%;
+  }
+  
+  .cardTitle {
+    text-align: center;
+    font-size: 1em;
+    word-wrap: break-word;
+    max-width: 90%;
+    white-space: normal; 
+  }
+  
+  .workIcons {
+    position: absolute;
+    left: 0px;
+    top: 5px;
+  }
+  
+  /* Media queries for different device widths */
+  @media (max-width: 300px) {
+    .card {
+      max-width: 120px; 
+      max-height: 120px;
+    }
+  
+    .cardTitle {
+      font-size: 0.6em; 
+      white-space: normal;
+      word-wrap: break-word;
+    }
+  }
+  
+  @media (min-width: 301px) and (max-width: 600px) {
+    .card {
+      max-width: 140px; 
+      height: 140px;
+    }
+  
+    .cardImage {
+      max-width: 70px; 
+    }
+  
+    .cardTitle {
+      font-size: 0.8em; 
+      white-space: normal;
+      word-wrap: break-word;
+    }
+  }
+  
+  @media (min-width: 601px) and (max-width: 900px) {
+    .card {
+      max-width: 180px; 
+    }
+  
+    .cardImage {
+      max-width: 90px; 
+    }
+  }
+  
+  @media (min-width: 901px) {
+    .card {
+      max-width: 200px; 
+      white-space: normal;
+      word-wrap: break-word;
+    }
+  
+    .cardImage {
+      max-width: 100px; 
+      
+    }
+  }

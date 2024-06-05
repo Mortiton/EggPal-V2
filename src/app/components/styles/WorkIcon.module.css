@@ -1,0 +1,64 @@
+
+.iconContainer {
+    display: flex;
+    align-items: center;
+    margin: 2px;
+  }
+  
+  .iconImage {
+    width: 25px;  
+    height: 25px; 
+    margin-right: 3px;
+  }
+  
+  .iconValue {
+    font-size: 14px; 
+  }
+  
+  /* Media Queries */
+  @media (min-width: 300px){
+    .iconImage {
+      width: 15px;
+      height: 15px;
+    }
+  
+    .iconValue {
+      font-size: 14px;
+    }
+  }
+  
+  @media (min-width: 301px) {
+    .iconImage {
+      width: 20px;
+      height: 20px;
+    }
+  
+    .iconValue {
+      font-size: 14px;
+    }
+  }
+  
+  
+  @media (min-width: 601px) {
+    .iconImage {
+      width: 25px;
+      height: 25px;
+    }
+  
+    .iconValue {
+      font-size: 14px;
+    }
+  }
+  
+  
+  @media (min-width: 992px) {
+    .iconImage {
+      width: 28px;
+      height: 28px;
+    }
+  
+    .iconValue {
+      font-size: 16px;
+    }
+  }
+  
