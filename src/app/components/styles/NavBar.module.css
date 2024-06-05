@@ -1,0 +1,139 @@
+/* Base styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    z-index: 10000;
+    display: flex;
+    border-bottom: 3px solid #b27fe5;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.navbar div {
+    overflow: hidden;
+}
+
+.title, .link, .logoutBtn {
+    white-space: nowrap;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.link, .logoutBtn {
+    color: #b27fe5;
+    text-decoration: none;
+    padding: 10px;
+    font-weight: bold;
+}
+
+/* Title styles */
+.title {
+    color: #b27fe5;
+    padding: 0;
+    margin-right: auto;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+/* Logout button styles */
+.logoutBtn {
+    color: black;
+    background-color: #b27fe5;
+    border: none;
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+}
+
+.logoutBtn:hover {
+    background-color: #dfc7f7;
+}
+
+/* Hamburger styles */
+.hamburger {
+    display: block;
+    background: none;
+    border: none;
+    color: #b27fe5;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+    margin-right: 20px;
+}
+
+/* Navigation links styles */
+.navLinks {
+    display: none;
+    margin-right: 30px;
+}
+
+.navLinksActive {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: #303030;
+    width: 50%;
+    top: 100px;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+    border-left: 1px solid #b27fe5;
+    border-bottom: 1px solid #b27fe5;
+}
+
+.link:hover {
+    background-color: #303030;
+}
+
+/* Media queries */
+@media (max-width: 300px) {
+    .navbar {
+        height: 70px;
+    }
+
+    .title, .link, .logoutBtn {
+        font-size: 14px;
+    }
+
+    .hamburger {
+        font-size: 24px;
+    }
+
+    .navLinksActive {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        padding: 0 10px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .link {
+        font-size: 16px;
+    }
+
+    .logoutBtn {
+        padding: 5px;
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 768px) {
+    .hamburger {
+        display: none;
+    }
+
+    .navLinks {
+        display: flex;
+        align-items: center;
+    }
+}
