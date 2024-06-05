@@ -8,6 +8,8 @@ export default function NavBar({ user }) {
       <div className={styles.navLinks}>
       {user ? (
         <>
+          <Link href="/profile" className={styles.link}>Favourite Pals</Link>|
+          <Link href="/profile" className={styles.link}>Saved Combinations</Link>|
           <Link href="/profile" className={styles.link}>Profile</Link>
           <form action='auth/signout' method='post'>
             <button className={styles.logoutBtn} type="submit">Logout</button>
