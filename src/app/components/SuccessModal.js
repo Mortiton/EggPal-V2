@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import Modal from 'react-modal';
 import styles from './styles/SuccessModal.module.css';
 
 const SuccessModal = ({ isOpen, onRequestClose, onConfirm, message }) => {
+  useEffect(() => {
+    Modal.setAppElement("#modal-root");
+  }, []);
+
   return (
     <Modal
       isOpen={isOpen}
