@@ -1,5 +1,5 @@
 
-import SignupForm from './SignupForm';
+import SignupForm from './components/SignupForm';
 import styles from './styles/page.module.css';
 
 

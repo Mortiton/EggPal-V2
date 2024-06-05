@@ -6,7 +6,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import SuccessModal from "@/app/components/SuccessModal";
-import { signup, checkUserExists } from "./actions";
+import { signup, checkUserExists } from "../actions";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 //Form scheme using Yup

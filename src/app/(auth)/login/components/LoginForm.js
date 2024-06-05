@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { login } from "./actions";
+import { login } from "../actions";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 const LoginSchema = Yup.object().shape({

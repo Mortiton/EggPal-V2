@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Modal from "react-modal";
-import styles from "./styles/PrivacyPolicyModal.module.css";
+import styles from "../styles/PrivacyPolicyModal.module.css";
 
 const PrivacyPolicyModal = ({ isOpen, onRequestClose, onAccept }) => {
   useEffect(() => {
