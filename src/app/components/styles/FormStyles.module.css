@@ -1,3 +1,4 @@
+/* Input container styles */
 .inputContainer {
     display: flex;
     flex-direction: column;
@@ -6,9 +7,10 @@
     width: 100%;
     max-width: 500px;
     box-sizing: border-box;
-}
-
-.input {
+  }
+  
+  /* Input field styles */
+  .input {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -17,14 +19,20 @@
     max-width: 500px;
     box-sizing: border-box;
     margin-bottom: 0.5em;
+    border-radius: 4px;
   }
-
+  
   .input:focus {
     box-shadow: none;
     outline: 0;
   }
+  /* Label styles */
+  .label {
+    display: block;
+    margin-bottom: 0.5em;
+  }
   
-  
+  /* Button styles */
   .button {
     padding: 10px 20px;
     background-color: #b27fe5;
@@ -35,30 +43,25 @@
     font-size: 1rem;
     transition: background-color 0.3s ease;
     width: 100%;
-    margin-bottom: 0.5em;
     margin-top: 0.5em;
-}
-
-.button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-.button:hover:not(:disabled) {
-    background-color: #9a66c2;
-}
-
-.label {
-    display: block;
-    width: 100%;
-    margin-bottom: 5px;
-    color: #b27fe5;
   }
   
-  .validation {
-    color: red;
-    font-size: 14px;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+  .button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
   }
+  
+  .button:hover:not(:disabled) {
+    background-color: #9a66c2;
+  }
+  
+  
+    .error, .validation {
+      color: #ff0000; 
+      font-size: 14px; 
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      text-align: center; 
+      width: 100%; 
+    }
   
