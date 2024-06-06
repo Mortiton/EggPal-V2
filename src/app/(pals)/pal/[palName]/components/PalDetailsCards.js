@@ -4,26 +4,17 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
-import { addFavoritePal, removeFavoritePal, getUserFavorites } from '../actions';
+import { addFavoritePal, removeFavoritePal } from '../actions';
 import styles from "./styles/PalDetailsCard.module.css";
 import WorkIcon from "@/app/components/WorkIcon";
 
-export default function PalDetailsCard({ pal, user }) {
+export default function PalDetailsCard({ pal, user, userFavorites }) {
   const [isFavourited, setIsFavourited] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const favorites = await getUserFavorites(user.id);
-        setIsFavourited(favorites.includes(pal.id));
-      } catch (error) {
-        console.error('Error fetching user favorites:', error.message);
-      }
-    };
-
-    fetchFavorites();
-  }, [user.id, pal.id]);
+    setIsFavourited(userFavorites.includes(pal.id));
+  }, [userFavorites, pal.id]);
 
   const handleToggleFavourite = async () => {
     if (isLoading) return;

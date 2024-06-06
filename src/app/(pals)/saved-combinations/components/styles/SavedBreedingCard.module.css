@@ -1,0 +1,44 @@
+.card {
+  position: relative; 
+    width: 450px; 
+    padding: 10px;
+    height: 150px;
+    border-radius: 5px;
+    margin: 10px;
+    overflow: hidden;
+    background-color: #303030;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  
+  .parent {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+  }
+  
+  .parentImage {
+    border-radius: 50%;
+  }
+  
+  .parentName {
+    margin-left: 10px;
+    font-weight: bold;
+  }
+  
+  .plusIcon {
+    margin: 0 10px;
+    height: 30px;
+  }
+  
+  .removeIcon {
+    position:absolute;
+    top: 0;
+    right: 5px;
+    height: 20px;
+    cursor: pointer;
+    color: #b27fe5;
+  }
