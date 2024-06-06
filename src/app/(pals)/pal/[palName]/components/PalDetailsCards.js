@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
-import { addFavoritePal, removeFavoritePal } from "../actions";
+import { addFavoritePal, removeFavoritePal, getUserFavorites } from '../actions';
 import styles from "./styles/PalDetailsCard.module.css";
 import WorkIcon from "@/app/components/WorkIcon";
 
@@ -13,12 +13,17 @@ export default function PalDetailsCard({ pal, user }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch user's favorite pals and set the initial state
     const fetchFavorites = async () => {
-      // Your logic to fetch and set favorite status
+      try {
+        const favorites = await getUserFavorites(user.id);
+        setIsFavourited(favorites.includes(pal.id));
+      } catch (error) {
+        console.error('Error fetching user favorites:', error.message);
+      }
     };
+
     fetchFavorites();
-  }, [pal.id]);
+  }, [user.id, pal.id]);
 
   const handleToggleFavourite = async () => {
     if (isLoading) return;

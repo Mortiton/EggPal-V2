@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from '@/app/utils/supabase/server';
+import { revalidatePath } from "next/cache";
 
 /**
  * Fetches all information about a specific pal from the 'palInfo' table.
@@ -96,6 +97,8 @@ export async function addFavoritePal(userId, palId) {
         .insert([{ user_id: userId, pal_id: palId }]);
   
       if (error) throw error;
+
+      revalidatePath("/favourite-pals");
   
       return data;
     } catch (error) {
@@ -114,6 +117,8 @@ export async function addFavoritePal(userId, palId) {
         .eq('pal_id', palId);
   
       if (error) throw error;
+
+      revalidatePath("/favourite-pals");
   
       return data;
     } catch (error) {
@@ -121,3 +126,22 @@ export async function addFavoritePal(userId, palId) {
       throw error;
     }
   }
+
+  export async function getUserFavorites(userId) {
+    const supabase = createClient();
+    try {
+        let { data: favorites, error } = await supabase
+            .from('favourites')
+            .select('pal_id')
+            .eq('user_id', userId);
+
+        if (error) throw error;
+
+        revalidatePath("/favourite-pals");
+
+        return favorites.map(favorite => favorite.pal_id);
+    } catch (error) {
+        console.error('Error fetching user favorites:', error.message);
+        return [];
+    }
+}
