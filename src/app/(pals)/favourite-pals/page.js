@@ -3,6 +3,7 @@ import PalCard from "@/app/components/PalCard";
 import styles from "./page.module.css";
 import { createClient } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function FavouritePalsPage() {
   const supabase = createClient();
@@ -25,7 +26,14 @@ export default async function FavouritePalsPage() {
       <h1>Your Favourite Pals</h1>
       <div className={styles.palGrid}>
         {favoritePals.map((pal) => (
-          <PalCard pal={pal} />
+          <Link
+              className={styles.cardLink}
+              key={pal.id}
+              href={`/pal/${encodeURIComponent(pal.name)}`}
+              passHref
+            >
+              <PalCard pal={pal} />
+            </Link>
         ))}
       </div>
     </div>
