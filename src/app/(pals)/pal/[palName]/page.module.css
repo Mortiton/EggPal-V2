@@ -1,0 +1,52 @@
+.mainContainer {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .palDetailsContainer {
+    width: 100%; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .breedingContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .breedingList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .palDetailsContainer, .breedingContainer {
+    width: 100%; 
+    padding: 10px; 
+  }
+  
+  @media (min-width: 768px) {
+    .mainContainer {
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+  
+    .palDetailsContainer {
+      flex: 1;
+
+    }
+  
+    .breedingContainer {
+      flex: 2;
+    }
+  }
