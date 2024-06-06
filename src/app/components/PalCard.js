@@ -51,6 +51,7 @@ export default function PalCard({ pal }) {
           height={100}
           style={{ objectFit: "cover" }}
           priority
+          unoptimized
         />
         </div>
 

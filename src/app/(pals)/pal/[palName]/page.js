@@ -1,6 +1,6 @@
 import { getAllPalInfo, fetchBreedingCombos } from "./actions";
-// import BreedingList from "./components/BreedingList";
-// import PalDetailsCard from "./components/PalDetailsCard";
+import BreedingList from "./components/BreedingList";
+import PalDetailsCard from "./components/PalDetailsCards";
 import styles from "./page.module.css";
 
 // Function to generate dynamic metadata based on the Pal's name.
@@ -33,11 +33,11 @@ export default async function PalPage({ params }) {
     return (
         <div className={styles.mainContainer}>
           <div className={styles.palDetailsContainer}>
-            {/* <PalDetailsCard pal={pal} /> */}
+            <PalDetailsCard pal={pal} />
           </div>
           <div className={styles.breedingContainer}>
             <h2>Breeding Combinations</h2>
-            {/* <BreedingList breedingCombos={breedingCombos} /> */}
+            <BreedingList breedingCombos={breedingCombos} />
           </div>
         </div>
       );

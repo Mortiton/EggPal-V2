@@ -1,0 +1,62 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #b27fe5;
+    border-radius: 5%;
+    padding: 20px;
+    width: 95%; 
+    margin-bottom: 20px; 
+    position: relative;
+  }
+  
+  .favoriteIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer; 
+    color: gold; 
+    height: 25px;
+  }
+  
+  .image {
+    width: auto; 
+    height: auto;
+    border-radius: 50%;
+  }
+  
+  .description {
+    text-align: center;
+    margin-top: 5px;
+  }
+  
+  .workEntry {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+    
+  .workName {
+    margin-left: 5px;
+    font-size: 14px;
+  }
+  
+  .level {
+    margin-left: 5px;
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      position: relative;
+      max-width: 400px; 
+    }
+  
+    .image {
+      width: 150px;
+    }
+  
+    .workName, .level {
+      font-size: 16px; 
+    }
+  }

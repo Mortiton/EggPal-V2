@@ -1,0 +1,79 @@
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #303030;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .parentImage {
+    width: 60px; 
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+  }
+  
+  .parentName {
+    font-size: 12px;
+    word-wrap: break-word;
+    width: 80px;
+    text-align: center;
+  }
+  
+  .plusIcon, .favouriteIcon {
+    margin: 10px 0;
+    height: 20px;
+  }
+  
+  .favouriteIcon {
+    position: absolute;
+    right: 0px;
+    top: 5px;
+    cursor: pointer;
+  }
+  
+  @media (min-width: 350px) {
+    .card {
+      flex-direction: row;
+    }
+    
+    .parentImage {
+      width: 80px; 
+      height: 80px;
+    }
+  
+    .parentName {
+      font-size: 14px;
+      width: 115px;
+    }
+  
+    .plusIcon, .favouriteIcon {
+      margin: 0 10px;
+    }
+  
+  }
+  
+  @media (min-width: 768px) {
+    .card {
+      margin-left: 10px;
+    }
+  
+    .parentImage {
+      width: 100px; 
+      height: 100px;
+    }
+  
+    .parentName {
+      font-size: 16px;
+    }
+  }
+  
