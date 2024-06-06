@@ -17,7 +17,9 @@ export default async function HomePage() {
   // Render the home page with the PalList component, passing the fetched data as a prop
   return (
     <div className={styles.container}>
+    <div className={styles.innerContainer}>
       <PalList pals={pals} />
+      </div>
     </div>
   );
 }

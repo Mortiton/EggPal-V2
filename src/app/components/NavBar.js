@@ -20,8 +20,8 @@ export default function NavBar({ user }) {
         {/* If user is logged in, display user links */}
         {user ? (
           <>
-            <Link href="/profile" className={styles.link}>Favourite Pals</Link>|
-            <Link href="/profile" className={styles.link}>Saved Combinations</Link>|
+            <Link href="/favourite-pals" className={styles.link}>Favourite Pals</Link>|
+            <Link href="/saved-combinations" className={styles.link}>Saved Combinations</Link>|
             <Link href="/profile" className={styles.link}>Profile</Link>
             <form action='auth/signout' method='post'>
               <button className={styles.logoutBtn} type="submit">Logout</button>
