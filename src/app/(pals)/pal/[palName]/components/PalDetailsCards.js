@@ -1,27 +1,42 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
+import { addFavoritePal, removeFavoritePal } from "../actions";
 import styles from "./styles/PalDetailsCard.module.css";
 import WorkIcon from "@/app/components/WorkIcon";
 
+export default function PalDetailsCard({ pal, user }) {
+  const [isFavourited, setIsFavourited] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-
-export default function PalDetailsCard({ pal }) {
-
-    const [isFavourited, setIsFavourited] = useState(false);
-
-const handleToggleFavourite = async () => {
-    try {
-      setIsFavourited(!isFavourited);
-      console.log("Favourite toggled:", !isFavourited);
-    } catch (error) {
-      console.error("Error toggling favourite:", error.message);
-    } 
+  useEffect(() => {
+    // Fetch user's favorite pals and set the initial state
+    const fetchFavorites = async () => {
+      // Your logic to fetch and set favorite status
     };
+    fetchFavorites();
+  }, [pal.id]);
 
+  const handleToggleFavourite = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+
+    try {
+      if (isFavourited) {
+        await removeFavoritePal(user.id, pal.id);
+      } else {
+        await addFavoritePal(user.id, pal.id);
+      }
+      setIsFavourited(!isFavourited);
+    } catch (error) {
+      console.error('Error toggling favorite:', error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const workAttributes = {
     kindling: pal.kindling,

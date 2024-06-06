@@ -16,3 +16,8 @@
     text-decoration: none;
     color: #b27fe5;
 }
+
+.noFavText {
+    text-align: center;
+    font-size: 1.5rem;
+}

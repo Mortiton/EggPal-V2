@@ -87,3 +87,37 @@ export async function fetchBreedingCombos(palName) {
         return [];
     }
 }
+
+export async function addFavoritePal(userId, palId) {
+    const supabase = createClient();
+    try {
+      const { data, error } = await supabase
+        .from('favourites')
+        .insert([{ user_id: userId, pal_id: palId }]);
+  
+      if (error) throw error;
+  
+      return data;
+    } catch (error) {
+      console.error('Error adding favorite pal:', error.message);
+      throw error;
+    }
+  }
+  
+  export async function removeFavoritePal(userId, palId) {
+    const supabase = createClient();
+    try {
+      const { data, error } = await supabase
+        .from('favourites')
+        .delete()
+        .eq('user_id', userId)
+        .eq('pal_id', palId);
+  
+      if (error) throw error;
+  
+      return data;
+    } catch (error) {
+      console.error('Error removing favorite pal:', error.message);
+      throw error;
+    }
+  }

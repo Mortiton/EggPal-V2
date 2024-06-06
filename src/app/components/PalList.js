@@ -6,7 +6,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp as upArrow } from "@fortawesome/free-solid-svg-icons";
 import PalCard from "./PalCard";
-import Searchbar from "./Searchbar";
+import SearchBar from "./SearchBar";
 import TypeDropdown from "./TypeDropDown";
 import WorkDropDown from "./WorkDropDown";
 
@@ -92,7 +92,7 @@ export default function PalList({ pals }) {
   // Render the component
   return (
     <div>
-      <Searchbar onSearch={setSearchQuery} />
+      <SearchBar onSearch={setSearchQuery} />
       <div className={styles.filterContainer}>
         <span>Filter by:</span>
         <div className={styles.dropdownButtonsContainer}>
@@ -129,7 +129,7 @@ export default function PalList({ pals }) {
               href={`/pal/${encodeURIComponent(pal.name)}`}
               passHref
             >
-              <PalCard pal={pal} />{" "}
+              <PalCard pal={pal} />
             </Link>
           ))
         ) : (

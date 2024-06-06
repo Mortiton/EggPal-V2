@@ -14,7 +14,8 @@ import WorkIcon from "./WorkIcon";
  */
 export default function PalCard({ pal }) {
   // Prepare the paths for the pal's image and types' images
-  const imagePath = `/images/pals/${pal.id}.png`;
+  const palId = pal.id || pal.pal_id;
+  const imagePath = `/images/pals/${palId}.png`;
   const type1Path = `/images/types/${pal.type1}.png`;
   const type2Path = pal.type2 ? `/images/types/${pal.type2}.png` : null;
 
