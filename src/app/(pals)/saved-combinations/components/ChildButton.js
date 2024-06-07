@@ -11,7 +11,7 @@ import styles from './styles/ChildButton.module.css';
  * @param {{ child: string, combos: Array }} props
  * @returns {JSX.Element} A React component.
  */
-export default function ChildButton({ child, combos, userId, onClick }) {
+export default function ChildButton({ child, combos, userId, onClick, isSelected }) {
   const handleClick = () => {
     onClick(child, combos);
   }
@@ -22,7 +22,7 @@ export default function ChildButton({ child, combos, userId, onClick }) {
 
   return (
     <div className={styles.childContainer}>
-      <div className={styles.childButton} onClick={handleClick}>
+       <div className={`${styles.childButton} ${isSelected ? styles.selected : ''}`} onClick={handleClick}>
         <Image
           src={childImage}
           alt={childName}

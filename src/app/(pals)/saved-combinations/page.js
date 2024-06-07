@@ -1,6 +1,5 @@
 import { fetchSavedBreedingCombos } from './actions';
 import { createClient } from '@/app/utils/supabase/server';
-import ChildButton from './components/ChildButton';
 import styles from './page.module.css';
 import BreedingCombosDisplay from './components/BreedingCombosDisplay';
 
@@ -33,7 +32,7 @@ export default async function SavedBreedingPage() {
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Saved Breeding Combinations</h2>
-      <p className={styles.description}>Click the pal to reveal their breeding combinations.</p>
+      <p className={styles.description}>Click the pal to reveal your saved breeding combinations.</p>
       <div className={styles.childGrid}>
         <BreedingCombosDisplay combos={groupedByChild} userId={user.id} />
       </div>

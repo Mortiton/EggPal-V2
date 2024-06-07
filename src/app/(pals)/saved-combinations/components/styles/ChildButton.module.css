@@ -19,8 +19,9 @@
   }
   
   .childButton:hover {
-    background-color: #e0e0e0;
+    background-color: #515050;
   }
+
   
   .childImage {
     border-radius: 50%;
@@ -37,3 +38,6 @@
     margin-top: 10px;
   }
   
+  .selected {
+    background-color: #515050; 
+  }

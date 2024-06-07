@@ -1,8 +1,8 @@
 import { createClient } from '@/app/utils/supabase/server'
 import localFont from 'next/font/local';
-import { cookies } from 'next/headers';
 import NavBar from './components/NavBar';
 import "./globals.css";
+import Head from 'next/head';
 
 export const metadata = {
   title: "EggPal",
@@ -30,6 +30,11 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en">
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </Head>
       <body className={mainFont.className}>
         <header>
           <NavBar user={user} />

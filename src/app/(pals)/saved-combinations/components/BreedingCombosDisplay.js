@@ -28,6 +28,7 @@ export default function BreedingCombosDisplay({ combos, userId }) {
           combos={combos}
           userId={userId}
           onClick={handleChildClick}
+          isSelected={selectedChild === child}
         />
       ))}
       </div>
