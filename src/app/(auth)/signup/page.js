@@ -16,7 +16,7 @@ export default function SignupPage({ searchParams }) {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Sign Up</h1>
+      <h2 className={styles.heading}>Sign Up</h2>
       <p className={styles.description}>Create an account by entering your details below</p>
       {/* Display error message if error exists */}
       {error && (

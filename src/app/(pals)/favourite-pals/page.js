@@ -23,7 +23,8 @@ export default async function FavouritePalsPage() {
 
   return (
     <div className={styles.container}>
-      <h1>Your Favourite Pals</h1>
+      <h1 className={styles.title}>Your Favourite Pals</h1>
+      <p className={styles.description}>Below are you favourite pals. Click the pal to view their page.</p>
       <div className={styles.palGrid}>
         {favoritePals.map((pal) => (
           <Link

@@ -11,7 +11,7 @@ import styles from './styles/SavedBreedingList.module.css';
  * @param {{ userId: string, breedingCombos: Array }} props
  * @returns {JSX.Element} A React component.
  */
-export default function SavedBreedingList({ userId, breedingCombos }) {
+export default function SavedBreedingList({ userId, breedingCombos = [] }) {
   const [searchTerm, setSearchTerm] = useState("");
   console.log(breedingCombos)
 

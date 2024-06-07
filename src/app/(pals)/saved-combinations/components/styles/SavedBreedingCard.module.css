@@ -1,6 +1,7 @@
 .card {
   position: relative; 
-    width: 350px; 
+    max-width: 300px; 
+    flex-basis: 300px;
     padding: 10px;
     height: 100px;
     border-radius: 5px;
@@ -11,6 +12,7 @@
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
+    flex-direction: row;
   }
   
   .parent {

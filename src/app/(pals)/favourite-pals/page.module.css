@@ -3,21 +3,46 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: #1d1c1c;
+    border: 1px solid #b27fe5;
+    width: 80%;
+    margin: auto;
+    border-radius: 20px;
+}
+
+.title {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.description {
+    margin-bottom: 30px;
+    font-size: 1rem;
+    color: #ffffff;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
 }
 
 .palGrid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    width: 70%;
+    gap: 20px;
 }
 
 .cardLink {
     text-decoration: none;
-    color: #b27fe5;
+    color: inherit;
+    transition: transform 0.2s;
+}
+
+.cardLink:hover {
+    transform: scale(1.05);
 }
 
 .noFavText {
     text-align: center;
     font-size: 1.5rem;
+    margin-top: 20px;
 }

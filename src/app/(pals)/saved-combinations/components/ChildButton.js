@@ -11,12 +11,10 @@ import styles from './styles/ChildButton.module.css';
  * @param {{ child: string, combos: Array }} props
  * @returns {JSX.Element} A React component.
  */
-export default function ChildButton({ child, combos, userId }) {
-  const [showCombos, setShowCombos] = useState(false);
-
-  const toggleCombos = useCallback(() => {
-    setShowCombos(prevShowCombos => !prevShowCombos);
-  }, []);
+export default function ChildButton({ child, combos, userId, onClick }) {
+  const handleClick = () => {
+    onClick(child, combos);
+  }
 
 
   const childImage = combos[0]?.child.image || '/images/default.png';
@@ -24,7 +22,7 @@ export default function ChildButton({ child, combos, userId }) {
 
   return (
     <div className={styles.childContainer}>
-      <div className={styles.childButton} onClick={toggleCombos}>
+      <div className={styles.childButton} onClick={handleClick}>
         <Image
           src={childImage}
           alt={childName}
@@ -35,19 +33,6 @@ export default function ChildButton({ child, combos, userId }) {
         />
         <span className={styles.childName}>{childName}</span>
       </div>
-      {showCombos && (
-        <div className={styles.combosContainer}>
-          {combos.map((combo, index) => (
-            <SavedBreedingCard
-              key={index}
-              userId={userId}
-              breedingComboId={combo.breeding_combo_id}
-              parent1={combo.parent1}
-              parent2={combo.parent2}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 }

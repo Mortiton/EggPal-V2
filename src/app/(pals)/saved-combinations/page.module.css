@@ -4,15 +4,29 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
+    background-color: #1d1c1c;
+    border: 1px solid #b27fe5;
+    width: 80%;
+    margin: auto;
+    border-radius: 20px;
   }
   
-  .h1 {
-    font-size: 2em;
+  .title {
     margin-bottom: 20px;
-  }
+}
+
+.description {
+    margin-bottom: 30px;
+    font-size: 1rem;
+    color: #ffffff;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
   
   .childGrid {
     display: flex;
+    width: 100%;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;

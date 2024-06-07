@@ -1,11 +1,10 @@
-import React from 'react';
-import Image from 'next/image';
-import styles from './styles/SavedBreedingCard.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import Image from "next/image";
+import styles from "./styles/SavedBreedingCard.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { removeSavedBreedingCombo } from '../actions';
-import { useRouter } from 'next/navigation';
+import { removeSavedBreedingCombo } from "../actions";
 
 /**
  * SavedBreedingCard component that displays the breeding details for two parent entities and allows removal.
@@ -14,14 +13,14 @@ import { useRouter } from 'next/navigation';
  * @param {{ userId: string, breedingComboId: string, parent1: { name: string, image: string }, parent2: { name: string, image: string } }} props
  * @returns {JSX.Element} A React component.
  */
-export default function SavedBreedingCard({ userId, breedingComboId, parent1, parent2 }) {
-  const router = useRouter();
-
-  console.log('userId:', userId);
-
+export default function SavedBreedingCard({
+  userId,
+  breedingComboId,
+  parent1,
+  parent2,
+}) {
   const handleRemove = async () => {
     await removeSavedBreedingCombo(userId, breedingComboId);
-    // router.refresh();
   };
 
   return (
