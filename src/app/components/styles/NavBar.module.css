@@ -31,16 +31,22 @@
     text-decoration: none;
     padding: 10px;
     font-weight: bold;
+    
   }
   
   /* Title styles */
   .title {
     color: #b27fe5;
-    padding: 0;
+    padding: 10px;
     margin-right: auto;
     text-decoration: none;
     font-size: 24px;
   }
+
+  .title:hover {
+    background-color: #303030;
+  }
+
   
   /* Logout button styles */
   .logoutBtn {
