@@ -1,0 +1,70 @@
+.hamburger {
+    background: none;
+    border: none;
+    color: #b27fe5;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+    margin-right: 20px;
+    transition: color 0.3s ease;
+}
+
+.hamburger:hover {
+    color: #dfc7f7;
+}
+
+.navLinksActive {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: #303030;
+    width: 50%;
+    top: 100px;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+    border-left: 1px solid #b27fe5;
+    border-bottom: 1px solid #b27fe5;
+    transition: background-color 0.3s ease;
+}
+
+.link {
+    color: #b27fe5;
+    text-decoration: none;
+    padding: 10px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.link:hover {
+    color: #dfc7f7;
+}
+
+.logoutBtn {
+    color: black;
+    background-color: #b27fe5;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logoutBtn:hover {
+    background-color: #dfc7f7;
+    color: white;
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) { 
+    .burgerMenu {
+      display: block;
+    }
+  }
+  
+  /* Medium devices (tablets, 768px and up) */
+  @media (min-width: 768px) {
+    .burgerMenu {
+      display: none;
+    }
+  }

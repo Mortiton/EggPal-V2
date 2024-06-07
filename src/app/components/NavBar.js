@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import BurgerMenu from './BurgerMenu';
 import styles from './styles/NavBar.module.css';
 
 /**
@@ -35,6 +36,7 @@ export default function NavBar({ user }) {
           </>
         )}
       </div>
+      <BurgerMenu user={user} />
     </nav>
   );
 }
