@@ -16,8 +16,8 @@
   }
   
   .parentImage {
-    width: 60px; 
-    height: 60px;
+    width: 80px; 
+    height: 80px;
     border-radius: 50%;
     margin-bottom: 5px;
   }
@@ -46,10 +46,7 @@
       flex-direction: row;
     }
     
-    .parentImage {
-      width: 80px; 
-      height: 80px;
-    }
+
   
     .parentName {
       font-size: 14px;
@@ -67,10 +64,7 @@
       margin-left: 10px;
     }
   
-    .parentImage {
-      width: 100px; 
-      height: 100px;
-    }
+
   
     .parentName {
       font-size: 16px;

@@ -1,4 +1,4 @@
-import { getFavoritePals } from "./actions";
+import { getFavoritePals, deleteFavouritePal } from "./actions";
 import PalCard from "@/app/components/PalCard";
 import styles from "./page.module.css";
 import { createClient } from "@/app/utils/supabase/server";

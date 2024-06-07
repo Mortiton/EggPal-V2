@@ -41,8 +41,8 @@ export default function BreedingCard({ parent1, parent2, userId, breedingComboId
             src={parent1Image}
             alt={parent1?.name || 'Unknown Parent'}
             className={styles.parentImage}
-            height={60}
-            width={60}
+            height={80}
+            width={80}
             unoptimized
           />
         </Link>
@@ -59,8 +59,8 @@ export default function BreedingCard({ parent1, parent2, userId, breedingComboId
             src={parent2Image}
             alt={parent2?.name || 'Unknown Parent'}
             className={styles.parentImage}
-            height={60}
-            width={60}
+            height={80}
+            width={80}
             unoptimized
           />
         </Link>
