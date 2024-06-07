@@ -34,7 +34,7 @@ export default async function SavedBreedingPage() {
       <h1>Saved Breeding Combinations</h1>
       <div className={styles.childGrid}>
         {Object.entries(groupedByChild).map(([child, combos]) => (
-          <ChildButton key={child} child={child} combos={combos} />
+          <ChildButton key={child} child={child} combos={combos} userId={user.id} />
         ))}
       </div>
     </div>

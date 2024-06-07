@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
 import SavedBreedingCard from './SavedBreedingCard';
 import styles from './styles/ChildButton.module.css';
@@ -11,12 +11,13 @@ import styles from './styles/ChildButton.module.css';
  * @param {{ child: string, combos: Array }} props
  * @returns {JSX.Element} A React component.
  */
-export default function ChildButton({ child, combos }) {
+export default function ChildButton({ child, combos, userId }) {
   const [showCombos, setShowCombos] = useState(false);
 
-  const toggleCombos = () => {
-    setShowCombos(!showCombos);
-  };
+  const toggleCombos = useCallback(() => {
+    setShowCombos(prevShowCombos => !prevShowCombos);
+  }, []);
+
 
   const childImage = combos[0]?.child.image || '/images/default.png';
   const childName = combos[0]?.child.name || 'Unknown';
@@ -39,7 +40,7 @@ export default function ChildButton({ child, combos }) {
           {combos.map((combo, index) => (
             <SavedBreedingCard
               key={index}
-              userId={combo.userId}
+              userId={userId}
               breedingComboId={combo.breeding_combo_id}
               parent1={combo.parent1}
               parent2={combo.parent2}

@@ -17,9 +17,11 @@ import { useRouter } from 'next/navigation';
 export default function SavedBreedingCard({ userId, breedingComboId, parent1, parent2 }) {
   const router = useRouter();
 
+  console.log('userId:', userId);
+
   const handleRemove = async () => {
     await removeSavedBreedingCombo(userId, breedingComboId);
-    router.refresh();
+    // router.refresh();
   };
 
   return (
@@ -29,8 +31,8 @@ export default function SavedBreedingCard({ userId, breedingComboId, parent1, pa
           src={parent1.image}
           alt={parent1.name}
           className={styles.parentImage}
-          height={100}
-          width={100}
+          height={80}
+          width={80}
           unoptimized
         />
         <span className={styles.parentName}>{parent1.name}</span>
@@ -45,8 +47,8 @@ export default function SavedBreedingCard({ userId, breedingComboId, parent1, pa
           src={parent2.image}
           alt={parent2.name}
           className={styles.parentImage}
-          height={100}
-          width={100}
+          height={80}
+          width={80}
           unoptimized
         />
         <span className={styles.parentName}>{parent2.name}</span>

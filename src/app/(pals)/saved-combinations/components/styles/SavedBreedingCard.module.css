@@ -1,8 +1,8 @@
 .card {
   position: relative; 
-    width: 450px; 
+    width: 350px; 
     padding: 10px;
-    height: 150px;
+    height: 100px;
     border-radius: 5px;
     margin: 10px;
     overflow: hidden;
@@ -25,13 +25,15 @@
   }
   
   .parentName {
-    margin-left: 10px;
     font-weight: bold;
+    overflow-wrap: break-word;
+    font-size: 14px;
+    text-align: center;
   }
   
   .plusIcon {
     margin: 0 10px;
-    height: 30px;
+    height: 20px;
   }
   
   .removeIcon {
