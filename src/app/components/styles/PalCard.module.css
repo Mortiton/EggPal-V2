@@ -26,6 +26,7 @@
   
   .card:hover {
     background-color: #515050;
+    transform: scale(1.05);
   }
   
   .typeIcons {
