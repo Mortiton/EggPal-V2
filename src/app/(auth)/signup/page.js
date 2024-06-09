@@ -1,5 +1,5 @@
 import SignupForm from './components/SignupForm';
-import styles from './styles/page.module.css';
+import styles from '../../components/styles/FormPage.module.css';
 
 /**
  * SignupPage component that renders a signup page.

@@ -16,14 +16,14 @@
   }
   
   /* Media Queries */
-  @media (min-width: 300px){
+  @media (max-width: 300px){
     .iconImage {
       width: 15px;
       height: 15px;
     }
   
     .iconValue {
-      font-size: 14px;
+      font-size: 12px;
     }
   }
   
@@ -46,7 +46,7 @@
     }
   
     .iconValue {
-      font-size: 14px;
+      font-size: 18px;
     }
   }
   

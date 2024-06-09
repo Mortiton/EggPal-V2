@@ -55,3 +55,22 @@ export async function signup(formData) {
   // Revalidate the cache for the root path
   revalidatePath("/", "layout");
 }
+
+/**
+ * Initiates a password reset process for the provided email.
+ *
+ * @param {string} email - The email address to send the reset link to.
+ * @throws {Error} - Throws an error if the reset email cannot be sent.
+ */
+export async function resetPassword(email) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase.auth.api.resetPasswordForEmail(email);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // Redirect to login page after successful password reset email sending
+  redirect("/login");
+}

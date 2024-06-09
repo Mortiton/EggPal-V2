@@ -34,3 +34,4 @@ export async function login({ email, password }) {
   // Return a success object
   return { success: true };
 }
+

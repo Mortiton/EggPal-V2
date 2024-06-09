@@ -99,6 +99,13 @@ export default function LoginForm() {
             >
               Log In
             </button>
+            <button
+              type="button"
+              className={styles.button}
+              onClick={() => router.push('/forgot-password')}
+            >
+              Forgot Password
+            </button>
           </Form>
         )}
       </Formik>

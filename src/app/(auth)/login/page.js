@@ -1,6 +1,6 @@
 // Importing necessary components and styles
 import LoginForm from './components/LoginForm';
-import styles from './page.module.css';
+import styles from '../../components/styles/FormPage.module.css';
 
 /**
  * LoginPage component that renders a login page.
