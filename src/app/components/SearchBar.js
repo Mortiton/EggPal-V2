@@ -10,7 +10,7 @@ import styles from './styles/searchbar.module.css'; // Import specific styles fo
  * @param {function} onSearch - The function to call when the user types in the search bar.
  * @returns {JSX.Element} A React component.
  */
-export default function SearchBar ({ onSearch }) {
+export default function SearchBar ({ onSearch, value }) {
   return (
     <div className={styles.searchContainer}>
       <input
@@ -18,7 +18,7 @@ export default function SearchBar ({ onSearch }) {
         id="filter"
         name="filter"
         placeholder="Search for a Pal..."
-        // Call the onSearch function when the user types in the search bar
+        value={value}
         onChange={(e) => onSearch(e.target.value)} 
         className={styles.searchInput} 
       />

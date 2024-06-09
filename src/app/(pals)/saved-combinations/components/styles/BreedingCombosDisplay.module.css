@@ -16,3 +16,8 @@
     gap: 20px;
     width: 100%;
 }
+
+.subText {
+  font-size: 1.3rem;
+  text-align: center;
+}
