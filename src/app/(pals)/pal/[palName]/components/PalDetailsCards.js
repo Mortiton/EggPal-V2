@@ -7,6 +7,7 @@ import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
 import { addFavoritePal, removeFavoritePal } from '../actions';
 import styles from "./styles/PalDetailsCard.module.css";
 import WorkIcon from "@/app/components/WorkIcon";
+import { toast } from 'react-toastify';
 
 export default function PalDetailsCard({ pal, user, userFavorites }) {
   const [isFavourited, setIsFavourited] = useState(false);
@@ -20,7 +21,7 @@ export default function PalDetailsCard({ pal, user, userFavorites }) {
 
   const handleToggleFavourite = async () => {
     if (!user) {
-      alert('Please log in to favorite pals.');
+      toast.info('Please log in to favorite pals.');
       return;
     }
     if (isLoading) return;

@@ -9,6 +9,7 @@ import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as fasHeart } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { addSavedBreedingCombo, removeSavedBreedingCombo } from "../actions";
+import { toast } from 'react-toastify';
 
 export default function BreedingCard({ parent1, parent2, userId, breedingComboId, savedBreedingCombos, user }) {
   const [favourite, setFavourite] = useState(false);
@@ -21,7 +22,7 @@ export default function BreedingCard({ parent1, parent2, userId, breedingComboId
 
   const toggleFavourite = async () => {
     if (!user) {
-      alert('Please log in to save breeding combinations.');
+      toast.info('Please log in to save breeding combinations.');
       return;
     }
     try {

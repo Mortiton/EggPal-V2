@@ -1,7 +1,9 @@
-import { createClient } from '@/app/utils/supabase/server'
-import localFont from 'next/font/local';
-import NavBar from './components/NavBar';
-import Footer from './components/Footer';
+import { createClient } from "@/app/utils/supabase/server";
+import localFont from "next/font/local";
+import NavBar from "./components/NavBar";
+import Footer from "./components/Footer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 export const metadata = {
@@ -10,23 +12,22 @@ export const metadata = {
 };
 
 const mainFont = localFont({
-  src: './fonts/slkscr.ttf',
-  display: 'swap',
+  src: "./fonts/slkscr.ttf",
+  display: "swap",
 });
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   console.log = () => {};
   console.error = () => {};
   console.warn = () => {};
 }
 
 export default async function RootLayout({ children }) {
-
-    const supabase = createClient()
+  const supabase = createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   return (
     <html lang="en">
@@ -35,14 +36,13 @@ export default async function RootLayout({ children }) {
           <NavBar user={user} />
         </header>
         <div className="page-container">
-        <main className="content-wrap">
-          {children}
-        </main>
-        <footer>
-          <Footer />
-        </footer>
+          <main className="content-wrap">{children}</main>
+          <footer>
+            <Footer />
+          </footer>
         </div>
-        <div id="modal-root"></div> 
+        <ToastContainer theme="dark" />
+        <div id="modal-root"></div>
       </body>
     </html>
   );
