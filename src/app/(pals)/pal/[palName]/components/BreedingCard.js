@@ -10,14 +10,20 @@ import { faHeart as fasHeart } from "@fortawesome/free-solid-svg-icons";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { addSavedBreedingCombo, removeSavedBreedingCombo } from "../actions";
 
-export default function BreedingCard({ parent1, parent2, userId, breedingComboId, savedBreedingCombos }) {
+export default function BreedingCard({ parent1, parent2, userId, breedingComboId, savedBreedingCombos, user }) {
   const [favourite, setFavourite] = useState(false);
 
   useEffect(() => {
-    setFavourite(savedBreedingCombos.some(combo => combo.breeding_combo_id === breedingComboId));
-  }, [savedBreedingCombos, breedingComboId]);
+    if (user) {
+      setFavourite(savedBreedingCombos.some(combo => combo.breeding_combo_id === breedingComboId));
+    }
+  }, [savedBreedingCombos, breedingComboId, user]);
 
   const toggleFavourite = async () => {
+    if (!user) {
+      alert('Please log in to save breeding combinations.');
+      return;
+    }
     try {
       if (favourite) {
         await removeSavedBreedingCombo(userId, breedingComboId);

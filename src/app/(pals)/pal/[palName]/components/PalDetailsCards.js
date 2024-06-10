@@ -13,10 +13,16 @@ export default function PalDetailsCard({ pal, user, userFavorites }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsFavourited(userFavorites.includes(pal.id));
-  }, [userFavorites, pal.id]);
+    if (user) {
+      setIsFavourited(userFavorites.includes(pal.id));
+    }
+  }, [userFavorites, pal.id, user]);
 
   const handleToggleFavourite = async () => {
+    if (!user) {
+      alert('Please log in to favorite pals.');
+      return;
+    }
     if (isLoading) return;
     setIsLoading(true);
 

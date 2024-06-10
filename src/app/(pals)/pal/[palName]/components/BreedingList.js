@@ -8,9 +8,9 @@ import styles from "./styles/BreedingList.module.css";
 export default function BreedingList({ breedingCombos, user, savedBreedingCombos }) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  if (!user) {
-    return <p>User data is not available.</p>;
-  }
+  // if (!user) {
+  //   return <p>User data is not available.</p>;
+  // }
 
   const filteredCombos = breedingCombos.filter((combo) => {
     const parent1Name = combo.parent1_name?.toLowerCase() || "";
@@ -30,9 +30,10 @@ export default function BreedingList({ breedingCombos, user, savedBreedingCombos
               key={index}
               parent1={{ name: combo.parent1_name, image: combo.parent1_image }}
               parent2={{ name: combo.parent2_name, image: combo.parent2_image }}
-              userId={user.id}
+              userId={user ? user.id : null}
               breedingComboId={combo.id}
-              savedBreedingCombos={savedBreedingCombos} // Pass the saved breeding combos
+              savedBreedingCombos={savedBreedingCombos}
+              user={user} 
             />
           ))}
         </div>

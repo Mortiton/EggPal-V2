@@ -33,15 +33,14 @@ export default async function PalPage({ params }) {
   // }
 
   const palName = decodeURIComponent(params.palName);
-  const data = await getPalDetailsAndFavorites(user.id, palName);
-
+  const data = await getPalDetailsAndFavorites(user ? user.id : null, palName);
+  
   if (!data || !data.pal_info) {
     return <div>No Pal information available.</div>;
   }
 
   const { pal_info: pal, breeding_combos: breedingCombos, favorites } = data;
-
-  const savedBreedingCombos = await fetchSavedBreedingCombos(user.id);
+  const savedBreedingCombos = user ? await fetchSavedBreedingCombos(user.id) : [];
 
   return (
     <div className={styles.mainContainer}>
