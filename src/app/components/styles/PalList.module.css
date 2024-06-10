@@ -32,6 +32,33 @@
   .filterContainer {
       min-height: 75px; 
     }
+
+    .selectedFiltersContainer {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 1rem;
+      padding: 0 20px;
+    }
+    
+    .selectedFilter {
+      background-color: #333;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .clearIndividualFilter {
+      background: none;
+      border: none;
+      color: #b27fe5;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
   
   .typeSpan {
       display: block;

@@ -120,6 +120,33 @@ export default function PalList({ pals }) {
           </span>
         )}
       </div>
+
+{/* Display currently selected filters */}
+<div className={styles.selectedFiltersContainer}>
+        {selectedType && (
+          <div className={styles.selectedFilter}>
+            Type: {selectedType}
+            <button
+              className={styles.clearIndividualFilter}
+              onClick={() => setSelectedType(null)}
+            >
+              X
+            </button>
+          </div>
+        )}
+        {selectedWork && (
+          <div className={styles.selectedFilter}>
+            Work: {selectedWork.replace("_", " ")}
+            <button
+              className={styles.clearIndividualFilter}
+              onClick={() => setSelectedWork(null)}
+            >
+              X
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className={styles.cardContainer}>
         {filteredPals.length > 0 ? (
           filteredPals.map((pal) => (
