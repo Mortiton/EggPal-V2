@@ -91,7 +91,7 @@ export default function PalList({ pals }) {
 
   // Render the component
   return (
-    <div>
+    <div className={styles.container}>
       <SearchBar onSearch={setSearchQuery} />
       <div className={styles.filterContainer}>
         <span>Filter by:</span>
@@ -116,7 +116,7 @@ export default function PalList({ pals }) {
             role="button"
             tabIndex="0"
           >
-            X Clear Filter
+            X Clear Filters
           </span>
         )}
       </div>
