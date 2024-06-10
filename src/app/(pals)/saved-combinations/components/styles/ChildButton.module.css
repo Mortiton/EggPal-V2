@@ -42,3 +42,27 @@
   .selected {
     background-color: #515050; 
   }
+
+
+@media (max-width: 768px) {
+  .childButton {
+    width: 120px; 
+    height: 180px; 
+  }
+
+  .childName {
+    font-size: 16px; 
+  }
+
+}
+
+@media (max-width: 480px) {
+  .childButton {
+    width: 90px; 
+    height: 140px; 
+  }
+
+  .childName {
+    font-size: 14px; 
+  }
+}

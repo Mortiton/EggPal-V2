@@ -28,9 +28,9 @@ export default async function PalPage({ params }) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return <div>Please log in to view this page.</div>;
-  }
+  // if (!user) {
+  //   return <div>Please log in to view this page.</div>;
+  // }
 
   const palName = decodeURIComponent(params.palName);
   const data = await getPalDetailsAndFavorites(user.id, palName);

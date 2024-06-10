@@ -83,12 +83,9 @@
   }
   
   @media (max-width: 300px) {
-    .navbar {
-      height: 70px;
-    }
-  
+
     .title, .link, .logoutBtn {
-      font-size: 14px;
+      font-size: 18px;
     }
   
     .hamburger {

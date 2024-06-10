@@ -17,7 +17,7 @@ export default function SearchBar ({ onSearch, value }) {
         type="text"
         id="filter"
         name="filter"
-        placeholder="Search for a Pal..."
+        placeholder="Search Pals..."
         value={value}
         onChange={(e) => onSearch(e.target.value)} 
         className={styles.searchInput} 

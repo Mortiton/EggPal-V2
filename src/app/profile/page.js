@@ -2,7 +2,7 @@ import { createClient } from '@/app/utils/supabase/server';
 import UpdateEmailForm from './components/UpdateEmailForm';
 import UpdatePasswordForm from './components/UpdatePasswordForm';
 import DeleteUserForm from './components/DeleteUserForm';
-import styles from './styles/ProfilePage.module.css';
+import styles from '../components/styles/FormPage.module.css'
 import { redirect } from 'next/navigation';
 
 /**

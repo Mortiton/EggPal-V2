@@ -47,3 +47,37 @@
     cursor: pointer;
     color: #b27fe5;
   }
+
+  @media (max-width: 768px) {
+    .card {
+      max-width: 400px; 
+    }
+  
+    .parentName {
+      font-size: 12px;
+    }
+  
+    .plusIcon {
+      margin: 0 5px; 
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .card {
+      max-width: 100%; 
+      flex-direction: column; 
+      height: auto; 
+    }
+  
+    .parent {
+      padding: 10px; 
+    }
+  
+    .plusIcon {
+      margin: 10px 0; 
+    }
+  
+    .parentName {
+      font-size: 10px; 
+    }
+  }

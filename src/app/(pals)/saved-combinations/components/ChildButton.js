@@ -2,7 +2,6 @@
 
 import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
-import SavedBreedingCard from './SavedBreedingCard';
 import styles from './styles/ChildButton.module.css';
 
 /**

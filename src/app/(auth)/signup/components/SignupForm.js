@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
+import TermsOfServiceModal from "./TermsOfServiceModal";
 import SuccessModal from "@/app/components/SuccessModal";
 import { signup, checkUserExists } from "../actions";
 import styles from "@/app/components/styles/FormStyles.module.css";
@@ -35,6 +36,7 @@ const SignupSchema = Yup.object().shape({
 export default function SignupForm() {
   const router = useRouter();
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [formData, setFormData] = useState(null);
   const [error, setError] = useState(null);
@@ -75,7 +77,7 @@ export default function SignupForm() {
               setSubmitting(false);
               return;
             }
-            setIsPrivacyModalOpen(true);
+            setIsTermsModalOpen(true);
           } catch (err) {
             setError(err.message);
           }
@@ -141,14 +143,22 @@ export default function SignupForm() {
           </Form>
         )}
       </Formik>
-      <PrivacyPolicyModal
+      <TermsOfServiceModal
+        isOpen={isTermsModalOpen}
+        onRequestClose={() => setIsTermsModalOpen(false)}
+        onAccept={() => {
+          setIsTermsModalOpen(false);
+          handleSignup();
+        }}
+      />
+      {/* <PrivacyPolicyModal
         isOpen={isPrivacyModalOpen}
         onRequestClose={() => setIsPrivacyModalOpen(false)}
         onAccept={() => {
           setIsPrivacyModalOpen(false);
           handleSignup();
         }}
-      />
+      /> */}
       <SuccessModal
         isOpen={isSuccessModalOpen}
         onRequestClose={() => setIsSuccessModalOpen(false)}

@@ -1,0 +1,34 @@
+.footer {
+  border-top: 1px solid #515050;
+  text-align: center;
+  padding: 1rem;
+  background-color: #000000;
+  color: white;
+}
+
+.footer p {
+  margin: 0.5rem 0;
+}
+
+.footer a {
+  color: #b27fe5;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.copyrightText, .disclaimerText {
+  padding-bottom: 10px;
+}
+
+@media (max-width: 480px) {
+  .footer p {
+    font-size: small;
+  }
+}
+
+.link {
+  margin: 0 10px;
+}

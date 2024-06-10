@@ -175,7 +175,6 @@ export async function fetchSavedBreedingCombos(userId) {
   export async function getPalDetailsAndFavorites(userId, palName) {
     const supabase = createClient();
     try {
-        console.log("Fetching pal details and favorites for user:", userId, "and pal:", palName);
         let { data, error } = await supabase
             .rpc('get_pal_details_and_favorites', { user_id: userId, pal_name: palName });
 
@@ -183,8 +182,7 @@ export async function fetchSavedBreedingCombos(userId) {
             console.error('Error from RPC:', error.message);
             throw error;
         }
-        
-        console.log('Data fetched from RPC:', data);
+      
         
         if (!data || !data.length) {
             console.log("Pal not found or data is null:", data);

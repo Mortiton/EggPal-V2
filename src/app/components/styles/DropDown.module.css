@@ -11,7 +11,7 @@
     cursor: pointer;
     width: 200px;
     padding: 10px;
-    font-size: 16px;
+    font-size: 1rem;
   }
   
   .dropdownContent {
@@ -64,11 +64,11 @@
 @media (min-width: 301px) and (max-width: 767px) {
   .dropdownButton {
     width: 150px;
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .dropdownContent {
-    min-width: 180px; /* Smaller width to fit on screen */
+    min-width: 180px; 
   }
 
 
@@ -84,7 +84,7 @@
 @media (min-width: 768px) and (max-width: 992px) {
   .dropdownButton {
     width: 180px;
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .dropdownContent {
