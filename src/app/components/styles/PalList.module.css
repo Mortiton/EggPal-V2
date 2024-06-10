@@ -48,7 +48,7 @@
 .selectedFiltersContainer {
   display: flex;
   position: fixed;
-  top: 110px; /* Adjust based on your layout */
+  top: 110px; 
   left: 20px;
   flex-direction: column;
   align-items: center;
@@ -94,11 +94,11 @@
   border-radius: 5px;
   cursor: pointer;
   opacity: 0.7;
-  z-index: 1001; /* Ensure it's above other content */
+  z-index: 1001; 
 }
 
 .scrollToTopButton:hover {
-  opacity: 1; /* Full opacity on hover */
+  opacity: 1; 
 }
 
 .cardLink {
