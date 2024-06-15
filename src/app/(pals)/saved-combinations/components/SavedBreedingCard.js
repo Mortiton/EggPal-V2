@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./styles/SavedBreedingCard.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -26,6 +27,7 @@ export default function SavedBreedingCard({
   return (
     <div className={styles.card}>
       <div className={styles.parent}>
+      <Link href={`/pal/${encodeURIComponent(parent1.name)}`} passHref>
         <Image
           src={parent1.image}
           alt={parent1.name}
@@ -34,6 +36,7 @@ export default function SavedBreedingCard({
           width={80}
           unoptimized
         />
+        </Link>
         <span className={styles.parentName}>{parent1.name}</span>
       </div>
       <FontAwesomeIcon
@@ -42,6 +45,7 @@ export default function SavedBreedingCard({
         aria-label="plus"
       />
       <div className={styles.parent}>
+      <Link href={`/pal/${encodeURIComponent(parent2.name)}`} passHref>
         <Image
           src={parent2.image}
           alt={parent2.name}
@@ -50,6 +54,7 @@ export default function SavedBreedingCard({
           width={80}
           unoptimized
         />
+        </Link>
         <span className={styles.parentName}>{parent2.name}</span>
       </div>
       <FontAwesomeIcon

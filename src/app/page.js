@@ -1,3 +1,4 @@
+import React from 'react';
 import { getPals } from './actions';
 import PalList from './components/PalList';
 import styles from './page.module.css';
