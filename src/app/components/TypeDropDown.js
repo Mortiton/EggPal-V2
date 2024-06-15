@@ -37,13 +37,14 @@ export default function TypeDropdown({ types, onSelectType }) {
   // Render the dropdown
   return (
     <div ref={dropdownRef} className={styles.dropdown}>
-      <button onClick={toggleDropdown} className={styles.dropdownButton}>
+      <button aria-label="Element Type" onClick={toggleDropdown} className={styles.dropdownButton}>
         Element Type
       </button>
       {isOpen && (
         <div className={styles.dropdownContent}>
           {types.map((type) => (
             <button
+              aria-label={type.name}
               key={type.name}
               onClick={() => {
                 onSelectType(type.name);

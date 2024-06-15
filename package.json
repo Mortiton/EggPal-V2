@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest --watch"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
@@ -16,12 +16,14 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.4",
+    "chromedriver": "^126.0.1",
     "formik": "^2.4.6",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
     "react-modal": "^3.16.1",
     "react-toastify": "^10.0.5",
+    "selenium-webdriver": "^4.21.0",
     "yup": "^1.4.0"
   },
   "devDependencies": {

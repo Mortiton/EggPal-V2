@@ -1,0 +1,84 @@
+2024-06-15T21:07:36.984Z - enter-login-credentails: Waiting for URL to be "http://localhost:3000/"
+Wait timed out after 5044ms
+2024-06-15T21:08:20.234Z - enter-login-credentails: Waiting for URL to be "http://localhost:3000/"
+Wait timed out after 5093ms
+2024-06-15T21:09:34.089Z - verify-login: expect(...).toBeTruth is not a function
+2024-06-15T21:22:17.059Z - login: Waiting for URL to be "http://localhost:3000/"
+Wait timed out after 5193ms
+2024-06-15T21:36:17.476Z - apply-filters: invalid selector
+from javascript error: {"status":32,"value":"An invalid or illegal selector was specified"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-15T21:39:53.745Z - apply-filters: invalid selector
+from javascript error: {"status":32,"value":"An invalid or illegal selector was specified"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-15T21:41:36.024Z - apply-filters: no such element: Unable to locate element: {"method":"xpath","selector":"//div[contains(@class, 'selectedFilter') and contains(text(), 'Type: dark')]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-15T21:45:28.748Z - apply-filters: Waiting for element to be located By(xpath, //div[contains(@class, 'selectedFilter') and contains(text(), 'Type: dark')])
+Wait timed out after 5066ms
+2024-06-15T21:46:49.997Z - apply-filters: Waiting for element to be located By(xpath, //div[contains(@class, 'selectedFilter') and contains(text(), 'dark')])
+Wait timed out after 5031ms
+2024-06-15T21:48:39.023Z - apply-filters: Waiting for element to be located By(xpath, //div[contains(@class, 'selectedFilter') and contains(text(), 'Type: dark')])
+Wait timed out after 5031ms
+2024-06-15T21:49:46.091Z - apply-filters: no such element: Unable to locate element: {"method":"css selector","selector":"button.dropdownButton"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-15T21:51:43.766Z - apply-filters: Waiting for element to be located By(xpath, //div[contains(@class, 'selectedFilter') and contains(text(), 'Type: dark')])
+Wait timed out after 5036ms
+2024-06-15T21:52:43.385Z - apply-filters: Waiting for element to be located By(xpath, //div[contains(@class, 'selectedFilter') and contains(text(), 'Type: dark')])
+Wait timed out after 5044ms
+2024-06-15T21:57:35.867Z - apply-filters: Waiting for element to be located By(css selector, button[aria-label="transporting"])
+Wait timed out after 5040ms
+2024-06-15T22:03:37.906Z - apply-filters: no such element: Unable to locate element: {"method":"css selector","selector":"[aria-label="Element Type"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-15T22:21:14.595Z - apply-filters: Waiting for element to be located By(css selector, .selectedFilter)
+Wait timed out after 5086ms
+2024-06-15T22:22:47.426Z - apply-filters: Waiting for element to be located By(css selector, .selectedFilter)
+Wait timed out after 5215ms
+2024-06-15T22:24:26.855Z - apply-filters: Waiting for element to be located By(css selector, .selectedFilterContainer)
+Wait timed out after 5049ms
+2024-06-15T22:25:19.169Z - apply-filters: Waiting for element to be located By(css selector, .selectedFilter)
+Wait timed out after 5044ms
+2024-06-15T22:28:26.126Z - apply-filters: Waiting for element to be located By(css selector, .selectedFilter)
+Wait timed out after 15204ms
+2024-06-15T22:29:31.542Z - apply-filters: Waiting for element to be located By(css selector, .selectedFiltersContainer .selectedFilter)
+Wait timed out after 15021ms
+2024-06-15T22:31:59.241Z - apply-filters: Waiting for element to be located By(css selector, .selectedFiltersContainer)
+Wait timed out after 15043ms
+2024-06-15T22:31:59.286Z - test-failed: Waiting for element to be located By(css selector, .selectedFiltersContainer)
+Wait timed out after 15043ms
+2024-06-15T22:33:19.896Z - test-failed: _seleniumWebdriver.By.cssSelector is not a function
+2024-06-15T22:34:10.148Z - apply-filters: Waiting for element to be located By(css selector, .selectedFiltersContainer)
+Wait timed out after 15066ms
+2024-06-15T22:34:10.181Z - test-failed: Waiting for element to be located By(css selector, .selectedFiltersContainer)
+Wait timed out after 15066ms
+2024-06-15T22:35:40.844Z - apply-filters: Waiting for element to be located By(css selector, a.cardLink)
+Wait timed out after 15002ms
+2024-06-15T22:35:40.894Z - test-failed: Waiting for element to be located By(css selector, a.cardLink)
+Wait timed out after 15002ms
+2024-06-15T22:36:57.798Z - apply-filters: Waiting for element to be located By(css selector, div.cardLink)
+Wait timed out after 15040ms
+2024-06-15T22:36:57.841Z - test-failed: Waiting for element to be located By(css selector, div.cardLink)
+Wait timed out after 15040ms
+2024-06-15T22:37:29.057Z - apply-filters: Waiting for element to be located By(css selector, Link.cardLink)
+Wait timed out after 15142ms
+2024-06-15T22:37:29.089Z - test-failed: Waiting for element to be located By(css selector, Link.cardLink)
+Wait timed out after 15142ms
+2024-06-15T22:38:01.456Z - apply-filters: Waiting for element to be located By(css selector, .cardLink)
+Wait timed out after 15225ms
+2024-06-15T22:38:01.504Z - test-failed: Waiting for element to be located By(css selector, .cardLink)
+Wait timed out after 15225ms
+2024-06-15T22:38:33.588Z - apply-filters: Waiting for element to be located By(css selector, .cardLink)
+Wait timed out after 15181ms
+2024-06-15T22:38:33.621Z - test-failed: Waiting for element to be located By(css selector, .cardLink)
+Wait timed out after 15181ms
+2024-06-15T22:41:08.048Z - apply-filters: styles is not defined
+2024-06-15T22:41:08.097Z - test-failed: styles is not defined
+2024-06-15T22:41:18.681Z - apply-filters: styles is not defined
+2024-06-15T22:41:18.730Z - test-failed: styles is not defined
+2024-06-15T22:42:23.412Z - search-killamari: no such element: Unable to locate element: {"method":"css selector","selector":".clearFilterSpan"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-15T22:42:23.443Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":".clearFilterSpan"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-15T22:44:20.907Z - search-killamari: no such element: Unable to locate element: {"method":"css selector","selector":".clearFilterSpan"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-15T22:44:20.940Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":".clearFilterSpan"}
+  (Session info: chrome-headless-shell=126.0.6478.61)

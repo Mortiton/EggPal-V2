@@ -37,13 +37,14 @@ export default function WorkDropDown({ work, onSelectWork }) {
     // Render the dropdown
     return (
         <div ref={dropdownRef} className={styles.dropdown}>
-            <button onClick={toggleDropdown} className={styles.dropdownButton}>
+            <button aria-label="Base Skills" onClick={toggleDropdown} className={styles.dropdownButton}>
                 Base Skills
             </button>
             {isOpen && (
                 <div className={styles.dropdownContent}>
                     {work.map(workItem => (
                         <button 
+                            aria-label={workItem.name}
                             key={workItem.name} 
                             onClick={() => { onSelectWork(workItem.name); setIsOpen(false); }} 
                             className={styles.dropdownItem}>
