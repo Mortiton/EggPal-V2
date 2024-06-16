@@ -82,3 +82,176 @@ Wait timed out after 15181ms
   (Session info: chrome-headless-shell=126.0.6478.61)
 2024-06-15T22:44:20.940Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":".clearFilterSpan"}
   (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T18:58:05.047Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"*[id="email"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T18:58:49.585Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"*[id="email"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T18:58:53.526Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"*[id="email"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:06:04.356Z - test-failed: Waiting for element to be located By(css selector, button[aria-label="Toggle Favourite"])
+Wait timed out after 10127ms
+2024-06-16T19:06:35.356Z - test-failed: Waiting for element to be located By(css selector, button[aria-label="Toggle Favourite"])
+Wait timed out after 10144ms
+2024-06-16T19:06:54.124Z - test-failed: Waiting for element to be located By(css selector, button[aria-label="Toggle Favourite"])
+Wait timed out after 10149ms
+2024-06-16T19:08:59.882Z - test-failed: element click intercepted: Element <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star PalDetailsCard_favoriteIcon__bZoJR" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" aria-label="Toggle Favourite" data-favourite="empty">...</svg> is not clickable at point (246, 44). Other element would receive the click: <a class="NavBar_link__ipLba" href="/favourite-pals">...</a>
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:10:07.813Z - test-failed: element click intercepted: Element <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="svg-inline--fa fa-star PalDetailsCard_favoriteIcon__bZoJR" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" aria-label="Toggle Favourite" data-favourite="empty">...</svg> is not clickable at point (246, 12). Other element would receive the click: <nav class="NavBar_navbar__YbUtr">...</nav>
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:16:36.696Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:16:46.714Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:23:30.047Z - test-failed: Waiting for URL to be "http://localhost:3000/pal/kitsun"
+Wait timed out after 10182ms
+2024-06-16T19:23:31.161Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10080ms
+2024-06-16T19:23:56.280Z - test-failed: Waiting for URL to be "http://localhost:3000/pal/kitsun"
+Wait timed out after 10135ms
+2024-06-16T19:24:52.399Z - test-failed: Waiting for element to be located By(xpath, //div[contains(@class, 'breeding-combination')])
+Wait timed out after 10036ms
+2024-06-16T19:26:45.064Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:26:45.065Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:26:53.011Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:26:53.022Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:28:09.074Z - test-failed: Waiting for URL to be "http://localhost:3000/pal/kitsun"
+Wait timed out after 10227ms
+2024-06-16T19:28:10.663Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10007ms
+2024-06-16T19:28:27.351Z - test-failed: Waiting for URL to be "http://localhost:3000/pal/kitsun"
+Wait timed out after 10185ms
+2024-06-16T19:29:14.716Z - test-failed: Waiting for element to be located By(xpath, //div[contains(@class, 'BreedingCard_parentName') and contains(text(), 'Helzephyr')])
+Wait timed out after 10208ms
+2024-06-16T19:30:26.647Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//span[contains(@class, 'BreedingCard_parentName') and text()='Cattiva']"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:31:23.345Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//span[contains(@class, 'BreedingCard_parentName') and text()='Cattiva']"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:32:20.026Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//img[@alt='Cattiva']"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:32:59.425Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//img[@alt='Cattiva']"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:33:33.956Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//img[@alt='Cattiva']"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:35:02.387Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//img[@alt='Cattiva']"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:36:45.699Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"img[alt="Cattiva"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:37:28.013Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//span[text()='Cattiva']"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:38:35.577Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//span[contains(text(), 'Cattiva')]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:39:20.776Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//span[contains(text(), 'Cattiva')]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:40:46.789Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":".//span[contains(text(), 'Cattiva')]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:46:35.643Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"[aria-label="favourite"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:46:46.234Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10112ms
+2024-06-16T19:46:54.724Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"[aria-label="favourite"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:47:06.023Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"[aria-label="favourite"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:47:16.186Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10021ms
+2024-06-16T19:47:28.725Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"[aria-label="favourite"]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:51:00.732Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:51:10.923Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10018ms
+2024-06-16T19:51:19.581Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:51:29.347Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:51:39.373Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10020ms
+2024-06-16T19:52:10.112Z - test-failed: favouriteIcon is not defined
+2024-06-16T19:52:29.654Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10212ms
+2024-06-16T19:52:31.288Z - test-failed: Waiting for element to be located By(xpath, //button[contains(text(), 'Kitsun')])
+Wait timed out after 10019ms
+2024-06-16T19:53:00.920Z - test-failed: Waiting for element to be located By(xpath, //button[contains(text(), 'Kitsun')])
+Wait timed out after 10017ms
+2024-06-16T19:54:08.155Z - test-failed: Waiting for element to be located By(xpath, //button[contains(text(), 'Kitsun')])
+Wait timed out after 10046ms
+2024-06-16T19:55:02.951Z - test-failed: Waiting for element to be located By(xpath, //img[@alt='Kitsun'])
+Wait timed out after 10025ms
+2024-06-16T19:55:45.249Z - test-failed: Waiting for element to be located By(xpath, //div[contains(@class, 'BreedingCard_parentName') and contains(text(), 'Helzephyr')])
+Wait timed out after 10039ms
+2024-06-16T19:56:21.879Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 10042ms
+2024-06-16T19:57:06.329Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"img[alt='Cattiva']"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T19:58:36.058Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 10036ms
+2024-06-16T19:59:18.840Z - test-failed: Waiting for element to be located By(css selector, .ChildButton_childButton__rx1XZ.ChildButton_selected__1zueE)
+Wait timed out after 10024ms
+2024-06-16T20:00:39.934Z - test-failed: Waiting for element to be located By(xpath, //img[@alt='Kitsun'])
+Wait timed out after 10159ms
+2024-06-16T20:25:24.492Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10042ms
+2024-06-16T20:25:25.276Z - test-failed: Waiting for element to be located By(xpath, //button[contains(text(), 'Kitsun')])
+Wait timed out after 10047ms
+2024-06-16T20:27:33.454Z - test-failed: Waiting for element to be located By(xpath, //button[contains(text(), 'Kitsun')])
+Wait timed out after 20161ms
+2024-06-16T20:28:47.535Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":"(//img[@alt='Cattiva'])[1]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T20:28:56.521Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10210ms
+2024-06-16T20:29:27.048Z - test-failed: Waiting for element to be located By(xpath, //span[contains(text(), 'Kitsun')])
+Wait timed out after 20199ms
+2024-06-16T20:29:39.485Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":"(//img[@alt='Cattiva'])[1]"}
+  (Session info: chrome-headless-shell=126.0.6478.61)
+2024-06-16T20:43:41.199Z - test-failed: Waiting for element to be located By(xpath, //span[contains(text(), 'Kitsun')])
+Wait timed out after 20205ms
+2024-06-16T20:44:19.631Z - test-failed: Waiting for element to be located By(xpath, //div[@class='BreedingList_breedingList__2e5VC']//div[2]//div[1]//a[1])
+Wait timed out after 10026ms
+2024-06-16T20:45:39.060Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 20037ms
+2024-06-16T20:46:12.442Z - test-failed: Waiting for element to be located By(xpath, //div[@class='BreedingList_breedingList__2e5VC']//div[2]//div[1]//a[1])
+Wait timed out after 10163ms
+2024-06-16T20:48:04.904Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 20080ms
+2024-06-16T20:48:24.537Z - test-failed: Waiting for element to be located By(xpath, //div[@class='BreedingList_breedingList__2e5VC']//div[2]//div[1]//a[1])
+Wait timed out after 10178ms
+2024-06-16T20:51:07.280Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 20210ms
+2024-06-16T20:51:41.163Z - test-failed: Waiting for element to be located By(xpath, //div[@class='BreedingList_breedingList__2e5VC']//div[2]//div[1]//a[1])
+Wait timed out after 10178ms
+2024-06-16T20:52:55.575Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 20197ms
+2024-06-16T20:53:16.759Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10188ms
+2024-06-16T20:54:21.986Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 20168ms
+2024-06-16T20:54:40.907Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10211ms
+2024-06-16T20:56:36.586Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 20185ms
+2024-06-16T20:56:57.584Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10198ms
+2024-06-16T20:58:12.964Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 20187ms
+2024-06-16T20:58:41.728Z - test-failed: Waiting for element to be located By(xpath, //div[@class='BreedingList_breedingList__2e5VC']//div[2]//div[1]//a[1])
+Wait timed out after 10154ms
+2024-06-16T21:02:05.270Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10193ms
+2024-06-16T21:02:06.221Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10212ms
+2024-06-16T21:02:37.419Z - test-failed: Waiting for element to be located By(css selector, img[alt='Kitsun'])
+Wait timed out after 20136ms
+2024-06-16T21:03:56.769Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10170ms
+2024-06-16T21:07:20.308Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10026ms
+2024-06-16T21:08:47.955Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10200ms
+2024-06-16T21:10:55.934Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10199ms
+2024-06-16T21:12:50.079Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
+Wait timed out after 10032ms
