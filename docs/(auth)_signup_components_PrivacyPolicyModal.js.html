@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: (auth)/signup/components/PrivacyPolicyModal.js | Source: (auth)/signup/components/PrivacyPolicyModal.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: (auth)/signup/components/PrivacyPolicyModal.js</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PrivacyPolicyModal">PrivacyPolicyModal</a></li><li><a href="global.html#SuccessModal">SuccessModal</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#addFavoritePal">addFavoritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#fetchSavedBreedingCombos">fetchSavedBreedingCombos</a></li><li><a href="global.html#formValidation">formValidation</a></li><li><a href="global.html#getFavoritePals">getFavoritePals</a></li><li><a href="global.html#getPalDetailsAndFavorites">getPalDetailsAndFavorites</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#removeFavoritePal">removeFavoritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect } from "react";
+import Modal from "react-modal";
+import styles from "../styles/PrivacyPolicyModal.module.css";
+
+/**
+ * PrivacyPolicyModal component that renders a modal with the privacy policy.
+ * It displays a heading, the privacy policy text, and buttons to accept or close the modal.
+ *
+ * @component
+ * @param {Object} props - The props that were defined by the caller of this component.
+ * @param {boolean} props.isOpen - If true, the modal is open. If false, the modal is closed.
+ * @param {function} props.onRequestClose - Function to call when the close button is clicked.
+ * @param {function} props.onAccept - Function to call when the accept button is clicked.
+ * @returns {JSX.Element} A React component.
+ */
+const PrivacyPolicyModal = ({ isOpen, onRequestClose, onAccept }) => {
+  useEffect(() => {
+    Modal.setAppElement("#modal-root");
+  }, []);
+
+  return (
+    &lt;Modal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      contentLabel="Privacy Policy"
+      className={styles.modalContent}
+      overlayClassName={styles.modalOverlay}
+      aria={{
+        labelledby: "privacy-policy-title",
+        describedby: "privacy-policy-content"
+      }}
+    >
+      &lt;div className={styles.modalHeader}>
+        &lt;h2>Privacy Policy&lt;/h2>
+        &lt;button 
+          onClick={onRequestClose} 
+          className={styles.closeButton}
+          aria-label="Close privacy policy"
+        >
+          ×
+        &lt;/button>
+      &lt;/div>
+      &lt;div className={styles.modalBody}>
+        &lt;p>
+          This privacy notice explains what to expect us to do with your
+          personal information when you use the EggPal application.
+        &lt;/p>
+        &lt;h3>Our Contact Details&lt;/h3>
+        &lt;p>Email: support@eggpal.net&lt;/p>
+        &lt;h3>What Information We Collect, Use, and Why&lt;/h3>
+        &lt;p>
+          We collect and use the following information for the operation of
+          customer accounts and guarantees:
+        &lt;/p>
+        &lt;ul>
+          &lt;li>
+            Account information, including registration details (such as email
+            addresses and passwords).
+          &lt;/li>
+        &lt;/ul>
+        &lt;h3>Lawful Bases&lt;/h3>
+        &lt;p>
+          Our lawful bases for collecting or using personal information for the
+          operation of customer accounts and guarantees are:
+        &lt;/p>
+        &lt;ul>
+          &lt;li>
+            &lt;strong>Contract&lt;/strong>: We collect and use this information to
+            enter into and carry out our contract with you.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Legitimate Interest&lt;/strong>:
+            &lt;ul>
+              &lt;li>
+                &lt;strong>Security and Fraud Prevention&lt;/strong>: Collecting
+                personal information such as email addresses and passwords
+                allows us to authenticate users, protect their accounts from
+                unauthorised access, and prevent fraudulent activities. This is
+                crucial for maintaining the integrity and security of our web
+                application, thereby safeguarding user data and ensuring a
+                trustworthy environment.
+              &lt;/li>
+              &lt;li>
+                &lt;strong>User Experience and Support&lt;/strong>: By maintaining
+                accurate user accounts, we can provide personalised and
+                efficient customer service. This includes helping users with
+                account-related issues, providing relevant updates, and ensuring
+                they can access the services they signed up for without
+                interruption. This enhances the overall user experience and
+                satisfaction.
+              &lt;/li>
+              &lt;li>
+                &lt;strong>Operational Efficiency&lt;/strong>: Proper management of
+                user accounts enables us to streamline our operations, manage
+                resources effectively, and improve our services. This includes
+                ensuring that our system can handle user data efficiently and
+                that we can scale our services as our user base grows.
+              &lt;/li>
+            &lt;/ul>
+          &lt;/li>
+        &lt;/ul>
+        &lt;h3>Where We Get Personal Information From&lt;/h3>
+        &lt;p>
+          People directly: We collect personal information directly from users
+          during the registration process and through their interactions with
+          our application.
+        &lt;/p>
+        &lt;h3>How Long We Keep Information&lt;/h3>
+        &lt;p>
+          We retain personal information for as long as necessary to fulfill the
+          purposes we collected it for, including for the purposes of satisfying
+          any legal, accounting, or reporting requirements. Specifically:
+        &lt;/p>
+        &lt;ul>
+          &lt;li>
+            &lt;strong>
+              Account Information (including registration details such as email
+              addresses and passwords)
+            &lt;/strong>
+            : Retained for the duration of the account's existence. If an
+            account is deleted, the associated data will be retained for up to 6
+            months to allow for account recovery and to comply with legal
+            obligations.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Customer Support Records&lt;/strong>: Retained for 2 years from
+            the date of the last interaction to help resolve any future issues
+            or disputes.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Transaction Records&lt;/strong>: Retained for 6 years to comply
+            with tax and accounting regulations.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Marketing Data (if applicable)&lt;/strong>: Retained until the
+            user opts out of marketing communications or withdraws consent.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Legal Compliance Data&lt;/strong>: Retained as long as required
+            by law.
+          &lt;/li>
+        &lt;/ul>
+        &lt;p>
+          After these periods, we will securely delete or anonymise personal
+          information. If deletion is not possible (for example, because the
+          personal information has been stored in backup archives), then we will
+          securely store and isolate the personal information from any further
+          processing until deletion is possible.
+        &lt;/p>
+        &lt;h3>Your Data Protection Rights&lt;/h3>
+        &lt;p>Under data protection law, you have rights including:&lt;/p>
+        &lt;ul>
+          &lt;li>
+            &lt;strong>Your right of access&lt;/strong>: You have the right to ask us
+            for copies of your personal data.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Your right to rectification&lt;/strong>: You have the right to
+            ask us to rectify personal data you think is inaccurate. You also
+            have the right to ask us to complete information you think is
+            incomplete.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Your right to erasure&lt;/strong>: You have the right to ask us
+            to erase your personal data in certain circumstances.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Your right to restriction of processing&lt;/strong>: You have
+            the right to ask us to restrict the processing of your personal data
+            in certain circumstances.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Your right to object to processing&lt;/strong>: You have the
+            right to object to the processing of your personal data in certain
+            circumstances.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Your right to data portability&lt;/strong>: You have the right
+            to ask that we transfer the personal data you gave us to another
+            organisation, or to you, in certain circumstances.
+          &lt;/li>
+          &lt;li>
+            &lt;strong>Your right to withdraw consent&lt;/strong>: When we use consent
+            as our lawful basis, you have the right to withdraw your consent at
+            any time.
+          &lt;/li>
+        &lt;/ul>
+        &lt;p>
+          You don’t usually need to pay a fee to exercise your rights. If you
+          make a request, we have one calendar month to respond to you. To make
+          a data protection rights request, please contact us using the contact
+          details at the top of this privacy notice.
+        &lt;/p>
+        &lt;h3>How to Complain&lt;/h3>
+        &lt;p>
+          If you have any concerns about our use of your personal data, you can
+          make a complaint to us using the contact details at the top of this
+          privacy notice.
+        &lt;/p>
+        &lt;p>
+          If you remain unhappy with how we’ve used your data after raising a
+          complaint with us, you can also complain to the ICO.
+        &lt;/p>
+        &lt;p>
+          &lt;strong>The ICO’s address:&lt;/strong>
+        &lt;/p>
+        &lt;address>
+          Information Commissioner’s Office
+          &lt;br />
+          Wycliffe House
+          &lt;br />
+          Water Lane
+          &lt;br />
+          Wilmslow
+          &lt;br />
+          Cheshire
+          &lt;br />
+          SK9 5AF
+          &lt;br />
+        &lt;/address>
+        &lt;p>Helpline number: 0303 123 1113&lt;/p>
+        &lt;p>
+          Website:{" "}
+          &lt;a href="https://www.ico.org.uk/make-a-complaint" className={styles.link}>
+            https://www.ico.org.uk/make-a-complaint
+          &lt;/a>
+        &lt;/p>
+        &lt;p>
+          &lt;strong>Last Updated&lt;/strong>: 26 May 2024
+        &lt;/p>
+      &lt;/div>
+      &lt;div className={styles.modalFooter}>
+        &lt;button onClick={onAccept} className={styles.acceptButton}>
+          Accept
+        &lt;/button>
+        &lt;button onClick={onRequestClose} className={styles.closeButton}>
+          Close
+        &lt;/button>
+      &lt;/div>
+    &lt;/Modal>
+  );
+};
+
+export default PrivacyPolicyModal;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: profile/actions.js | Source: profile/actions.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: profile/actions.js</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PrivacyPolicyModal">PrivacyPolicyModal</a></li><li><a href="global.html#SuccessModal">SuccessModal</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#addFavoritePal">addFavoritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#fetchSavedBreedingCombos">fetchSavedBreedingCombos</a></li><li><a href="global.html#formValidation">formValidation</a></li><li><a href="global.html#getFavoritePals">getFavoritePals</a></li><li><a href="global.html#getPalDetailsAndFavorites">getPalDetailsAndFavorites</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#removeFavoritePal">removeFavoritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+import { createClient } from "@/app/utils/supabase/server";
+
+// Create a Supabase client with admin privileges
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+/**
+ * Update the email of the authenticated user.
+ *
+ * @async
+ * @param {string} email - The new email.
+ * @throws Will throw an error if the email update fails.
+ */
+export async function updateEmail(email) {
+  const supabase = createClient();
+  const { error } = await supabase.auth.updateUser({ email });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * Update the password of the authenticated user.
+ *
+ * @async
+ * @param {string} currentPassword - The current password.
+ * @param {string} newPassword - The new password.
+ * @throws Will throw an error if the password update fails.
+ */
+export async function updatePassword(currentPassword, newPassword) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  // Reauthenticate the user with the current password
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  });
+
+  if (signInError) {
+    throw new Error("Current password is incorrect");
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * Delete the authenticated user.
+ *
+ * @async
+ * @throws Will throw an error if the user deletion fails.
+ */
+export async function deleteUser() {
+  const supabase = createClient();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { error } = await supabaseAdmin.rpc('delete_user');
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // Sign out the user after deletion using the standard client
+  await supabase.auth.signOut();
+
+  // Revalidate path and redirect to homepage
+  revalidatePath("/");
+  redirect("/");
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

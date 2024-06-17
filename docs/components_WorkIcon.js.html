@@ -1,0 +1,112 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: components/WorkIcon.js | Source: components/WorkIcon.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: components/WorkIcon.js</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PrivacyPolicyModal">PrivacyPolicyModal</a></li><li><a href="global.html#SuccessModal">SuccessModal</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#addFavoritePal">addFavoritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#fetchSavedBreedingCombos">fetchSavedBreedingCombos</a></li><li><a href="global.html#formValidation">formValidation</a></li><li><a href="global.html#getFavoritePals">getFavoritePals</a></li><li><a href="global.html#getPalDetailsAndFavorites">getPalDetailsAndFavorites</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#removeFavoritePal">removeFavoritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import Image from 'next/image';
+import styles from './styles/WorkIcon.module.css'; // Import styles specific to the WorkIcon
+
+/**
+ * WorkIcon component that renders an icon for a work.
+ * It only renders the icon if the value is greater than 0.
+ *
+ * @component
+ * @param {string} iconName - The name of the icon to render.
+ * @param {number} value - The value associated with the icon.
+ * @returns {JSX.Element|null} A React component, or null if the value is 0 or negative.
+ */
+export default function WorkIcon({ iconName, value }) {
+    // Only render the component if the value is greater than 0
+    if (value &lt;= 0) {
+        return null; // Return null to avoid rendering anything for this component if the value is 0 or negative
+    }
+
+    const iconPath = `/images/work/${iconName}.png`; // Construct the path for the icon image
+
+    // Render the icon and its associated value
+    return (
+        &lt;div className={styles.iconContainer} role="img" aria-label={`${iconName}: ${value}`}>
+            &lt;Image 
+                src={iconPath} 
+                alt={`${iconName} icon`} 
+                width={25} 
+                height={25} 
+                className={styles.iconImage} 
+            />
+            &lt;span className={styles.iconValue}>{value}&lt;/span>
+        &lt;/div>
+    );
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

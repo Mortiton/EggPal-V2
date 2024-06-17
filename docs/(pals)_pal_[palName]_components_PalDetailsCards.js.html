@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: (pals)/pal/[palName]/components/PalDetailsCards.js | Source: (pals)/pal/[palName]/components/PalDetailsCards.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: (pals)/pal/[palName]/components/PalDetailsCards.js</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PrivacyPolicyModal">PrivacyPolicyModal</a></li><li><a href="global.html#SuccessModal">SuccessModal</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#addFavoritePal">addFavoritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#fetchSavedBreedingCombos">fetchSavedBreedingCombos</a></li><li><a href="global.html#formValidation">formValidation</a></li><li><a href="global.html#getFavoritePals">getFavoritePals</a></li><li><a href="global.html#getPalDetailsAndFavorites">getPalDetailsAndFavorites</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#removeFavoritePal">removeFavoritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
+import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
+import { addFavoritePal, removeFavoritePal } from '../actions';
+import styles from "./styles/PalDetailsCard.module.css";
+import WorkIcon from "@/app/components/WorkIcon";
+import { toast } from 'react-toastify';
+
+
+/**
+ * PalDetailsCard component that renders a card with details about a pal.
+ * It displays a favorite icon, the pal's name, image, description, and base skills.
+ *
+ * @component
+ * @param {Object} props - The props that were defined by the caller of this component.
+ * @param {Object} props.pal - The pal.
+ * @param {Object} props.user - The user.
+ * @param {Array} props.userFavorites - The user's favorite pals.
+ * @returns {JSX.Element} A React component.
+ */
+export default function PalDetailsCard({ pal, user, userFavorites }) {
+  const [isFavourited, setIsFavourited] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setIsFavourited(userFavorites.includes(pal.id));
+    }
+  }, [userFavorites, pal.id, user]);
+
+  const handleToggleFavourite = async () => {
+    if (!user) {
+      toast.info('Please log in to favorite pals.');
+      return;
+    }
+    if (isLoading) return;
+    setIsLoading(true);
+
+    try {
+      if (isFavourited) {
+        await removeFavoritePal(user.id, pal.id);
+      } else {
+        await addFavoritePal(user.id, pal.id);
+      }
+      setIsFavourited(!isFavourited);
+    } catch (error) {
+      console.error('Error toggling favorite:', error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const workAttributes = {
+    kindling: pal.kindling,
+    watering: pal.watering,
+    planting: pal.planting,
+    generating_electricity: pal.generating_electricity,
+    handiwork: pal.handiwork,
+    gathering: pal.gathering,
+    lumbering: pal.lumbering,
+    mining: pal.mining,
+    medicine_production: pal.medicine_production,
+    cooling: pal.cooling,
+    transporting: pal.transporting,
+    farming: pal.farming,
+  };
+
+  return (
+    &lt;div className={styles.container}>
+      &lt;FontAwesomeIcon
+        icon={isFavourited ? fasStar : farStar}
+        className={styles.favoriteIcon}
+        aria-label="Toggle Favourite"
+        data-favourite={isFavourited ? "filled" : "empty"}
+        onClick={handleToggleFavourite}
+        role="button"
+        tabIndex="0"
+      />
+      &lt;h1>{pal.name}&lt;/h1>
+      &lt;Image
+        src={`/images/pals/${pal.id}.png`}
+        alt={pal.name}
+        className={styles.image}
+        width={120}
+        height={120}
+        unoptimized
+      />
+      &lt;p className={styles.description}>{pal.description}&lt;/p>
+      &lt;h2>Base Skills&lt;/h2>
+      &lt;div className={styles.baseSkills} role="list" aria-label="List of base skills">
+        {Object.entries(workAttributes).map(
+          ([iconName, value]) =>
+            value > 0 &amp;&amp; (
+              &lt;div className={styles.workEntry} key={iconName}>
+                &lt;WorkIcon iconName={iconName} />
+                &lt;span className={styles.workName}>
+                  {iconName.replace("_", " ")}:
+                &lt;/span>
+                &lt;span className={styles.level}>{value}&lt;/span>
+              &lt;/div>
+            )
+        )}
+      &lt;/div>
+    &lt;/div>
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

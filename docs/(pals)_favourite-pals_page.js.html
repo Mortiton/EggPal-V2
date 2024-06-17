@@ -1,0 +1,131 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: (pals)/favourite-pals/page.js | Source: (pals)/favourite-pals/page.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: (pals)/favourite-pals/page.js</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PrivacyPolicyModal">PrivacyPolicyModal</a></li><li><a href="global.html#SuccessModal">SuccessModal</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#addFavoritePal">addFavoritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#fetchSavedBreedingCombos">fetchSavedBreedingCombos</a></li><li><a href="global.html#formValidation">formValidation</a></li><li><a href="global.html#getFavoritePals">getFavoritePals</a></li><li><a href="global.html#getPalDetailsAndFavorites">getPalDetailsAndFavorites</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getUserFavorites">getUserFavorites</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#removeFavoritePal">removeFavoritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { getFavoritePals, deleteFavouritePal } from "./actions";
+import PalCard from "@/app/components/PalCard";
+import styles from "./page.module.css";
+import { createClient } from "@/app/utils/supabase/server";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+
+
+export const metadata = {
+  title: 'Your Favourite Pals',
+  description: 'View your favourite pals',
+};
+
+/**
+ * FavouritePalsPage component
+ * @returns {JSX.Element} The rendered JSX element
+ */
+export default async function FavouritePalsPage() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login"); // Redirect to login if user is not authenticated
+  }
+
+  const favoritePals = await getFavoritePals(user.id);
+
+  if (favoritePals.length === 0) {
+    return &lt;div className={styles.noFavText}>No favorite pals found.&lt;/div>;
+  }
+
+  return (
+    &lt;div className={styles.container}>
+      &lt;h2 className={styles.title}>Your Favourite Pals&lt;/h2>
+      &lt;p className={styles.description}>Below are you favourite pals. Click the pal to view their page.&lt;/p>
+      &lt;div className={styles.palGrid}>
+        {favoritePals.map((pal) => (
+          &lt;Link
+              className={styles.cardLink}
+              key={pal.id}
+              href={`/pal/${encodeURIComponent(pal.name)}`}
+              passHref
+              role="listitem"
+              aria-label={`View details for ${pal.name}`}
+            >
+              &lt;PalCard pal={pal} />
+            &lt;/Link>
+        ))}
+      &lt;/div>
+    &lt;/div>
+  );
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>
