@@ -20,6 +20,17 @@ const UpdatePasswordSchema = Yup.object().shape({
     .required("Required"),
 });
 
+/**
+ * UpdatePasswordForm component that renders a form for updating the password.
+ * It displays input fields for the new password and password confirmation, and a submit button.
+ * It also displays a success modal upon successful password update.
+ *
+ * @component
+ * @param {Object} props - The props that were defined by the caller of this component.
+ * @param {string} props.accessToken - The access token for the user.
+ * @returns {JSX.Element} A React component.
+ */
+
 const UpdatePasswordForm = ({ accessToken }) => {
     const router = useRouter();
     const [error, setError] = useState('');

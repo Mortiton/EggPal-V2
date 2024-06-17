@@ -11,6 +11,20 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { addSavedBreedingCombo, removeSavedBreedingCombo } from "../actions";
 import { toast } from 'react-toastify';
 
+/**
+ * BreedingCard component that renders a card with two parent Pals and a favorite icon.
+ * It displays images and names of the parent Pals, and a favorite icon that can be toggled.
+ *
+ * @component
+ * @param {Object} props - The props that were defined by the caller of this component.
+ * @param {Object} props.parent1 - The first parent Pal.
+ * @param {Object} props.parent2 - The second parent Pal.
+ * @param {string} props.userId - The ID of the user.
+ * @param {string} props.breedingComboId - The ID of the breeding combination.
+ * @param {Array} props.savedBreedingCombos - The saved breeding combinations of the user.
+ * @param {Object} props.user - The user.
+ * @returns {JSX.Element} A React component.
+ */
 export default function BreedingCard({ parent1, parent2, userId, breedingComboId, savedBreedingCombos, user }) {
   const [favourite, setFavourite] = useState(false);
 
@@ -43,7 +57,7 @@ export default function BreedingCard({ parent1, parent2, userId, breedingComboId
   return (
     <div className={styles.card}>
       <div className={styles.parent}>
-        <Link href={`/pal/${encodeURIComponent(parent1.name)}`} passHref>
+        <Link href={`/pal/${encodeURIComponent(parent1.name)}`} passHref aria-label={`Link to ${parent1?.name || 'Unknown Parent'}`}>
           <Image
             src={parent1Image}
             alt={parent1?.name || 'Unknown Parent'}
@@ -61,7 +75,7 @@ export default function BreedingCard({ parent1, parent2, userId, breedingComboId
         aria-label="plus"
       />
       <div className={styles.parent}>
-        <Link href={`/pal/${encodeURIComponent(parent2.name)}`} passHref>
+        <Link href={`/pal/${encodeURIComponent(parent2.name)}`} passHref aria-label={`Link to ${parent2?.name || 'Unknown Parent'}`}>
           <Image
             src={parent2Image}
             alt={parent2?.name || 'Unknown Parent'}

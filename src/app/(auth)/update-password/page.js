@@ -4,6 +4,7 @@ import styles from '../../components/styles/FormPage.module.css';
 
 export const metadata = {
     title: 'Update Password',
+    description: 'Update your password'
   };
   
   export default function UpdatePasswordPage({ searchParams }) {

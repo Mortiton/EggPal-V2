@@ -18,7 +18,11 @@ export default function DeleteUserForm() {
     const [error, setError] = useState(null);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   
-    // Function to handle deleting the user
+     /**
+     * Function to handle deleting the user.
+     * It sets the error state if there is an error deleting the user.
+     * It sets the success modal state to open if the user is deleted successfully.
+     */
     const handleUserDelete = async () => {
       setError(null);
       try {
@@ -33,7 +37,7 @@ export default function DeleteUserForm() {
     return (
       <>
         <div className={styles.inputContainer}>
-          {error && <div className={styles.error}>{error}</div>}
+          {error && <div className={styles.error} role="alert">{error}</div>}
           {!isConfirmVisible ? (
             <button
               className={styles.button}

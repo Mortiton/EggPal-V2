@@ -2,6 +2,12 @@
 import LoginForm from "./components/LoginForm";
 import styles from "../../components/styles/FormPage.module.css";
 
+export const metadata = {
+  title: 'Login',
+  description: 'Enter your credentials to log into your account',
+};
+
+
 /**
  * LoginPage component that renders a login page.
  * It displays a heading, a description, and a LoginForm component.

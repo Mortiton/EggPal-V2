@@ -34,7 +34,13 @@ export default function UpdatePasswordForm() {
   const [error, setError] = useState(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  // Function to handle updating the password
+  /**
+   * Function to handle updating the password.
+   * It sets the error state if there is an error updating the password.
+   * It sets the success modal state to open if the password is updated successfully.
+   *
+   * @param {Object} values - The form values.
+   */
   const handlePasswordUpdate = async (values) => {
     setError(null);
     try {
@@ -45,7 +51,10 @@ export default function UpdatePasswordForm() {
     }
   };
 
-  // Function to handle confirming the success modal
+  /**
+   * Function to handle confirming the success modal.
+   * It sets the success modal state to close.
+   */
   const handleSuccessConfirm = () => {
     setIsSuccessModalOpen(false);
   };
@@ -54,7 +63,11 @@ export default function UpdatePasswordForm() {
   return (
     <>
       <Formik
-        initialValues={{ currentPassword: "", newPassword: "", confirmNewPassword: "" }}
+        initialValues={{
+          currentPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        }}
         validationSchema={UpdatePasswordSchema}
         onSubmit={async (values, { setSubmitting }) => {
           await handlePasswordUpdate(values);
@@ -66,24 +79,59 @@ export default function UpdatePasswordForm() {
             <label htmlFor="currentPassword" className={styles.label}>
               Current Password:
             </label>
-            <Field id="currentPassword" name="currentPassword" type="password" className={styles.input} />
-            <ErrorMessage name="currentPassword" component="div" className={styles.validation} />
+            <Field
+              id="currentPassword"
+              name="currentPassword"
+              type="password"
+              className={styles.input}
+              aria-label="Current password input field"
+            />
+            <ErrorMessage
+              name="currentPassword"
+              component="div"
+              className={styles.validation}
+            />
 
             <label htmlFor="newPassword" className={styles.label}>
               New Password:
             </label>
-            <Field id="newPassword" name="newPassword" type="password" className={styles.input} />
-            <ErrorMessage name="newPassword" component="div" className={styles.validation} />
+            <Field
+              id="newPassword"
+              name="newPassword"
+              type="password"
+              className={styles.input}
+              aria-label="New password input field"
+            />
+            <ErrorMessage
+              name="newPassword"
+              component="div"
+              className={styles.validation}
+            />
 
             <label htmlFor="confirmNewPassword" className={styles.label}>
               Confirm New Password:
             </label>
-            <Field id="confirmNewPassword" name="confirmNewPassword" type="password" className={styles.input} />
-            <ErrorMessage name="confirmNewPassword" component="div" className={styles.validation} />
+            <Field
+              id="confirmNewPassword"
+              name="confirmNewPassword"
+              type="password"
+              className={styles.input}
+              aria-label="Confirm new password input field"
+            />
+            <ErrorMessage
+              name="confirmNewPassword"
+              component="div"
+              className={styles.validation}
+            />
 
             {error && <div className={styles.error}>{error}</div>}
 
-            <button className={styles.button} type="submit" disabled={isSubmitting}>
+            <button
+              className={styles.button}
+              type="submit"
+              disabled={isSubmitting}
+              aria-label="Update password button"
+            >
               Update Password
             </button>
           </Form>

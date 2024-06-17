@@ -5,6 +5,16 @@ import { createClient } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+
+export const metadata = {
+  title: 'Your Favourite Pals',
+  description: 'View your favourite pals',
+};
+
+/**
+ * FavouritePalsPage component
+ * @returns {JSX.Element} The rendered JSX element
+ */
 export default async function FavouritePalsPage() {
   const supabase = createClient();
   const {
@@ -32,6 +42,8 @@ export default async function FavouritePalsPage() {
               key={pal.id}
               href={`/pal/${encodeURIComponent(pal.name)}`}
               passHref
+              role="listitem"
+              aria-label={`View details for ${pal.name}`}
             >
               <PalCard pal={pal} />
             </Link>

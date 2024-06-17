@@ -25,7 +25,13 @@ export default function UpdateEmailForm({ user }) {
   const [error, setError] = useState(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  // Function to handle updating the email
+   /**
+   * Function to handle updating the email.
+   * It sets the error state if there is an error updating the email.
+   * It sets the success modal state to open if the email is updated successfully.
+   *
+   * @param {Object} values - The form values.
+   */
   const handleEmailUpdate = async (values) => {
     setError(null);
     try {
@@ -36,12 +42,14 @@ export default function UpdateEmailForm({ user }) {
     }
   };
 
-  // Function to handle confirming the success modal
+   /**
+   * Function to handle confirming the success modal.
+   * It sets the success modal state to close.
+   */
   const handleSuccessConfirm = () => {
     setIsSuccessModalOpen(false);
   };
 
-  // Render the form
   return (
     <>
       <Formik
@@ -57,12 +65,12 @@ export default function UpdateEmailForm({ user }) {
             <label htmlFor="email" className={styles.label}>
               Email:
             </label>
-            <Field id="email" name="email" type="email" className={styles.input} />
+            <Field id="email" name="email" type="email" className={styles.input} aria-label="Email input field"/>
             <ErrorMessage name="email" component="div" className={styles.validation} />
 
-            {error && <div className={styles.error}>{error}</div>}
+            {error && <div className={styles.error} role="alert">{error}</div>}
 
-            <button className={styles.button} type="submit" disabled={isSubmitting}>
+            <button className={styles.button} type="submit" disabled={isSubmitting} aria-label="Update email button">
               Update Email
             </button>
           </Form>

@@ -9,18 +9,24 @@ import styles from "./styles/BreedingCombosDisplay.module.css";
  * BreedingCombos component that displays the breeding combinations for a selected child.
  *
  * @param {{ combos: Object }} props - The breeding combinations grouped by child.
+ * @param {string} props.userId - The user ID.
  * @returns {JSX.Element} A React component.
  */
 export default function BreedingCombosDisplay({ combos, userId }) {
   const [selectedChild, setSelectedChild] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  /**
+   * Handles the click event on a child button.
+   *
+   * @param {string} child - The child that was clicked.
+   */
   const handleChildClick = (child) => {
     setSelectedChild((prevChild) => {
       if (prevChild === child) {
         return null;
       } else {
-        setSearchTerm(""); // Reset search term when a new child is selected
+        setSearchTerm("");
         return child;
       }
     });
@@ -37,6 +43,7 @@ export default function BreedingCombosDisplay({ combos, userId }) {
             userId={userId}
             onClick={handleChildClick}
             isSelected={selectedChild === child}
+            aria-pressed={selectedChild === child}
           />
         ))}
       </div>
@@ -45,12 +52,12 @@ export default function BreedingCombosDisplay({ combos, userId }) {
           <h3 className={styles.subText}>
             Breeding combinations for {selectedChild}
           </h3>
-          {/* <SavedBreedingList breedingCombos={combos[selectedChild]} userId={userId} /> */}
           <SavedBreedingList
             breedingCombos={combos[selectedChild]}
             userId={userId}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
+            aria-label={`Saved breeding combinations for ${selectedChild}`}
           />
         </>
       )}

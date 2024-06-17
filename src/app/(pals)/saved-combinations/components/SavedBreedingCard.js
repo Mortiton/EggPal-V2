@@ -20,6 +20,9 @@ export default function SavedBreedingCard({
   parent1,
   parent2,
 }) {
+  /**
+   * Handles the remove event on the remove icon.
+   */
   const handleRemove = async () => {
     await removeSavedBreedingCombo(userId, breedingComboId);
   };
@@ -27,7 +30,7 @@ export default function SavedBreedingCard({
   return (
     <div className={styles.card}>
       <div className={styles.parent}>
-      <Link href={`/pal/${encodeURIComponent(parent1.name)}`} passHref>
+      <Link href={`/pal/${encodeURIComponent(parent1.name)}`} passHref aria-label={`Link to ${parent1.name}`}>
         <Image
           src={parent1.image}
           alt={parent1.name}
@@ -45,7 +48,7 @@ export default function SavedBreedingCard({
         aria-label="plus"
       />
       <div className={styles.parent}>
-      <Link href={`/pal/${encodeURIComponent(parent2.name)}`} passHref>
+      <Link href={`/pal/${encodeURIComponent(parent2.name)}`} passHref aria-label={`Link to ${parent2.name}`}>
         <Image
           src={parent2.image}
           alt={parent2.name}
@@ -57,12 +60,13 @@ export default function SavedBreedingCard({
         </Link>
         <span className={styles.parentName}>{parent2.name}</span>
       </div>
-      <FontAwesomeIcon
-        icon={faTimes}
+      <button
         className={styles.removeIcon}
         onClick={handleRemove}
         aria-label="remove"
-      />
+      >
+        <FontAwesomeIcon icon={faTimes} />
+      </button>
     </div>
   );
 }

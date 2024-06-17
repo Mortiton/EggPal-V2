@@ -8,7 +8,8 @@ import styles from "./styles/SavedBreedingList.module.css";
 /**
  * SavedBreedingList component that filters and displays saved breeding combinations based on search terms.
  *
- * @param {{ userId: string, breedingCombos: Array }} props
+ * @component
+ * @param {{ userId: string, breedingCombos: Array, searchTerm: string, setSearchTerm: function }} props
  * @returns {JSX.Element} A React component.
  */
 export default function SavedBreedingList({
@@ -27,7 +28,7 @@ export default function SavedBreedingList({
     <div className={styles.container}>
       <SearchBar onSearch={setSearchTerm} value={searchTerm} />
       {filteredCombos.length > 0 ? (
-        <div className={styles.breedingList}>
+        <div className={styles.breedingList} role="list">
           {filteredCombos.map((combo, index) => (
             <SavedBreedingCard
               key={index}

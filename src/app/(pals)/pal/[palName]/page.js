@@ -22,15 +22,22 @@ export async function generateMetadata({ params }) {
   };
 }
 
+/**
+ * PalPage component that renders a page with details and breeding combinations of a Pal.
+ * It displays a PalDetailsCard component and a BreedingList component.
+ *
+ * @component
+ * @param {Object} params - The parameters passed to the component.
+ * @param {string} params.palName - The name of the Pal.
+ * @returns {JSX.Element} A React component.
+ */
+
 export default async function PalPage({ params }) {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // if (!user) {
-  //   return <div>Please log in to view this page.</div>;
-  // }
 
   const palName = decodeURIComponent(params.palName);
   const data = await getPalDetailsAndFavorites(user ? user.id : null, palName);
@@ -49,7 +56,7 @@ export default async function PalPage({ params }) {
       </div>
       <div className={styles.breedingContainer}>
         <h2>Breeding Combinations</h2>
-        <BreedingList breedingCombos={breedingCombos} user={user} savedBreedingCombos={savedBreedingCombos} />
+        <BreedingList aria-label='List of breeding combinations' breedingCombos={breedingCombos} user={user} savedBreedingCombos={savedBreedingCombos} />
       </div>
     </div>
   );

@@ -9,6 +9,18 @@ import styles from "./styles/PalDetailsCard.module.css";
 import WorkIcon from "@/app/components/WorkIcon";
 import { toast } from 'react-toastify';
 
+
+/**
+ * PalDetailsCard component that renders a card with details about a pal.
+ * It displays a favorite icon, the pal's name, image, description, and base skills.
+ *
+ * @component
+ * @param {Object} props - The props that were defined by the caller of this component.
+ * @param {Object} props.pal - The pal.
+ * @param {Object} props.user - The user.
+ * @param {Array} props.userFavorites - The user's favorite pals.
+ * @returns {JSX.Element} A React component.
+ */
 export default function PalDetailsCard({ pal, user, userFavorites }) {
   const [isFavourited, setIsFavourited] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,6 +76,8 @@ export default function PalDetailsCard({ pal, user, userFavorites }) {
         aria-label="Toggle Favourite"
         data-favourite={isFavourited ? "filled" : "empty"}
         onClick={handleToggleFavourite}
+        role="button"
+        tabIndex="0"
       />
       <h1>{pal.name}</h1>
       <Image
@@ -76,7 +90,7 @@ export default function PalDetailsCard({ pal, user, userFavorites }) {
       />
       <p className={styles.description}>{pal.description}</p>
       <h2>Base Skills</h2>
-      <div className={styles.baseSkills}>
+      <div className={styles.baseSkills} role="list" aria-label="List of base skills">
         {Object.entries(workAttributes).map(
           ([iconName, value]) =>
             value > 0 && (

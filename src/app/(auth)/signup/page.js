@@ -1,6 +1,12 @@
 import SignupForm from './components/SignupForm';
 import styles from '../../components/styles/FormPage.module.css';
 
+export const metadata = {
+  title: 'Login',
+  description: 'Enter your credentials to log into your account',
+};
+
+
 /**
  * SignupPage component that renders a signup page.
  * It displays a heading, a description, an error message (if any), and a SignupForm component.
