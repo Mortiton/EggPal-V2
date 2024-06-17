@@ -23,11 +23,11 @@ export default function PalCard({ pal }) {
     <div className={styles.container}>
       <div className={styles.card}>
         {/* Display the pal's types */}
-        <div className={styles.typeIcons}>
+        <div className={styles.typeIcons} aria-label={`Types of ${pal.name}`}>
           {type1Path && (
             <Image 
               src={type1Path} 
-              alt={pal.type1} 
+              alt={`Type: ${pal.type1}`} 
               width={24}
               height={24}
               className={styles.typeIcon} />
@@ -35,7 +35,7 @@ export default function PalCard({ pal }) {
           {type2Path && (
             <Image 
               src={type2Path} 
-              alt={pal.type2} 
+              alt={`Type: ${pal.type2}`} 
               width={24}
               height={24}
               className={styles.typeIcon} />
@@ -47,7 +47,7 @@ export default function PalCard({ pal }) {
         <Image 
           className={styles.cardImage} 
           src={imagePath} 
-          alt={pal.name}
+          alt={`Image of ${pal.name}`}
           width={100}
           height={100}
           style={{ objectFit: "cover" }}
@@ -57,10 +57,10 @@ export default function PalCard({ pal }) {
         </div>
 
         {/* Display the pal's name */}
-        <h3 className={styles.cardTitle}>{pal.name}</h3>
+        <h3 className={styles.cardTitle} aria-label={pal.name}>{pal.name}</h3>
 
         {/* Display the pal's work attributes */}
-        <div className={styles.workIcons}>
+        <div className={styles.workIcons} aria-label={`Work attributes of ${pal.name}`}>
           {Object.entries(pal).map(([key, value]) => 
             key !== 'id' && key !== 'name' && key !== 'type1' && key !== 'type2' && value > 0 ? (
               <WorkIcon key={key} iconName={key} value={value} />

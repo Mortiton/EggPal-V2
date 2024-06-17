@@ -99,10 +99,12 @@ export default function PalList({ pals }) {
           <TypeDropdown
             types={types}
             onSelectType={(typeName) => setSelectedType(typeName)}
+            aria-label="Type filter dropdown"
           />
           <WorkDropDown
             work={work}
             onSelectWork={(workName) => setSelectedWork(workName)}
+            aria-label="Work filter dropdown"          
           />
         </div>
 
@@ -115,6 +117,13 @@ export default function PalList({ pals }) {
             className={styles.clearFilterSpan}
             role="button"
             tabIndex="0"
+            aria-lavel="Clear filters"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setSelectedType(null);
+                setSelectedWork(null);
+              }
+            }}
           >
             X Clear Filters
           </span>
@@ -129,6 +138,7 @@ export default function PalList({ pals }) {
             <button
               className={styles.clearIndividualFilter}
               onClick={() => setSelectedType(null)}
+              aria-label={`Clear ${selectedType} filter`}
             >
               X
             </button>
@@ -140,6 +150,7 @@ export default function PalList({ pals }) {
             <button
               className={styles.clearIndividualFilter}
               onClick={() => setSelectedWork(null)}
+              aria-label={`Clear ${selectedWork.replace("_", " ")} filter`}
             >
               X
             </button>
@@ -154,6 +165,7 @@ export default function PalList({ pals }) {
               className={styles.cardLink}
               key={pal.id}
               href={`/pal/${encodeURIComponent(pal.name)}`}
+              aria-label={`View details for ${pal.name}`}
               passHref
             >
               <PalCard pal={pal} />
@@ -168,6 +180,7 @@ export default function PalList({ pals }) {
           onClick={scrollToTop}
           className={styles.scrollToTopButton}
           style={{ position: "fixed", bottom: "20px", right: "20px" }}
+          aria-label="Scroll to top"
         >
           <FontAwesomeIcon icon={upArrow} />
         </button>

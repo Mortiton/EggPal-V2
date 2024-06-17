@@ -4,6 +4,17 @@ import PalList from './components/PalList';
 import styles from './page.module.css';
 
 /**
+ * Metadata for the HomePage component.
+ */
+export const metadata = {
+  title: 'EggPal',
+  description: 'EggPal- The Palworld database for breeding combinations and pals',
+  viewport: 'width=device-width, initial-scale=1',
+  charset: 'UTF-8',
+  keywords: 'home, pals, list, discover, palworld, pal, calculator, save, base skills',
+};
+
+/**
  * HomePage component that renders the home page.
  * It fetches data about pals using the getPals function and passes the data to the PalList component.
  * If the getPals function returns null (indicating an error), the PalList component will receive null as a prop.
