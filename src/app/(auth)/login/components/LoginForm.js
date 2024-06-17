@@ -29,10 +29,22 @@ const LoginSchema = Yup.object().shape({
  * )
  */
 export default function LoginForm() {
-  // Using useRouter hook for navigation
   const router = useRouter();
-  // Using useState hook for error handling
   const [error, setError] = useState(null);
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setError(null);
+    try {
+      // Attempt to login
+      await login(values);
+      // Navigate to home page on successful login
+      router.push("/");
+    } catch (err) {
+      // Set error message on login failure
+      setError(err.message);
+      setSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -40,19 +52,7 @@ export default function LoginForm() {
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={LoginSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          setError(null);
-          try {
-            // Attempt to login
-            await login(values);
-            // Navigate to home page on successful login
-            router.push("/");
-          } catch (err) {
-            // Set error message on login failure
-            setError(err.message);
-            setSubmitting(false);
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form className={styles.inputContainer}>
@@ -65,11 +65,16 @@ export default function LoginForm() {
               name="email"
               type="email"
               className={styles.input}
+              aria-label="Email address"
+              aria-required="true"
+              aria-describedby="emailError"
             />
             <ErrorMessage
               name="email"
               component="div"
               className={styles.validation}
+              id="emailError"
+              role="alert"
             />
 
             {/* Password field */}
@@ -81,26 +86,35 @@ export default function LoginForm() {
               name="password"
               type="password"
               className={styles.input}
+              aria-label="Password"
+              aria-required="true"
+              aria-describedby="passwordError"
             />
             <ErrorMessage
               name="password"
               component="div"
               className={styles.validation}
+              id="passwordError"
+              role="alert"
             />
 
             {/* Display error message if login fails */}
-            {error && <div className={styles.error}>{error}</div>}
+            {error && <div className={styles.error} role="alert">{error}</div>}
 
             {/* Submit button */}
             <button
               className={styles.button}
               type="submit"
               disabled={isSubmitting}
+              aria-busy={isSubmitting}
+              aria-live="polite"
+              aria-label="Log in"
             >
               Log In
             </button>
             <button
               type="button"
+              aria-label="Forgot Password"
               className={styles.button}
               onClick={() => router.push('/forgot-password')}
             >

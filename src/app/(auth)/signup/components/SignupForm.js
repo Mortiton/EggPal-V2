@@ -94,13 +94,17 @@ export default function SignupForm() {
               name="email"
               type="email"
               className={styles.input}
+              aria-required="true"
+              aria-describedby="emailError"
             />
             <ErrorMessage
               name="email"
               component="div"
               className={styles.validation}
+              id="emailError"
+              role="alert"
             />
-
+            
             <label htmlFor="password" className={styles.label}>
               Password:
             </label>
@@ -109,11 +113,15 @@ export default function SignupForm() {
               name="password"
               type="password"
               className={styles.input}
+              aria-required="true"
+              aria-describedby="passwordError"
             />
             <ErrorMessage
               name="password"
               component="div"
               className={styles.validation}
+              id="passwordError"
+              role="alert"
             />
 
             <label htmlFor="confirmPassword" className={styles.label}>
@@ -124,11 +132,15 @@ export default function SignupForm() {
               name="confirmPassword"
               type="password"
               className={styles.input}
+              aria-required="true"
+              aria-describedby="confirmPasswordError"
             />
             <ErrorMessage
               name="confirmPassword"
               component="div"
               className={styles.validation}
+              id="confirmPasswordError"
+              role="alert"
             />
 
             {error && <div className={styles.error}>{error}</div>}
@@ -137,6 +149,8 @@ export default function SignupForm() {
               className={styles.button}
               type="submit"
               disabled={isSubmitting}
+              aria-busy={isSubmitting}
+              aria-live="polite"
             >
               Sign Up
             </button>

@@ -1,6 +1,6 @@
 // Importing necessary components and styles
-import LoginForm from './components/LoginForm';
-import styles from '../../components/styles/FormPage.module.css';
+import LoginForm from "./components/LoginForm";
+import styles from "../../components/styles/FormPage.module.css";
 
 /**
  * LoginPage component that renders a login page.
@@ -15,11 +15,11 @@ import styles from '../../components/styles/FormPage.module.css';
 export default function LoginPage() {
   return (
     <div className={styles.container}>
-      {/* Heading */}
       <h1 className={styles.heading}>Login</h1>
-      {/* Description */}
-      <p className={styles.description}>Enter your credentials below to log into your account</p>
-      {/* LoginForm component */}
+      <p className={styles.description}>
+        Enter your credentials below to log into your account
+      </p>
+
       <LoginForm />
     </div>
   );

@@ -7,7 +7,6 @@ import * as Yup from "yup";
 import { resetPassword } from "../actions";
 import SuccessModal from "@/app/components/SuccessModal";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 const ForgotPasswordSchema = Yup.object().shape({
