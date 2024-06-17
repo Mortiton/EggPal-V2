@@ -7,15 +7,15 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow: hidden; 
 }
-
 body {
   font-family: var(--main-font), sans-serif;
   background-color: black;
   color: #b689e3;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 header {
@@ -38,7 +38,9 @@ header {
   display: flex;
   flex-direction: column;
   flex: 1;
+  box-sizing: border-box;
   margin-top: 100px;
+  overflow-y: scroll;
 }
 
 .content-wrap {

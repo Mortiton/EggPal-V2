@@ -21,10 +21,10 @@ export default function WorkIcon({ iconName, value }) {
 
     // Render the icon and its associated value
     return (
-        <div className={styles.iconContainer}>
+        <div className={styles.iconContainer} role="img" aria-label={`${iconName}: ${value}`}>
             <Image 
                 src={iconPath} 
-                alt={iconName} 
+                alt={`${iconName} icon`} 
                 width={25} 
                 height={25} 
                 className={styles.iconImage} 

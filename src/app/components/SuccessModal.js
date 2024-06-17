@@ -20,6 +20,15 @@ const SuccessModal = ({ isOpen, onRequestClose, onConfirm, message }) => {
     Modal.setAppElement("#modal-root");
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      const confirmButton = document.querySelector(`.${styles.confirmButton}`);
+      if (confirmButton) {
+        confirmButton.focus();
+      }
+    }
+  }, [isOpen]);
+
   // Render the modal
   return (
     <Modal
@@ -28,9 +37,13 @@ const SuccessModal = ({ isOpen, onRequestClose, onConfirm, message }) => {
       contentLabel="Success"
       className={styles.modalContent}
       overlayClassName={styles.modalOverlay}
+      aria={{
+        labelledby: "success-modal-title",
+        describedby: "success-modal-message"
+      }}
     >
-      <h2>Success</h2>
-      <p>{message}</p>
+      <h2 id="success-modal-title">Success</h2>
+      <p id="success-modal-message">{message}</p>
       <button onClick={onConfirm} className={styles.confirmButton}>
         OK
       </button>

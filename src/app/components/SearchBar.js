@@ -21,6 +21,7 @@ export default function SearchBar ({ onSearch, value }) {
         value={value}
         onChange={(e) => onSearch(e.target.value)} 
         className={styles.searchInput} 
+        aria-label='Search for pals'
       />
     </div>
   );

@@ -13,7 +13,8 @@ import styles from "./styles/DropDown.module.css";
 export default function TypeDropdown({ types, onSelectType }) {
   const [isOpen, setIsOpen] = useState(false); // State variable for whether the dropdown is open
   const dropdownRef = useRef(null); // Ref for the dropdown div
-
+  const buttonRef = useRef(null);
+  
   // Function to toggle whether the dropdown is open
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -34,21 +35,41 @@ export default function TypeDropdown({ types, onSelectType }) {
     };
   }, [isOpen]);
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      setIsOpen(false);
+      buttonRef.current.focus();
+    }
+  };
+
   // Render the dropdown
   return (
     <div ref={dropdownRef} className={styles.dropdown}>
-      <button aria-label="Element Type" onClick={toggleDropdown} className={styles.dropdownButton}>
+      <button
+        aria-label="Element Type"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        onClick={toggleDropdown}
+        className={styles.dropdownButton}
+        onKeyDown={handleKeyDown}
+      >
         Element Type
       </button>
       {isOpen && (
-        <div className={styles.dropdownContent}>
+        <div
+          className={styles.dropdownContent}
+          role="listbox"
+          aria-label="Element Type"
+        >
           {types.map((type) => (
             <button
+              role="option"
               aria-label={type.name}
               key={type.name}
               onClick={() => {
                 onSelectType(type.name);
                 setIsOpen(false);
+                buttonRef;
               }}
               className={styles.dropdownItem}
             >

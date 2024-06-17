@@ -11,7 +11,7 @@ export default function Footer() {
       <p className={styles.disclaimerText}>
         This website is not affiliated with Palworlds. All game content and materials are trademarks of Pocketpair, Inc.
       </p>
-      <nav className={styles.footerNav}>
+      <nav className={styles.footerNav} aria-label="Footer navigation">
         <Link href="/privacy-policy" className={styles.link}>Privacy Policy</Link>
         <Link href="/terms-of-service" className={styles.link}>Terms of Service</Link>
       </nav>

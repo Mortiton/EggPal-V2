@@ -117,7 +117,7 @@ export default function PalList({ pals }) {
             className={styles.clearFilterSpan}
             role="button"
             tabIndex="0"
-            aria-lavel="Clear filters"
+            aria-label="Clear filters"
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 setSelectedType(null);
