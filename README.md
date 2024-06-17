@@ -12,13 +12,12 @@ The application is organised using a modern web application architecture with a 
 
 - **React**: Utilises the React library for building the user interface with components that manage their own state and compose to form complex UIs.
 - **Next.js**: Enhances React by enabling server-side rendering, static site generation, and handling routing with the App Router, improving SEO and load times.
-- **Zustand**: A state management library used to handle the global state across the React components efficiently.
 - **CSS Modules**: Ensures that all CSS styles are locally scoped to components and pages, preventing style leakage.
 
 #### Backend
 
 - **Node.js**: Provides the runtime environment for the backend logic, leveraging JavaScript for server-side scripting.
-- **Next.js API Routes**: Used to create RESTful API endpoints that the frontend consumes. These are structured within the `src/app/api` directory with specific routes for different data needs (e.g., `/api/[palName]` and `/api/palCards`).
+- **Next.js API Routes**: Used to create RESTful API endpoints that the frontend consumes.
 
 #### Database
 
@@ -30,20 +29,13 @@ Here is the structure of the project directories, explaining the purpose of each
 
 - **`src/app/components`**: Contains all React components and their corresponding test files
   - **`src/app/components/styles`**: CSS Modules for component-specific styling.
-- **`src/app/`**: Contains folders for each page, each folder includes a `page.js` file.
+- **`src/app/`**: Contains folders for each page, each folder includes a `page.js` file and an `action.js` file if applicable.
   - **Page-specific CSS modules reside within the respective page folder.**
-- **`src/app/stores`**: Contains Zustand stores for managing application state.
 - **`src/app/utils`**: Utility functions and helper scripts, including the database client.
-- **`src/app/services`**: Functions that interact with the database, encapsulating business logic.
-- **`src/app/api`**: API routes for handling backend requests.
-  - **`[palName].js`**: API route for fetching data based on `palName`.
-  - **`palCards.js`**: API route for handling requests related to Pal cards.
 
 ### Data Flow
 
-- **Data Retrieval**: Frontend components make API calls to the backend via defined Next.js routes, retrieving data as needed.
-- **Data Management**: State management is handled by Zustand, facilitating efficient updates and re-rendering of components when state changes.
-- **Real-Time Features**: Supabase's real-time capabilities are leveraged to ensure that any updates to the database are promptly reflected in the user interface.
+- **Data Retrieval**: Frontend components use action files to fetch data, this data is fetched using Supabase's API
 
 ## Setup Process
 
