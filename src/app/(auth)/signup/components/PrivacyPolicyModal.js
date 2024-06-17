@@ -25,10 +25,18 @@ const PrivacyPolicyModal = ({ isOpen, onRequestClose, onAccept }) => {
       contentLabel="Privacy Policy"
       className={styles.modalContent}
       overlayClassName={styles.modalOverlay}
+      aria={{
+        labelledby: "privacy-policy-title",
+        describedby: "privacy-policy-content"
+      }}
     >
       <div className={styles.modalHeader}>
         <h2>Privacy Policy</h2>
-        <button onClick={onRequestClose} className={styles.closeButton}>
+        <button 
+          onClick={onRequestClose} 
+          className={styles.closeButton}
+          aria-label="Close privacy policy"
+        >
           ×
         </button>
       </div>

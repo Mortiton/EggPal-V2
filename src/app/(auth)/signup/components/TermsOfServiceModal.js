@@ -25,10 +25,18 @@ const TermsOfServiceModal = ({ isOpen, onRequestClose, onAccept }) => {
       contentLabel="Terms of Service"
       className={styles.modalContent}
       overlayClassName={styles.modalOverlay}
+      aria={{
+        labelledby: "terms-of-service-title",
+        describedby: "terms-of-service-content"
+      }}
     >
       <div className={styles.modalHeader}>
         <h2>Terms of Service</h2>
-        <button onClick={onRequestClose} className={styles.closeButton}>
+        <button 
+          onClick={onRequestClose} 
+          className={styles.closeButton}
+          aria-label="Close terms of service"
+        >
           ×
         </button>
       </div>
@@ -66,10 +74,18 @@ const TermsOfServiceModal = ({ isOpen, onRequestClose, onAccept }) => {
         <p className={styles.text}>If you have any questions about these ToS, please contact us at <a href="mailto:support@eggpal.net" className={styles.link}>support@eggpal.net</a>.</p>
       </div>
       <div className={styles.modalFooter}>
-        <button onClick={onAccept} className={styles.acceptButton}>
+      <button 
+          onClick={onAccept} 
+          className={styles.acceptButton}
+          aria-label="Accept terms of service"
+        >
           Accept
         </button>
-        <button onClick={onRequestClose} className={styles.closeButton}>
+        <button 
+          onClick={onRequestClose} 
+          className={styles.closeButton}
+          aria-label="Close terms of service"
+        >
           Close
         </button>
       </div>
