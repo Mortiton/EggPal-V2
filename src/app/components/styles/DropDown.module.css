@@ -12,6 +12,7 @@
     width: 200px;
     padding: 10px;
     font-size: 1rem;
+    font-weight: bold;
   }
   
   .dropdownContent {
