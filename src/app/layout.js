@@ -41,7 +41,7 @@ export default async function RootLayout({ children }) {
             <Footer />
           </footer>
         </div>
-        <ToastContainer theme="dark" />
+        <ToastContainer theme="dark" style={{ top: "100px" }} />
         <div id="modal-root"></div>
       </body>
     </html>

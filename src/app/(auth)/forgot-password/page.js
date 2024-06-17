@@ -9,7 +9,7 @@ const ForgotPasswordPage = () => {
       <h1 className={styles.heading}>Reset Your Password</h1>
       <p className={styles.description}>Enter your email below to send a recover password email.</p>
       <ForgotPasswordForm />
-      <p className={styles.description}>Already have an account? <Link className={styles.link} href='./login'>sign in</Link></p> 
+      <p className={styles.description}>Already have an account? <Link className={styles.link} href='./login'>Sign in</Link></p> 
     </div>
   );
 };
