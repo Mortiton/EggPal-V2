@@ -9,8 +9,6 @@ import styles from './page.module.css';
 export const metadata = {
   title: 'EggPal',
   description: 'EggPal- The Palworld database for breeding combinations and pals',
-  viewport: 'width=device-width, initial-scale=1',
-  charset: 'UTF-8',
   keywords: 'home, pals, list, discover, palworld, pal, calculator, save, base skills',
 };
 

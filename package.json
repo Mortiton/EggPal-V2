@@ -34,10 +34,15 @@
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
     "babel-jest": "^29.7.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdoc": "^4.0.3",
+    "supertest": "^7.0.0",
+    "taffydb": "^2.7.3",
+    "tui-jsdoc-template": "^1.2.2"
   }
 }

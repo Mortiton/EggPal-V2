@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { deleteUser } from "../actions";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
@@ -14,56 +13,51 @@ import styles from "@/app/components/styles/FormStyles.module.css";
  * @returns {JSX.Element} A React component.
  */
 export default function DeleteUserForm() {
-    const router = useRouter();
-    const [error, setError] = useState(null);
-    const [isConfirmVisible, setIsConfirmVisible] = useState(false);
-  
-     /**
-     * Function to handle deleting the user.
-     * It sets the error state if there is an error deleting the user.
-     * It sets the success modal state to open if the user is deleted successfully.
-     */
-    const handleUserDelete = async () => {
-      setError(null);
-      try {
-        await deleteUser();
-        setIsSuccessModalOpen(true);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-  
-    // Render the form
-    return (
-      <>
-        <div className={styles.inputContainer}>
-          {error && <div className={styles.error} role="alert">{error}</div>}
-          {!isConfirmVisible ? (
-            <button
-              className={styles.button}
-              onClick={() => setIsConfirmVisible(true)}
-              style={{ backgroundColor: "red", color: "white" }}
-            >
-              Delete Account
-            </button>
-          ) : (
-            <>
-              <button
-                className={styles.button}
-                onClick={handleUserDelete}
-                style={{ backgroundColor: "red", color: "white" }}
-              >
-                Are you sure? Confirm Delete
-              </button>
-              <button
-                className={styles.cancelButton}
-                onClick={() => setIsConfirmVisible(false)}
-              >
-                Cancel
-              </button>
-            </>
-          )}
-        </div>
-      </>
-    );
+  const [error, setError] = useState(null);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+
+  /**
+   * Function to handle deleting the user.
+   * It sets the error state if there is an error deleting the user.
+   */
+  const handleUserDelete = async () => {
+    setError(null);
+    try {
+      await deleteUser();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Render the form
+  return (
+    <div className={styles.inputContainer}>
+      {error && <div className={styles.error} role="alert">{error}</div>}
+      {!isConfirmVisible ? (
+        <button
+          className={styles.button}
+          onClick={() => setIsConfirmVisible(true)}
+          style={{ backgroundColor: "red", color: "white" }}
+        >
+          Delete Account
+        </button>
+      ) : (
+        <>
+          <button
+            className={styles.button}
+            onClick={handleUserDelete}
+            style={{ backgroundColor: "red", color: "white" }}
+          >
+            Are you sure? Confirm Delete
+          </button>
+          <button
+            className={styles.cancelButton}
+            onClick={() => setIsConfirmVisible(false)}
+          >
+            Cancel
+          </button>
+        </>
+      )}
+    </div>
+  );
 }

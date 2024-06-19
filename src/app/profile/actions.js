@@ -1,18 +1,19 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
+import supabaseAdmin from '@/app/utils/supabase/supabaseAdminClient';
 import { createClient } from "@/app/utils/supabase/server";
 
 // Create a Supabase client with admin privileges
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// const supabaseAdmin = createClient(
+//   process.env.NEXT_PUBLIC_SUPABASE_URL,
+//   process.env.SUPABASE_SERVICE_ROLE_KEY
+// );
 
 /**
  * Update the email of the authenticated user.
  *
+ * @async
  * @param {string} email - The new email.
  * @throws Will throw an error if the email update fails.
  */
@@ -28,6 +29,7 @@ export async function updateEmail(email) {
 /**
  * Update the password of the authenticated user.
  *
+ * @async
  * @param {string} currentPassword - The current password.
  * @param {string} newPassword - The new password.
  * @throws Will throw an error if the password update fails.
@@ -62,6 +64,7 @@ export async function updatePassword(currentPassword, newPassword) {
 /**
  * Delete the authenticated user.
  *
+ * @async
  * @throws Will throw an error if the user deletion fails.
  */
 export async function deleteUser() {

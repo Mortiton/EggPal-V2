@@ -1,5 +1,5 @@
 import { By, until } from "selenium-webdriver";
-import { initDriver, quitDriver, logError } from "../utils/webdriverUtil";
+import { initDriver, quitDriver, logError } from "../../utils/webdriverUtil";
 
 jest.setTimeout(60000);
 

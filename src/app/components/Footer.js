@@ -1,7 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
-import styles from './styles/Footer.module.css'; // Make sure to create a corresponding CSS module for styling
+import styles from './styles/Footer.module.css'; 
 
+/**
+ * A footer component that displays copyright, disclaimer text, and links to Privacy Policy and Terms of Service.
+ *
+ * @component
+ *
+ * @returns {React.Element} The rendered React element.
+ */
 export default function Footer() {
   return (
     <footer className={styles.footer}>

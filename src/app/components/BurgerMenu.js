@@ -6,6 +6,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import styles from "./styles/BurgerMenu.module.css";
 
+/**
+ * A responsive navigation menu component that toggles between a hamburger icon and a dropdown menu.
+ *
+ * @component
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.user - The user object. If present, the menu will show user-specific options.
+ *
+ * @returns {React.Element} The rendered React element.
+ */
 export default function BurgerMenu({ user }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);

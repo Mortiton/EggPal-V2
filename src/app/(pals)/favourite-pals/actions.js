@@ -2,6 +2,14 @@
 
 import { createClient } from '@/app/utils/supabase/server';
 
+/**
+ * Fetches the favorite pals of a given user from the database.
+ *
+ * @async
+ * @param {string} userId - The ID of the user.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of favorite pals. Each pal is an object with properties: id, name, type1, type2, kindling, watering, planting, generating_electricity, handiwork, gathering, lumbering, mining, medicine_production, cooling, transporting, farming. If an error occurs, it logs the error and returns an empty array.
+ * @throws Will throw an error if the request fails.
+ */
 export async function getFavoritePals(userId) {
   const supabase = createClient();
 

@@ -1,0 +1,17 @@
+{
+    "source": {
+      "include": ["src"],  
+      "includePattern": ".+\\.js(doc|x)?$", 
+      "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "opts": {
+      "destination": "./docs",
+      "template": "node_modules/tui-jsdoc-template",
+      "recurse": true
+    },
+    "templates": {
+      "default": {
+        "includeDate": false
+      }
+    }
+  }

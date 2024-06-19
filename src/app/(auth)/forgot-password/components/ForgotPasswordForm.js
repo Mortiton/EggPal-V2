@@ -9,10 +9,7 @@ import SuccessModal from "@/app/components/SuccessModal";
 import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
-/**
- * Validation schema for the form
- * @type {Yup.ObjectSchema}
- */
+
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
 });

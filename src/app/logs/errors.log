@@ -255,3 +255,21 @@ Wait timed out after 10200ms
 Wait timed out after 10199ms
 2024-06-16T21:12:50.079Z - test-failed: Waiting for element to be located By(xpath, (//img[@alt='Cattiva'])[1])
 Wait timed out after 10032ms
+2024-06-19T20:11:28.692Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-19T20:11:28.709Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-19T20:11:28.743Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-19T20:11:28.974Z - login: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-19T20:11:49.825Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-19T20:11:49.858Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-19T20:11:49.957Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-19T20:11:50.008Z - login: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-19T20:34:57.501Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10124ms
