@@ -6,7 +6,6 @@
     },
     "opts": {
       "destination": "./docs",
-      "template": "node_modules/tui-jsdoc-template",
       "recurse": true
     },
     "templates": {
