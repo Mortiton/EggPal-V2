@@ -42,7 +42,6 @@
     "jest-environment-jsdom": "^29.7.0",
     "jsdoc": "^4.0.3",
     "supertest": "^7.0.0",
-    "taffydb": "^2.7.3",
     "tui-jsdoc-template": "^1.2.2"
   }
 }
