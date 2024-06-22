@@ -273,3 +273,23 @@ Wait timed out after 10032ms
   (Session info: chrome-headless-shell=126.0.6478.114)
 2024-06-19T20:34:57.501Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
 Wait timed out after 10124ms
+2024-06-22T17:51:47.935Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-22T18:09:24.736Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10118ms
+2024-06-22T18:09:56.195Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10049ms
+2024-06-22T18:10:20.143Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10102ms
+2024-06-22T18:10:50.375Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10018ms
+2024-06-22T18:11:15.925Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10172ms
+2024-06-22T18:11:54.757Z - test-failed: Waiting for element to be located By(xpath, //h3[contains(text(), 'Killamari')])
+Wait timed out after 10106ms
+2024-06-22T18:14:56.353Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-22T18:15:08.185Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=126.0.6478.114)
+2024-06-22T18:16:33.650Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=126.0.6478.114)

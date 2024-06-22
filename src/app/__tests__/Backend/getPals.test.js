@@ -6,13 +6,16 @@ jest.mock('@/app/utils/supabase/server', () => ({
   createClient: jest.fn(),
 }));
 
+/**
+ * Test suite for getPals function.
+ */
 describe('getPals', () => {
   let supabase;
 
   beforeEach(() => {
     // Clear all previous mock data before each test
     jest.clearAllMocks();
-    
+
     // Mock the Supabase client methods
     supabase = {
       from: jest.fn().mockReturnThis(),
@@ -24,8 +27,12 @@ describe('getPals', () => {
     createClient.mockReturnValue(supabase);
   });
 
+  /**
+   * Test case for successfully fetching pals.
+   * Mocks the necessary methods to return the expected pals data.
+   */
   test('should fetch pals successfully', async () => {
-    // Arrange: Define the mock data that should be returned
+    // Define the mock data that should be returned
     const mockData = [
       {
         id: 1,
@@ -52,10 +59,9 @@ describe('getPals', () => {
     supabase.select.mockReturnThis();
     supabase.order.mockResolvedValue({ data: mockData, error: null });
 
-    // Act: Call the function to be tested
     const result = await getPals();
 
-    // Assert: Check that the result is as expected
+    // Check that the result is as expected
     expect(result).toEqual(mockData);
     expect(supabase.from).toHaveBeenCalledWith('palInfo');
     expect(supabase.select).toHaveBeenCalledWith(
@@ -64,8 +70,12 @@ describe('getPals', () => {
     expect(supabase.order).toHaveBeenCalledWith('id', { ascending: true });
   });
 
+  /**
+   * Test case for handling database query failure.
+   * Mocks the necessary methods to simulate an error and return null.
+   */
   test('should return null and log error on database query failure', async () => {
-    // Arrange: Define the mock error to be returned
+    // Define the mock error to be returned
     const mockError = new Error('Database error');
     supabase.from.mockReturnThis();
     supabase.select.mockReturnThis();
@@ -74,10 +84,9 @@ describe('getPals', () => {
     // Mock console.error to check if it gets called
     console.error = jest.fn();
 
-    // Act: Call the function to be tested
     const result = await getPals();
 
-    // Assert: Check that the function returns null and logs the error
+    // Check that the function returns null and logs the error
     expect(result).toBeNull();
     expect(console.error).toHaveBeenCalledWith('Error fetching pals:', mockError.message);
   });
