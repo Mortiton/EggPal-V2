@@ -28,6 +28,7 @@ export default function WorkIcon({ iconName, value }) {
                 width={25} 
                 height={25} 
                 className={styles.iconImage} 
+                priority 
             />
             <span className={styles.iconValue}>{value}</span>
         </div>

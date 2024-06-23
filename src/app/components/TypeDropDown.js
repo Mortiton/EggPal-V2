@@ -11,8 +11,8 @@ import styles from "./styles/DropDown.module.css";
  * @returns {JSX.Element} A React component.
  */
 export default function TypeDropdown({ types, onSelectType }) {
-  const [isOpen, setIsOpen] = useState(false); // State variable for whether the dropdown is open
-  const dropdownRef = useRef(null); // Ref for the dropdown div
+  const [isOpen, setIsOpen] = useState(false); 
+  const dropdownRef = useRef(null); 
   const buttonRef = useRef(null);
   
   // Function to toggle whether the dropdown is open
@@ -38,7 +38,9 @@ export default function TypeDropdown({ types, onSelectType }) {
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       setIsOpen(false);
-      buttonRef.current.focus();
+      if (buttonRef.current) {
+        buttonRef.current.focus();
+      }
     }
   };
 

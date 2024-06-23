@@ -10,6 +10,8 @@ import { createClient } from '@/app/utils/supabase/server';
  * @returns {Promise<Array|null>} An array of pals if the database query is successful, or null if there's an error.
  */
 export async function getPals() {
+  console.log('Fetching pals data...');
+  
   // Create a new Supabase client
   const supabase = createClient();
 
@@ -33,6 +35,8 @@ export async function getPals() {
     // If there's an error during the database query, throw the error
     if (error) throw error;
 
+    // console.log('Fetched pals data:', pals);
+    
     // Return the fetched data
     return pals;
   } catch (error) {
@@ -41,4 +45,3 @@ export async function getPals() {
     return null;
   }
 }
-

@@ -1,15 +1,17 @@
-import React from 'react';
-import { getPals } from './actions';
-import PalList from './components/PalList';
-import styles from './page.module.css';
+import React from "react";
+import { getPals } from "./actions";
+import PalList from "./components/PalList";
+import styles from "./page.module.css";
 
 /**
  * Metadata for the HomePage component.
  */
 export const metadata = {
-  title: 'EggPal',
-  description: 'EggPal- The Palworld database for breeding combinations and pals',
-  keywords: 'home, pals, list, discover, palworld, pal, calculator, save, base skills',
+  title: "EggPal",
+  description:
+    "EggPal- The Palworld database for breeding combinations and pals",
+  keywords:
+    "home, pals, list, discover, palworld, pal, calculator, save, base skills",
 };
 
 /**
@@ -27,9 +29,11 @@ export default async function HomePage() {
   // Render the home page with the PalList component, passing the fetched data as a prop
   return (
     <div className={styles.container}>
-    <div className={styles.innerContainer}>
-      <PalList pals={pals} />
+      <div className={styles.innerContainer}>
+        <MemoPalList pals={pals} />
       </div>
     </div>
   );
 }
+
+const MemoPalList = React.memo(PalList);

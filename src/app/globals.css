@@ -1,3 +1,5 @@
+@import '~react-toastify/dist/ReactToastify.min.css';
+
 :root {
   --main-font: var(--font-silkscreen);
 }
@@ -7,8 +9,9 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; 
+  overflow: hidden;
 }
+
 body {
   font-family: var(--main-font), sans-serif;
   background-color: black;
@@ -17,6 +20,7 @@ body {
   flex-direction: column;
   box-sizing: border-box;
 }
+
 
 header {
   position: fixed;
@@ -38,14 +42,16 @@ header {
   display: flex;
   flex-direction: column;
   flex: 1;
-  box-sizing: border-box;
   margin-top: 100px;
-  overflow-y: scroll;
+  box-sizing: border-box;
+  height: calc(100vh - 100px); /* 100px for the header */
+  overflow-y: auto;
 }
 
 .content-wrap {
   flex: 1;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 footer {
@@ -53,6 +59,7 @@ footer {
   color: white;
   text-align: center;
   padding: 1rem 0;
+  flex-shrink: 0;
 }
 
 button {

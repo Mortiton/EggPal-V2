@@ -11,9 +11,10 @@ import styles from "./styles/DropDown.module.css";
  * @returns {JSX.Element} A React component.
  */
 export default function WorkDropDown({ work, onSelectWork }) {
-  const [isOpen, setIsOpen] = useState(false); // State variable for whether the dropdown is open
-  const dropdownRef = useRef(null); // Ref for the dropdown div
+  const [isOpen, setIsOpen] = useState(false); 
+  const dropdownRef = useRef(null); 
   const buttonRef = useRef(null);
+  const buttonId = 'work-dropdown-button'; 
 
   // Function to toggle whether the dropdown is open
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -38,7 +39,9 @@ export default function WorkDropDown({ work, onSelectWork }) {
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       setIsOpen(false);
-      buttonRef.current.focus();
+      if (buttonRef.current) {
+        buttonRef.current.focus();
+      }
     }
   };
 
@@ -46,17 +49,23 @@ export default function WorkDropDown({ work, onSelectWork }) {
   return (
     <div ref={dropdownRef} className={styles.dropdown}>
       <button
+        id={buttonId}
         aria-label="Base Skills"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={toggleDropdown}
         className={styles.dropdownButton}
         onKeyDown={handleKeyDown}
+        ref={buttonRef}
       >
         Base Skills
       </button>
       {isOpen && (
-        <div className={styles.dropdownContent}>
+        <div
+          className={styles.dropdownContent}
+          role="listbox"
+          aria-labelledby={buttonId}
+        >
           {work.map((workItem) => (
             <button
               role="option"
@@ -65,7 +74,9 @@ export default function WorkDropDown({ work, onSelectWork }) {
               onClick={() => {
                 onSelectWork(workItem.name);
                 setIsOpen(false);
-                buttonRef.current.focus();
+                if (buttonRef.current) {
+                  buttonRef.current.focus();
+                }
               }}
               className={styles.dropdownItem}
             >

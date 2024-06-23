@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+"use client"
+
+import React, { useEffect, useRef } from "react";
 import Modal from 'react-modal';
 import styles from './styles/SuccessModal.module.css';
 
@@ -15,6 +17,8 @@ import styles from './styles/SuccessModal.module.css';
  * @returns {JSX.Element} A React component.
  */
 const SuccessModal = ({ isOpen, onRequestClose, onConfirm, message }) => {
+  const confirmButtonRef = useRef(null);
+
   // Set the app element for the modal
   useEffect(() => {
     Modal.setAppElement("#modal-root");
@@ -22,10 +26,13 @@ const SuccessModal = ({ isOpen, onRequestClose, onConfirm, message }) => {
 
   useEffect(() => {
     if (isOpen) {
-      const confirmButton = document.querySelector(`.${styles.confirmButton}`);
-      if (confirmButton) {
-        confirmButton.focus();
-      }
+      const timer = setTimeout(() => {
+        if (confirmButtonRef.current) {
+          confirmButtonRef.current.focus();
+        }
+      }, 0);
+
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
@@ -44,7 +51,7 @@ const SuccessModal = ({ isOpen, onRequestClose, onConfirm, message }) => {
     >
       <h2 id="success-modal-title">Success</h2>
       <p id="success-modal-message">{message}</p>
-      <button onClick={onConfirm} className={styles.confirmButton}>
+      <button ref={confirmButtonRef} onClick={onConfirm} className={styles.confirmButton}>
         OK
       </button>
     </Modal>

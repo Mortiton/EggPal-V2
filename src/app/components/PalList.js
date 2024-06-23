@@ -18,50 +18,55 @@ import WorkDropDown from "./WorkDropDown";
  * @param {Object[]} pals - The list of pals to display.
  * @returns {JSX.Element} A React component.
  */
-export default function PalList({ pals }) {
-  // State variables for search and filter functionality
+const PalList = ({ pals }) => {
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState(null);
   const [selectedWork, setSelectedWork] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
 
-  // Effect to show a scroll to top button when the user scrolls down
   useEffect(() => {
+    const container = document.querySelector('.page-container');
+
     const checkScroll = () => {
-      if (window.scrollY > 300) {
+      const scrollTop = container ? container.scrollTop : 0;
+      if (scrollTop > 300) {
         setShowScrollButton(true);
       } else {
         setShowScrollButton(false);
       }
     };
 
-    window.addEventListener("scroll", checkScroll);
+    if (container) {
+      container.addEventListener("scroll", checkScroll);
+      checkScroll();
+    }
+
     return () => {
-      window.removeEventListener("scroll", checkScroll);
+      if (container) {
+        container.removeEventListener("scroll", checkScroll);
+      }
     };
   }, []);
 
-  // Function to scroll to the top of the page
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    const container = document.querySelector('.page-container');
+    if (container) {
+      container.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
-  // Filter the pals based on the search query and selected type and work
   const filteredPals = pals.filter((pal) => {
-    const matchesSearch = pal.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesType =
-      !selectedType || pal.type1 === selectedType || pal.type2 === selectedType;
+    const matchesSearch = pal.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = !selectedType || pal.type1 === selectedType || pal.type2 === selectedType;
     const matchesWork = !selectedWork || (pal[selectedWork] || 0) > 0;
 
     return matchesSearch && matchesType && matchesWork;
   });
 
-  // The available types and work for the dropdowns
   const types = [
     { name: "neutral" },
     { name: "dark" },
@@ -89,7 +94,6 @@ export default function PalList({ pals }) {
     { name: "farming" },
   ];
 
-  // Render the component
   return (
     <div className={styles.container}>
       <SearchBar onSearch={setSearchQuery} />
@@ -130,8 +134,7 @@ export default function PalList({ pals }) {
         )}
       </div>
 
-{/* Display currently selected filters */}
-<div className={styles.selectedFiltersContainer}>
+      <div className={styles.selectedFiltersContainer}>
         {selectedType && (
           <div className={styles.selectedFilter}>
             Type: {selectedType}
@@ -187,4 +190,6 @@ export default function PalList({ pals }) {
       )}
     </div>
   );
-}
+};
+
+export default React.memo(PalList);
