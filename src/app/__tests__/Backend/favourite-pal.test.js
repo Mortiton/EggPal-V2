@@ -1,4 +1,4 @@
-import { getFavoritePals } from "@/app/(pals)/favourite-pals/actions";
+import { getFavouritePals } from "@/app/(pals)/favourite-pals/actions";
 import { createClient } from "@/app/utils/supabase/server";
 
 // Mock the Supabase client creation function
@@ -7,9 +7,9 @@ jest.mock("@/app/utils/supabase/server", () => ({
 }));
 
 /**
- * Test suite for getFavoritePals function.
+ * Test suite for getFavouritePals function.
  */
-describe("getFavoritePals", () => {
+describe("getFavouritePals", () => {
   let supabase;
 
   beforeEach(() => {
@@ -99,7 +99,7 @@ describe("getFavoritePals", () => {
       };
     });
 
-    const pals = await getFavoritePals("user1");
+    const pals = await getFavouritePals("user1");
     expect(pals).toEqual([
       {
         id: "pal1",
@@ -150,7 +150,7 @@ describe("getFavoritePals", () => {
       eq: jest.fn().mockResolvedValue({ data: [], error: null }),
     });
 
-    const pals = await getFavoritePals("user1");
+    const pals = await getFavouritePals("user1");
     expect(pals).toEqual([]);
   });
 
@@ -166,7 +166,7 @@ describe("getFavoritePals", () => {
         .mockResolvedValue({ data: null, error: new Error("Fetch error") }),
     });
 
-    const pals = await getFavoritePals("user1");
+    const pals = await getFavouritePals("user1");
     expect(pals).toEqual([]);
   });
 
@@ -196,7 +196,7 @@ describe("getFavoritePals", () => {
       };
     });
 
-    const pals = await getFavoritePals("user1");
+    const pals = await getFavouritePals("user1");
     expect(pals).toEqual([]);
   });
 });

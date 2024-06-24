@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import { deleteUser } from "../actions";
 import styles from "@/app/components/styles/FormStyles.module.css";

@@ -1,3 +1,4 @@
+import React from "react";
 import { getPalDetailsAndFavorites, fetchSavedBreedingCombos } from "./actions";
 import BreedingList from "./components/BreedingList";
 import PalDetailsCard from "./components/PalDetailsCards";
