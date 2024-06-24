@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -35,7 +36,6 @@ const SignupSchema = Yup.object().shape({
  */
 export default function SignupForm() {
   const router = useRouter();
-  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [formData, setFormData] = useState(null);
@@ -165,14 +165,6 @@ export default function SignupForm() {
           handleSignup();
         }}
       />
-      {/* <PrivacyPolicyModal
-        isOpen={isPrivacyModalOpen}
-        onRequestClose={() => setIsPrivacyModalOpen(false)}
-        onAccept={() => {
-          setIsPrivacyModalOpen(false);
-          handleSignup();
-        }}
-      /> */}
       <SuccessModal
         isOpen={isSuccessModalOpen}
         onRequestClose={() => setIsSuccessModalOpen(false)}
