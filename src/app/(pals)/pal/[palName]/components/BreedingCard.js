@@ -97,3 +97,5 @@ export default function BreedingCard({ parent1, parent2, userId, breedingComboId
     </div>
   );
 }
+
+BreedingCard.displayName = 'BreedingCard'

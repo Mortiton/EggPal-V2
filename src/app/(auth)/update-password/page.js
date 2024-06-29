@@ -18,3 +18,5 @@ export const metadata = {
       </div>
     );
   }
+
+  UpdatePasswordPage.displayName = 'UpdatePasswordPage'

@@ -58,4 +58,6 @@ const SuccessModal = ({ isOpen, onRequestClose, onConfirm, message }) => {
   );
 };
 
+SuccessModal.displayName = 'SuccessModal'
+
 export default SuccessModal;

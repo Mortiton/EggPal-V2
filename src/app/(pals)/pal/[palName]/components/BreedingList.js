@@ -50,3 +50,5 @@ export default function BreedingList({ breedingCombos, user, savedBreedingCombos
     </div>
   );
 }
+
+BreedingList.displayName = 'BreedingList'

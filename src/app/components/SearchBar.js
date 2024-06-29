@@ -26,3 +26,5 @@ export default function SearchBar ({ onSearch, value }) {
     </div>
   );
 };
+
+SearchBar.displayName = 'SearchBar'

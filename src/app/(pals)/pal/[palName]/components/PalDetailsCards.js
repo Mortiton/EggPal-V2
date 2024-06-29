@@ -107,3 +107,5 @@ export default function PalDetailsCard({ pal, user, userFavorites }) {
     </div>
   );
 }
+
+PalDetailsCard.displayName = 'PalDetailsCard'

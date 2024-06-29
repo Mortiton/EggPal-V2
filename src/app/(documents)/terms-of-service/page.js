@@ -7,7 +7,7 @@ export default function Terms() {
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Terms of Service</h1>
-      <p className={styles.text}>Welcome to EggPal, a companion web application for Palworlds that helps users track breeding combinations and save their pals and combinations. By using our service, you agree to these Terms of Service ("ToS").</p>
+      <p className={styles.text}>Welcome to EggPal, a companion web application for Palworlds that helps users track breeding combinations and save their pals and combinations. By using our service, you agree to these Terms of Service.</p>
       
       <h2 className={styles.subheading}>Acceptance of Terms</h2>
       <p className={styles.text}>By accessing or using EggPal, you agree to be bound by these ToS. If you do not agree to these ToS, please do not use our service.</p>
@@ -42,3 +42,4 @@ export default function Terms() {
   );
 };
 
+Terms.displayName = 'Terms'

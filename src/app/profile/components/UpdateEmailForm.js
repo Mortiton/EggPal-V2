@@ -86,3 +86,5 @@ export default function UpdateEmailForm({ user }) {
     </>
   );
 }
+
+UpdateEmailForm.displayName = 'UpdateEmailForm'

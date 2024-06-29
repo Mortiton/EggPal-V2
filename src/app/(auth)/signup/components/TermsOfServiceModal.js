@@ -41,7 +41,7 @@ const TermsOfServiceModal = ({ isOpen, onRequestClose, onAccept }) => {
         </button>
       </div>
       <div className={styles.modalBody}>
-        <p className={styles.text}>Welcome to EggPal, a companion web application for Palworlds that helps users track breeding combinations and save their pals and combinations. By using our service, you agree to these Terms of Service ("ToS").</p>
+        <p className={styles.text}>Welcome to EggPal, a companion web application for Palworlds that helps users track breeding combinations and save their pals and combinations. By using our service, you agree to these Terms of Service.</p>
         
         <h3>Acceptance of Terms</h3>
         <p className={styles.text}>By accessing or using EggPal, you agree to be bound by these ToS. If you do not agree to these ToS, please do not use our service.</p>
@@ -92,5 +92,7 @@ const TermsOfServiceModal = ({ isOpen, onRequestClose, onAccept }) => {
     </Modal>
   );
 };
+
+TermsOfServiceModal.displayName = 'TermsOfServiceModal'
 
 export default TermsOfServiceModal;

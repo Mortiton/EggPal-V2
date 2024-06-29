@@ -71,3 +71,5 @@ export default function PalCard({ pal }) {
     </div>
   );
 }
+
+PalCard.displayName = 'PalCard'

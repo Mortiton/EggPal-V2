@@ -41,3 +41,5 @@ export default async function ProfilePage() {
     </div>
   );
 }
+
+ProfilePage.displayName = 'ProfilePage'

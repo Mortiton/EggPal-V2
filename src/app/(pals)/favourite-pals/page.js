@@ -60,3 +60,5 @@ export default async function FavouritePalsPage() {
     </div>
   );
 }
+
+FavouritePalsPage.displayName = 'FavouritePalsPage'

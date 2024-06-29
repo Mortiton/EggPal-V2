@@ -92,3 +92,5 @@ export default function WorkDropDown({ work, onSelectWork }) {
     </div>
   );
 }
+
+WorkDropDown.displayName = 'WorkDropDown'

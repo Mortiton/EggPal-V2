@@ -35,7 +35,7 @@ export default function PrivacyPolicy() {
       <h2 className={styles.subheading}>How Long We Keep Information</h2>
       <p className={styles.text}>We retain personal information for as long as necessary to fulfill the purposes we collected it for, including for the purposes of satisfying any legal, accounting, or reporting requirements. Specifically:</p>
       <ul>
-        <li className={styles.text}><strong>Account Information:</strong> Retained for the duration of the account's existence. If an account is deleted, the associated data will be retained for up to 6 months to allow for account recovery and to comply with legal obligations.</li>
+        <li className={styles.text}><strong>Account Information:</strong> Retained for the duration of the accounts existence. If an account is deleted, the associated data will be retained for up to 6 months to allow for account recovery and to comply with legal obligations.</li>
         <li className={styles.text}><strong>Customer Support Records:</strong> Retained for 2 years from the date of the last interaction to help resolve any future issues or disputes.</li>
         <li className={styles.text}><strong>Marketing Data (if applicable):</strong> Retained until the user opts out of marketing communications or withdraws consent.</li>
         <li className={styles.text}><strong>Legal Compliance Data:</strong> Retained as long as required by law.</li>
@@ -72,3 +72,5 @@ export default function PrivacyPolicy() {
     </div>
   );
 };
+
+PrivacyPolicy.displayName = 'PrivacyPolicy'

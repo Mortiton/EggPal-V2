@@ -34,3 +34,5 @@ export default function WorkIcon({ iconName, value }) {
         </div>
     );
 }
+
+WorkIcon.displayName = 'WorkIcon'

@@ -45,3 +45,5 @@ export default function SavedBreedingList({
     </div>
   );
 }
+
+SavedBreedingList.displayName = 'SavedBreedingList'

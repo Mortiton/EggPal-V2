@@ -95,4 +95,6 @@ const ForgotPasswordForm = () => {
   );
 };
 
+ForgotPasswordForm.displayName = 'ForgotPasswordForm';
+
 export default ForgotPasswordForm;

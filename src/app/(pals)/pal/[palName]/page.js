@@ -62,3 +62,4 @@ export default async function PalPage({ params }) {
     </div>
   );
 }
+PalPage.displayName = 'PalPage'

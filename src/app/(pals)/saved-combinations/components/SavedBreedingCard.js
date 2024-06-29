@@ -70,3 +70,5 @@ export default function SavedBreedingCard({
     </div>
   );
 }
+
+SavedBreedingCard.displayName = 'SavedBreedingCard'

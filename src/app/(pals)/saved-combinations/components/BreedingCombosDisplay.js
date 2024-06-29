@@ -64,3 +64,5 @@ export default function BreedingCombosDisplay({ combos, userId }) {
     </div>
   );
 }
+
+BreedingCombosDisplay.displayName = 'BreedingCombosDisplay'

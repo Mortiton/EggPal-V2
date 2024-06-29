@@ -36,3 +36,5 @@ export default function SignupPage({ searchParams }) {
     </div>
   );
 }
+
+SignupPage.displayName = 'SignupPage'

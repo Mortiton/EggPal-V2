@@ -28,3 +28,5 @@ export function formValidation(formData) {
     // Return the validation message
     return validationMessage;
 }
+
+formValidation.displayName = 'formValidation'

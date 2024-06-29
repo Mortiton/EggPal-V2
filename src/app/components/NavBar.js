@@ -67,3 +67,5 @@ export default function NavBar({ user }) {
     </nav>
   );
 }
+
+NavBar.displayName = 'NavBar'

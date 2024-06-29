@@ -104,3 +104,5 @@ export default function BurgerMenu({ user }) {
     </div>
   );
 }
+
+BurgerMenu.displayName = 'BurgerMenu'

@@ -87,3 +87,5 @@ export default function TypeDropdown({ types, onSelectType }) {
     </div>
   );
 }
+
+TypeDropdown.displayName = 'TypeDropdown'

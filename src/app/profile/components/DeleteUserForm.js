@@ -62,3 +62,5 @@ export default function DeleteUserForm() {
     </div>
   );
 }
+
+DeleteUserForm.displayName = 'DeleteUserForm'

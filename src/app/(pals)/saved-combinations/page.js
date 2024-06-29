@@ -52,3 +52,5 @@ export default async function SavedBreedingPage() {
     </div>
   );
 }
+
+SavedBreedingPage.displayName =  'SavedBreedingPage'

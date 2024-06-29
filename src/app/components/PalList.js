@@ -192,4 +192,7 @@ const PalList = ({ pals }) => {
   );
 };
 
+PalList.displayName = 'PalList'
+
 export default React.memo(PalList);
+

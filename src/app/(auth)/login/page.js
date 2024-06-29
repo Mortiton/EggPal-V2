@@ -30,3 +30,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+LoginPage.displayName = 'LoginPage'

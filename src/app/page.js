@@ -37,3 +37,5 @@ export default async function HomePage() {
 }
 
 const MemoPalList = React.memo(PalList);
+
+HomePage.displayName = 'HomePage'

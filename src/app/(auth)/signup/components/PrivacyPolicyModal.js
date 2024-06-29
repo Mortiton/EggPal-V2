@@ -117,7 +117,7 @@ const PrivacyPolicyModal = ({ isOpen, onRequestClose, onAccept }) => {
               Account Information (including registration details such as email
               addresses and passwords)
             </strong>
-            : Retained for the duration of the account's existence. If an
+            : Retained for the duration of the accounts existence. If an
             account is deleted, the associated data will be retained for up to 6
             months to allow for account recovery and to comply with legal
             obligations.
@@ -240,5 +240,7 @@ const PrivacyPolicyModal = ({ isOpen, onRequestClose, onAccept }) => {
     </Modal>
   );
 };
+
+PrivacyPolicyModal.displayName= 'PrivacyPolicyModal'
 
 export default PrivacyPolicyModal;

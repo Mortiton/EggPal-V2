@@ -140,4 +140,6 @@ const UpdatePasswordForm = ({ accessToken }) => {
   );
 };
 
+UpdatePasswordForm.displayName = 'UpdatePasswordForm'
+
 export default UpdatePasswordForm;

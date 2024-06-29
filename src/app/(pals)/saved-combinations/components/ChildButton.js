@@ -43,3 +43,5 @@ export default function ChildButton({
     </div>
   );
 }
+
+ChildButton.displayName = 'ChildButton'

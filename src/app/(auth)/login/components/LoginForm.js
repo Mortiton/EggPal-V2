@@ -100,7 +100,11 @@ export default function LoginForm() {
             />
 
             {/* Display error message if login fails */}
-            {error && <div className={styles.error} role="alert">{error}</div>}
+            {error && (
+              <div className={styles.error} role="alert">
+                {error}
+              </div>
+            )}
 
             {/* Submit button */}
             <button
@@ -117,7 +121,7 @@ export default function LoginForm() {
               type="button"
               aria-label="Forgot Password"
               className={styles.button}
-              onClick={() => router.push('/forgot-password')}
+              onClick={() => router.push("/forgot-password")}
             >
               Forgot Password
             </button>
@@ -127,3 +131,5 @@ export default function LoginForm() {
     </>
   );
 }
+
+LoginForm.displayName = "LoginForm";

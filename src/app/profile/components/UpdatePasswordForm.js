@@ -147,3 +147,5 @@ export default function UpdatePasswordForm() {
     </>
   );
 }
+
+UpdatePasswordForm.displayName = 'UpdatePasswordForm'
