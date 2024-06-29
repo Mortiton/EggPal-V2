@@ -2,6 +2,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import localFont from "next/font/local";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
@@ -36,7 +37,10 @@ export default async function RootLayout({ children }) {
           <NavBar user={user} />
         </header>
         <div className="page-container">
-          <main className="content-wrap">{children}</main>
+          <main className="content-wrap">
+            {children}
+            <SpeedInsights />
+          </main>
           <footer>
             <Footer />
           </footer>
