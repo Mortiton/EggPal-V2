@@ -16,7 +16,7 @@ import styles from "./styles/BreedingList.module.css";
  * @param {Array} props.savedBreedingCombos - The saved breeding combinations of the user.
  * @returns {JSX.Element} A React component.
  */
-export default function BreedingList({ breedingCombos, user, savedBreedingCombos }) {
+const BreedingList = ({ breedingCombos, user, savedBreedingCombos }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCombos = breedingCombos.filter((combo) => {
@@ -49,6 +49,8 @@ export default function BreedingList({ breedingCombos, user, savedBreedingCombos
       )}
     </div>
   );
-}
+};
 
 BreedingList.displayName = 'BreedingList'
+
+export default React.memo(BreedingList);
