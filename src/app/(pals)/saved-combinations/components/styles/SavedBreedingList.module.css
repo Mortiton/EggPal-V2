@@ -9,7 +9,7 @@
   .breedingList {
     display: flex;
     flex-direction: row;
-    margin: auto;
+    width: 100%;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;

@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import styles from './styles/searchbar.module.css'; // Import specific styles for the search bar
+import styles from './styles/SearchBar.module.css'
 
 /**
  * SearchBar component that renders a search bar.

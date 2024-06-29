@@ -66,6 +66,7 @@ export default function TypeDropdown({ types, onSelectType }) {
           {types.map((type) => (
             <button
               role="option"
+              aria-selected={false}
               aria-label={type.name}
               key={type.name}
               onClick={() => {

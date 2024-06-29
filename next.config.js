@@ -42,7 +42,8 @@ module.exports = {
     if (!isServer) {
       // Exclude test files from the client bundle
       config.module.rules.push({
-        test: /__tests__/,
+        test: /\.test\.js$/,
+        include: path.resolve(__dirname, 'src/app/__tests__'), 
         loader: 'ignore-loader',
       });
 
@@ -54,33 +55,9 @@ module.exports = {
     }
 
     // Alias for cleaner imports
-    config.resolve.alias['@components'] = path.join(__dirname, 'src/components');
-    config.resolve.alias['@styles'] = path.join(__dirname, 'src/styles');
+    config.resolve.alias['@components'] = path.join(__dirname, 'src/app/components');
+    config.resolve.alias['@styles'] = path.join(__dirname, 'src/app/styles');
 
     return config;
-  },
-
-  // Optimization configuration
-  optimization: {
-    minimize: true,
-    splitChunks: {
-      chunks: 'all',
-      cacheGroups: {
-        default: false,
-        vendors: false,
-        // Example: Split code from node_modules into a separate chunk
-        vendor: {
-          name: 'vendor',
-          test: /[\\/]node_modules[\\/]/,
-          chunks: 'all',
-        },
-      },
-    },
-  },
-
-  // Experimental configuration
-  experimental: {
-    modern: true, // Enable modern JavaScript bundles
-    polyfillsOptimization: true, // Optimize polyfills
   },
 };

@@ -69,6 +69,7 @@ export default function WorkDropDown({ work, onSelectWork }) {
           {work.map((workItem) => (
             <button
               role="option"
+              aria-selected={false}
               aria-label={workItem.name}
               key={workItem.name}
               onClick={() => {
