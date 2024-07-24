@@ -19,20 +19,7 @@ import WorkIcon from "@/app/components/WorkIcon";
  * @returns {JSX.Element} A React component.
  */
 export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite }) {
-  const workAttributes = {
-    kindling: pal.kindling,
-    watering: pal.watering,
-    planting: pal.planting,
-    generating_electricity: pal.generating_electricity,
-    handiwork: pal.handiwork,
-    gathering: pal.gathering,
-    lumbering: pal.lumbering,
-    mining: pal.mining,
-    medicine_production: pal.medicine_production,
-    cooling: pal.cooling,
-    transporting: pal.transporting,
-    farming: pal.farming,
-  };
+  const { skills } = pal;
 
   return (
     <div className={styles.container}>
@@ -47,7 +34,7 @@ export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite })
       />
       <h1>{pal.name}</h1>
       <Image
-        src={`/images/pals/${pal.id}.png`}
+        src={pal.image_url}
         alt={pal.name}
         className={styles.image}
         width={120}
@@ -57,18 +44,13 @@ export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite })
       <p className={styles.description}>{pal.description}</p>
       <h2>Base Skills</h2>
       <div className={styles.baseSkills} role="list" aria-label="List of base skills">
-        {Object.entries(workAttributes).map(
-          ([iconName, value]) =>
-            value > 0 && (
-              <div className={styles.workEntry} key={iconName}>
-                <WorkIcon iconName={iconName} />
-                <span className={styles.workName}>
-                  {iconName.replace("_", " ")}:
-                </span>
-                <span className={styles.level}>{value}</span>
-              </div>
-            )
-        )}
+        {skills.map((skill) => (
+          <div className={styles.workEntry} key={skill.skill_name}>
+            <Image src={skill.skill_icon_url} alt={skill.skill_name} width={24} height={24} />
+            <span className={styles.workName}>{skill.skill_name.replace("_", " ")}:</span>
+            <span className={styles.level}>{skill.skill_level}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
