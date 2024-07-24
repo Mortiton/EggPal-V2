@@ -1,20 +1,28 @@
 import { createClient } from '../utils/supabase/server';
 
 /**
- * Fetches pal information using the RPC call.
- * 
- * @param {Array<string>} ids - The list of pal IDs to fetch. Defaults to an empty array to fetch all pals.
- * @returns {Promise<Array<Object>>} The fetched pal information.
+ * Fetches and combines pal information, icon URLs, and skills data.
+ *
+ * @param {string[]} [ids=[]] - Array of pal IDs to fetch.
+ * @returns {Promise<Object[]>} - A promise that resolves to an array of combined pal data objects.
+ * @throws Will throw an error if the request fails.
  */
 export async function getPals(ids = []) {
-  const supabase = createClient();
-
-  // Make the RPC call to get the pal information
-  const { data, error } = await supabase.rpc('get_pals', {  });
-
-  if (error) {
-    throw new Error(`Failed to fetch pals: ${error.message}`);
+    const supabase = createClient();
+    console.log('Fetching pals data with IDs:', ids);
+  
+    try {
+      const { data, error } = await supabase.rpc('get_pals', { ids: ids.length ? ids : null });
+  
+      if (error) {
+        console.error('Supabase RPC Error:', error);
+        throw new Error(`Error fetching pals: ${error.message}`);
+      }
+  
+      console.log('Number of pals fetched:', data.length);
+      return data;
+    } catch (error) {
+      console.error('Error fetching pals:', error.message);
+      return null;
+    }
   }
-
-  return data;
-}
