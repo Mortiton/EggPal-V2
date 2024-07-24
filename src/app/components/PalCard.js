@@ -9,67 +9,57 @@ import WorkIcon from "./WorkIcon";
  *
  * @component
  * @param {Object} props - The props that were defined by the caller of this component.
- * @param {Object} props.pal - The pal object. It contains the pal's id, name, types, and work attributes.
+ * @param {Object} props.pal - The pal object. It contains the pal's id, name, types, image URL, and work attributes.
  * @returns {JSX.Element} A React component.
  */
 export default function PalCard({ pal }) {
-  // Prepare the paths for the pal's image and types' images
-  const palId = pal.id || pal.pal_id;
-  const imagePath = `/images/pals/${palId}.png`;
-  const type1Path = `/images/types/${pal.type1}.png`;
-  const type2Path = pal.type2 ? `/images/types/${pal.type2}.png` : null;
-
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        {/* Display the pal's types */}
         <div className={styles.typeIcons} aria-label={`Types of ${pal.name}`}>
-          {type1Path && (
-            <Image 
-              src={type1Path} 
-              alt={`Type: ${pal.type1}`} 
+          {pal.type1_icon_url && (
+            <Image
+              src={pal.type1_icon_url}
+              alt={`Type: ${pal.type1}`}
               width={24}
               height={24}
-              className={styles.typeIcon} />
+              className={styles.typeIcon}
+              priority
+            />
           )}
-          {type2Path && (
-            <Image 
-              src={type2Path} 
-              alt={`Type: ${pal.type2}`} 
+          {pal.type2_icon_url && (
+            <Image
+              src={pal.type2_icon_url}
+              alt={`Type: ${pal.type2}`}
               width={24}
               height={24}
-              className={styles.typeIcon} />
+              className={styles.typeIcon}
+              priority
+            />
           )}
         </div>
-
-        {/* Display the pal's image */}
         <div className={styles.cardImageWrapper}>
-        <Image 
-          className={styles.cardImage} 
-          src={imagePath} 
-          alt={`Image of ${pal.name}`}
-          width={100}
-          height={100}
-          style={{ objectFit: "cover" }}
-          priority
-          unoptimized
-        />
-        </div>
-
-        {/* Display the pal's name */}
-        <h3 className={styles.cardTitle} aria-label={pal.name}>{pal.name}</h3>
-
-        {/* Display the pal's work attributes */}
-        <div className={styles.workIcons} aria-label={`Work attributes of ${pal.name}`}>
-          {Object.entries(pal).map(([key, value]) => 
-            key !== 'id' && key !== 'name' && key !== 'type1' && key !== 'type2' && value > 0 ? (
-              <WorkIcon key={key} iconName={key} value={value} />
-            ) : null
+          {pal.image_url && (
+            <Image
+              className={styles.cardImage}
+              src={pal.image_url}
+              alt={`Image of ${pal.name}`}
+              width={100}
+              height={100}
+              style={{ objectFit: 'cover' }}
+              priority
+              placeholder="blur"
+              blurDataURL={pal.image_url}
+            />
           )}
+        </div>
+        <h3 className={styles.cardTitle} aria-label={pal.name}>{pal.name}</h3>
+        <div className={styles.workIcons} aria-label={`Work attributes of ${pal.name}`}>
+          {pal.skills.map((skill) => (
+            <WorkIcon key={skill.skill_name} iconUrl={skill.skill_icon_url} value={skill.skill_level} />
+          ))}
         </div>
       </div>
     </div>
   );
 }
-
-PalCard.displayName = 'PalCard'
