@@ -1,53 +1,57 @@
-import { createClient } from "@/app/utils/supabase/server";
-import localFont from "next/font/local";
-import NavBar from "./components/NavBar";
-import Footer from "./components/Footer";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "./globals.css";
+import React from 'react';
+import localFont from 'next/font/local';
+import NavBar from './components/NavBar';
+import Footer from './components/Footer';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './globals.css';
+import { UserProvider } from './context/userContext';
 
+/**
+ * Metadata for the application
+ */
 export const metadata = {
-  title: "EggPal",
-  description: "Palword Breeding Companion",
+  title: 'EggPal',
+  description: 'Palworld Breeding Companion',
 };
 
 const mainFont = localFont({
-  src: "./fonts/slkscr.ttf",
-  display: "swap",
+  src: './fonts/slkscr.ttf',
+  display: 'swap',
 });
 
-if (process.env.NODE_ENV === "production") {
-  console.log = () => {};
-  console.error = () => {};
-  console.warn = () => {};
-}
-
-export default async function RootLayout({ children }) {
-  const supabase = createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+/**
+ * RootLayout
+ * The main layout component for the application.
+ * 
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The child components.
+ * @returns {React.ReactNode} The layout with user data.
+ */
+const RootLayout = ({ children }) => {
   return (
-    <html lang="en">
-      <body className={mainFont.className}>
-        <header>
-          <NavBar user={user} />
-        </header>
-        <div className="page-container">
-          <main className="content-wrap">
-            {children}
-            <SpeedInsights />
-          </main>
-          <footer>
-            <Footer />
-          </footer>
-        </div>
-        <ToastContainer theme="dark" style={{ top: "100px" }} />
-        <div id="modal-root"></div>
-      </body>
-    </html>
+    <UserProvider>
+      <html lang="en">
+        <body className={mainFont.className}>
+          <header>
+            <NavBar />
+          </header>
+          <div className="page-container">
+            <main className="content-wrap">
+              {children}
+              <SpeedInsights />
+            </main>
+            <footer>
+              <Footer />
+            </footer>
+          </div>
+          <ToastContainer theme="dark" style={{ top: '100px' }} />
+          <div id="modal-root"></div>
+        </body>
+      </html>
+    </UserProvider>
   );
-}
+};
+
+export default RootLayout;

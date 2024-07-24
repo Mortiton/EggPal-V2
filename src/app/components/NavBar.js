@@ -1,7 +1,10 @@
+"use client"
+
 import React from 'react';
 import Link from "next/link";
 import BurgerMenu from "./BurgerMenu";
 import styles from "./styles/NavBar.module.css";
+import { useUser } from "../context/userContext";
 
 /**
  * NavBar component that renders a navigation bar.
@@ -10,18 +13,19 @@ import styles from "./styles/NavBar.module.css";
  * If a user is not logged in, it displays links to the login and signup pages.
  *
  * @component
- * @param {Object} props - The props that were defined by the caller of this component.
- * @param {Object} props.user - The user object. If it exists, the user is logged in.
  * @returns {JSX.Element} A React component.
  */
-export default function NavBar({ user }) {
+export default function NavBar() {
+  const user = useUser();
+  
+  console.log(user);
+  
   return (
     <nav className={styles.navbar}>
       <Link href="/" className={styles.title} aria-label="Home Page">
         EggPal
       </Link>
       <div className={styles.navLinks}>
-        {/* If user is logged in, display user links */}
         {user ? (
           <>
             <Link
@@ -52,7 +56,6 @@ export default function NavBar({ user }) {
             </form>
           </>
         ) : (
-          /* If user is not logged in, display login and signup links */
           <>
             <Link href="/login" className={styles.link} aria-label="Login">
               Login
@@ -68,4 +71,4 @@ export default function NavBar({ user }) {
   );
 }
 
-NavBar.displayName = 'NavBar'
+NavBar.displayName = 'NavBar';

@@ -1,7 +1,8 @@
 import React from "react";
-import { getPals } from "./actions";
+import { getPals } from "./services/palService"
 import PalList from "./components/PalList";
 import styles from "./page.module.css";
+
 
 /**
  * Metadata for the HomePage component.
@@ -28,6 +29,7 @@ export default async function HomePage() {
 
   // Render the home page with the PalList component, passing the fetched data as a prop
   return (
+
     <div className={styles.container}>
       <div className={styles.innerContainer}>
         <MemoPalList pals={pals} />
