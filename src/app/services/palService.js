@@ -1,3 +1,5 @@
+"use server"
+
 import React from "react";
 import { createClient } from "../utils/supabase/server";
 
@@ -74,4 +76,36 @@ export async function getTypes() {
     console.error("Error fetching type categories:", error);
     return null;
   }
+}
+
+/**
+ * Fetches breeding combinations from the database.
+ *
+ * @param {string} palName - The name of the pal to fetch breeding combinations for.
+ * @returns {Promise<Object[]>} - A promise that resolves to an array of breeding combination objects.
+ * @throws Will throw an error if the request fails.
+ */
+const fetchBreedingCombinations = async (palName) => {
+  console.log('Fetching breeding combinations from database');
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc('get_breeding_combos', { child_pal_name: palName });
+
+  if (error) {
+    throw new Error(`Error fetching breeding combinations: ${error.message}`);
+  }
+
+  return data;
+};
+
+const cachedFetchBreedingCombinations = React.cache(fetchBreedingCombinations);
+
+/**
+ * Fetches breeding combinations from cache or database.
+ *
+ * @param {string} palName - The name of the pal to fetch breeding combinations for.
+ * @returns {Promise<Object[]>} - A promise that resolves to an array of breeding combination objects.
+ */
+export async function getBreedingCombinations(palName) {
+  console.log('Fetching breeding combinations from cache or database');
+  return cachedFetchBreedingCombinations(palName);
 }

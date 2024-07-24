@@ -12,11 +12,9 @@ import styles from "./styles/BreedingList.module.css";
  * @component
  * @param {Object} props - The props that were defined by the caller of this component.
  * @param {Array} props.breedingCombos - The breeding combinations.
- * @param {Object} props.user - The user.
- * @param {Array} props.savedBreedingCombos - The saved breeding combinations of the user.
  * @returns {JSX.Element} A React component.
  */
-const BreedingList = ({ breedingCombos, user, savedBreedingCombos }) => {
+const BreedingList = ({ breedingCombos }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCombos = breedingCombos.filter((combo) => {
@@ -28,19 +26,16 @@ const BreedingList = ({ breedingCombos, user, savedBreedingCombos }) => {
   return (
     <div className={styles.container}>
       <div className={styles.searchContainer}>
-        <SearchBar onSearch={setSearchTerm} aria-label="Search breeding combinations"/>
+        <SearchBar onSearch={setSearchTerm} aria-label="Search breeding combinations" />
       </div>
       {filteredCombos.length > 0 ? (
         <div className={styles.breedingList} role="list" aria-label="List of breeding combinations">
           {filteredCombos.map((combo, index) => (
             <BreedingCard
               key={index}
-              parent1={{ name: combo.parent1_name, image: combo.parent1_image }}
-              parent2={{ name: combo.parent2_name, image: combo.parent2_image }}
-              userId={user ? user.id : null}
+              parent1={{ id: combo.parent1_id, name: combo.parent1_name, image: combo.parent1_image }}
+              parent2={{ id: combo.parent2_id, name: combo.parent2_name, image: combo.parent2_image }}
               breedingComboId={combo.id}
-              savedBreedingCombos={savedBreedingCombos}
-              user={user} 
             />
           ))}
         </div>
@@ -51,6 +46,6 @@ const BreedingList = ({ breedingCombos, user, savedBreedingCombos }) => {
   );
 };
 
-BreedingList.displayName = 'BreedingList'
+BreedingList.displayName = 'BreedingList';
 
 export default React.memo(BreedingList);

@@ -15,21 +15,11 @@ export const metadata = {
  * @returns {JSX.Element} The rendered JSX element
  */
 export default async function FavouritePalsPage() {
-  // Fetch the authenticated user
   const user = await getUser();
 
-  // If no user is authenticated, redirect to the login page
   if (!user) {
     return redirect("/login");
   }
 
-  // Fetch the user's favourite pals
-  const favouritePals = await getFavouritePals(user.id);
-
-  // Pass data to the client component via context
-  return (
-    <FavouritePalsDisplay initialUser={user} initialFavourites={favouritePals} />
-  );
+  return <FavouritePalsDisplay />;
 }
-
-FavouritePalsPage.displayName = "FavouritePalsPage";

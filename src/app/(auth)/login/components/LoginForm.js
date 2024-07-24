@@ -6,7 +6,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { login } from "../actions";
+// import { login } from "../actions";
+import { useUser } from "@/app/context/UserContext";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 /**
@@ -31,13 +32,17 @@ const LoginSchema = Yup.object().shape({
  */
 export default function LoginForm() {
   const router = useRouter();
+  const { handleLogin } = useUser(); 
   const [error, setError] = useState(null);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setError(null);
     try {
+      // Prevent default form submission behavior
+      event.preventDefault();
+      
       // Attempt to login
-      await login(values);
+      await handleLogin(values);
       // Navigate to home page on successful login
       router.push("/");
     } catch (err) {

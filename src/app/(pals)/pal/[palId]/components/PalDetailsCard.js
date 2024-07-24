@@ -4,8 +4,8 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
+import { toast } from 'react-toastify';
 import styles from "./styles/PalDetailsCard.module.css";
-import WorkIcon from "@/app/components/WorkIcon";
 
 /**
  * PalDetailsCard component that renders a card with details about a pal.
@@ -16,10 +16,19 @@ import WorkIcon from "@/app/components/WorkIcon";
  * @param {Object} props.pal - The pal.
  * @param {boolean} props.isFavourited - Whether the pal is favourited.
  * @param {function} props.onToggleFavourite - Function to toggle the favourite status.
+ * @param {Object} props.user - The user object.
  * @returns {JSX.Element} A React component.
  */
-export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite }) {
+export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite, user }) {
   const { skills } = pal;
+
+  const handleFavouriteClick = () => {
+    if (!user) {
+      toast.info('Please sign in to favourite pals.');
+      return;
+    }
+    onToggleFavourite();
+  };
 
   return (
     <div className={styles.container}>
@@ -28,7 +37,7 @@ export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite })
         className={styles.favoriteIcon}
         aria-label="Toggle Favourite"
         data-favourite={isFavourited ? "filled" : "empty"}
-        onClick={onToggleFavourite}
+        onClick={handleFavouriteClick}
         role="button"
         tabIndex="0"
       />

@@ -1,13 +1,14 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getFavouritePals, addFavouritePal, removeFavouritePal } from '../services/userService';
 import { useUser } from './UserContext';
+import { toast } from 'react-toastify';
 
 /**
  * FavouritesContext
  * Context for managing user's favourite pals.
  */
-const FavouritesContext = createContext(null);
+const FavouritesContext = createContext();
 
 /**
  * FavouritesProvider
@@ -22,30 +23,54 @@ export function FavouritesProvider({ children }) {
   const { user } = useUser();
   const [favourites, setFavourites] = useState([]);
 
-  useEffect(() => {
-    const loadFavourites = async () => {
-      if (user) {
+  const loadFavourites = useCallback(async () => {
+    if (user) {
+      try {
         const favs = await getFavouritePals(user.id);
         setFavourites(favs);
+      } catch (error) {
+        console.error('Failed to load favourite pals:', error);
+        toast.error('Failed to load favourite pals');
       }
-    };
-
-    loadFavourites();
+    } else {
+      setFavourites([]); // Clear favourites when user logs out
+    }
   }, [user]);
 
-  const addFavourite = async (pal) => {
-    setFavourites([...favourites, pal]);
-    await addFavouritePal(user.id, pal.id);
-  };
+  useEffect(() => {
+    loadFavourites();
+  }, [loadFavourites]);
 
-  const removeFavourite = async (palId) => {
-    setFavourites(favourites.filter(fav => fav.id !== palId));
-    await removeFavouritePal(user.id, palId);
-  };
+  const addFavourite = useCallback(async (pal) => {
+    if (!user) {
+      toast.info('Please log in to add favourite pals');
+      return;
+    }
+    try {
+      await addFavouritePal(user.id, pal.id);
+      setFavourites(prev => [...prev, pal]);
+      toast.success(`${pal.name} added to favourites`);
+    } catch (error) {
+      console.error('Failed to add favourite:', error);
+      toast.error(`Failed to add ${pal.name} to favourites`);
+    }
+  }, [user]);
 
-  const isFavourite = (palId) => {
+  const removeFavourite = useCallback(async (palId) => {
+    if (!user) return;
+    try {
+      await removeFavouritePal(user.id, palId);
+      setFavourites(prev => prev.filter(fav => fav.id !== palId));
+      toast.success('Pal removed from favourites');
+    } catch (error) {
+      console.error('Failed to remove favourite:', error);
+      toast.error('Failed to remove pal from favourites');
+    }
+  }, [user]);
+
+  const isFavourite = useCallback((palId) => {
     return favourites.some(fav => fav.id === palId);
-  };
+  }, [favourites]);
 
   return (
     <FavouritesContext.Provider value={{ favourites, addFavourite, removeFavourite, isFavourite }}>
@@ -58,6 +83,12 @@ export function FavouritesProvider({ children }) {
  * useFavourites
  * Custom hook to use the FavouritesContext.
  *
- * @returns {Object} The current favourites.
+ * @returns {Object} The current favourites and related functions.
  */
-export const useFavourites = () => useContext(FavouritesContext);
+export const useFavourites = () => {
+  const context = useContext(FavouritesContext);
+  if (context === undefined) {
+    throw new Error('useFavourites must be used within a FavouritesProvider');
+  }
+  return context;
+};

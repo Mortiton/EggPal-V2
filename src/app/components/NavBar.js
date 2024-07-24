@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from 'react';
 import Link from "next/link";
@@ -16,10 +16,8 @@ import { useUser } from '../context/UserContext';
  * @returns {JSX.Element} A React component.
  */
 export default function NavBar() {
-  const user = useUser();
-  
-  console.log(user);
-  
+  const { user, logout } = useUser();
+
   return (
     <nav className={styles.navbar}>
       <Link href="/" className={styles.title} aria-label="Home Page">
@@ -45,15 +43,14 @@ export default function NavBar() {
             <Link href="/profile" className={styles.link} aria-label="Profile">
               Profile
             </Link>
-            <form action="auth/signout" method="post">
-              <button
-                className={styles.logoutBtn}
-                type="submit"
-                aria-label="Logout"
-              >
-                Logout
-              </button>
-            </form>
+            <button
+              className={styles.logoutBtn}
+              type="button"
+              aria-label="Logout"
+              onClick={logout}
+            >
+              Logout
+            </button>
           </>
         ) : (
           <>

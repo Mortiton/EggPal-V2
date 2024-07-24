@@ -8,14 +8,8 @@ import styles from "../page.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-/**
- * FavouritePalsDisplay component
- * Displays the user's favourite pals.
- * 
- * @returns {JSX.Element} The rendered JSX element
- */
 export default function FavouritePalsDisplay() {
-  const user = useUser();
+  const { user } = useUser();
   const { favourites } = useFavourites();
   const router = useRouter();
 
@@ -25,7 +19,10 @@ export default function FavouritePalsDisplay() {
     }
   }, [user, router]);
 
-  // Render a message if no favourite pals are found
+  if (!user) {
+    return null; 
+  }
+
   if (!favourites || favourites.length === 0) {
     return (
       <div className={styles.noFavText}>
@@ -34,7 +31,6 @@ export default function FavouritePalsDisplay() {
     );
   }
 
-  // Render the list of favourite pals
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Your Favourite Pals</h2>

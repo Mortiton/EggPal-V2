@@ -1,53 +1,72 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import PalDetailsCard from "./PalDetailsCard";
 import { useUser } from "@/app/context/UserContext";
 import { useFavourites } from "@/app/context/FavouritesContext";
+import PalDetailsCard from "./PalDetailsCard";
+import BreedingList from "./BreedingList";
+import { getBreedingCombinations } from "@/app/services/palService";
+import styles from "../page.module.css";
 
 /**
- * PalDetailsDisplay component that handles the display and interactions for Pal details.
+ * PalDetailsDisplay component that renders Pal details and breeding combinations.
  *
  * @component
- * @param {Object} props - The component props.
+ * @param {Object} props - The props that were defined by the caller of this component.
  * @param {Object} props.pal - The pal details.
- * @param {Object} props.initialUser - The initial user data.
  * @returns {JSX.Element} A React component.
  */
-const PalDetailsDisplay = ({ pal, initialUser }) => {
-  const { user, setUser } = useUser();
+const PalDetailsDisplay = ({ pal }) => {
+  const { user } = useUser();
   const { favourites, addFavourite, removeFavourite } = useFavourites();
-  const [isFavourited, setIsFavourited] = useState(false);
+  const [breedingCombos, setBreedingCombos] = useState([]);
 
   useEffect(() => {
-    if (initialUser) {
-      setUser(initialUser);
-    }
-  }, [initialUser, setUser]);
+    const fetchBreedingCombos = async () => {
+      try {
+        const combos = await getBreedingCombinations(pal.name);
+        setBreedingCombos(combos);
+      } catch (error) {
+        console.error('Error fetching breeding combinations:', error);
+        toast.error('Failed to load breeding combinations');
+      }
+    };
 
-  useEffect(() => {
-    if (user) {
-      setIsFavourited(favourites.some(fav => fav.id === pal.id));
-    }
-  }, [favourites, pal.id, user]);
+    fetchBreedingCombos();
+  }, [pal.name]);
+
+  const isFavourited = user ? favourites.some((fav) => fav.id === pal.id) : false;
 
   const handleToggleFavourite = () => {
+    if (!user) {
+      toast.info('Please log in to favourite pals.');
+      return;
+    }
     if (isFavourited) {
       removeFavourite(pal.id);
     } else {
       addFavourite(pal);
     }
-    setIsFavourited(!isFavourited);
   };
 
   return (
-    <PalDetailsCard
-      pal={pal}
-      isFavourited={isFavourited}
-      onToggleFavourite={handleToggleFavourite}
-    />
+    <div className={styles.mainContainer}>
+      <div className={styles.palDetailsContainer}>
+        <PalDetailsCard
+          pal={pal}
+          isFavourited={isFavourited}
+          onToggleFavourite={handleToggleFavourite}
+          user={user}
+        />
+      </div>
+      <div className={styles.breedingContainer}>
+        <h2>Breeding Combinations</h2>
+        <BreedingList breedingCombos={breedingCombos} />
+      </div>
+    </div>
   );
 };
 
-PalDetailsDisplay.displayName = 'PalDetailsDisplay';
+PalDetailsDisplay.displayName = "PalDetailsDisplay";
+
 export default PalDetailsDisplay;

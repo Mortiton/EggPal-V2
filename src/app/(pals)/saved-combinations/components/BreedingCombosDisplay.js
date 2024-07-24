@@ -1,49 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
-import SavedBreedingList from "./SavedBreedingList";
+import React, { useState, useEffect } from "react";
+import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
 import ChildButton from "./ChildButton";
+import SavedBreedingList from "./SavedBreedingList";
 import styles from "./styles/BreedingCombosDisplay.module.css";
 
-/**
- * BreedingCombos component that displays the breeding combinations for a selected child.
- *
- * @param {{ combos: Object }} props - The breeding combinations grouped by child.
- * @param {string} props.userId - The user ID.
- * @returns {JSX.Element} A React component.
- */
-export default function BreedingCombosDisplay({ combos, userId }) {
+export default function BreedingCombosDisplay() {
+  const { savedCombinations } = useSavedCombinations();
   const [selectedChild, setSelectedChild] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [groupedCombos, setGroupedCombos] = useState({});
 
-  /**
-   * Handles the click event on a child button.
-   *
-   * @param {string} child - The child that was clicked.
-   */
-  const handleChildClick = (child) => {
-    setSelectedChild((prevChild) => {
-      if (prevChild === child) {
-        return null;
-      } else {
-        setSearchTerm("");
-        return child;
+  useEffect(() => {
+    const grouped = savedCombinations.reduce((acc, combo) => {
+      const childName = combo.child.name;
+      if (!acc[childName]) {
+        acc[childName] = [];
       }
-    });
+      acc[childName].push(combo);
+      return acc;
+    }, {});
+    setGroupedCombos(grouped);
+  }, [savedCombinations]);
+
+  const handleChildClick = (child) => {
+    setSelectedChild((prevChild) => prevChild === child ? null : child);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.childGrid}>
-        {Object.entries(combos).map(([child, combos]) => (
+        {Object.entries(groupedCombos).map(([child, combos]) => (
           <ChildButton
             key={child}
             child={child}
             combos={combos}
-            userId={userId}
             onClick={handleChildClick}
             isSelected={selectedChild === child}
-            aria-pressed={selectedChild === child}
           />
         ))}
       </div>
@@ -53,10 +46,7 @@ export default function BreedingCombosDisplay({ combos, userId }) {
             Breeding combinations for {selectedChild}
           </h3>
           <SavedBreedingList
-            breedingCombos={combos[selectedChild]}
-            userId={userId}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
+            breedingCombos={groupedCombos[selectedChild]}
             aria-label={`Saved breeding combinations for ${selectedChild}`}
           />
         </>
@@ -64,5 +54,3 @@ export default function BreedingCombosDisplay({ combos, userId }) {
     </div>
   );
 }
-
-BreedingCombosDisplay.displayName = 'BreedingCombosDisplay'
