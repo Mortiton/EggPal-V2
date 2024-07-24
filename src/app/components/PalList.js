@@ -141,7 +141,7 @@ const PalList = ({ pals, workTypes, types }) => {
             <Link
               className={styles.cardLink}
               key={pal.id}
-              href={`/pal/${encodeURIComponent(pal.name)}`}
+              href={`/pal/${encodeURIComponent(pal.id)}`}
               aria-label={`View details for ${pal.name}`}
               passHref
             >

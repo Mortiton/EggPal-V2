@@ -7,7 +7,7 @@ import { useUser } from './UserContext';
  * FavouritesContext
  * Context for managing user's favourite pals.
  */
-const FavouritesContext = createContext();
+const FavouritesContext = createContext(null);
 
 /**
  * FavouritesProvider
@@ -19,7 +19,7 @@ const FavouritesContext = createContext();
  * @returns {React.ReactNode} The provider with favourites data.
  */
 export function FavouritesProvider({ children }) {
-  const user = useUser();
+  const { user } = useUser();
   const [favourites, setFavourites] = useState([]);
 
   useEffect(() => {

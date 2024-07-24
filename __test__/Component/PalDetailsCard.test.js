@@ -1,9 +1,9 @@
 import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
-import PalDetailsCard from "@/app/(pals)/pal/[palName]/components/PalDetailsCards";
+import PalDetailsCard from "@/app/(pals)/pal/[palId]/components/PalDetailsCards";
 import '@testing-library/jest-dom';
 import { toast } from 'react-toastify';
-import { addFavoritePal, removeFavoritePal } from '@/app/(pals)/pal/[palName]/actions';
+import { addFavoritePal, removeFavoritePal } from '@/app/(pals)/pal/[palId]/actions';
 import WorkIcon from "@/app/components/WorkIcon"; // Adjust the import path accordingly
 
 // Mock the toast and action functions

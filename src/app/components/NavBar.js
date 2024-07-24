@@ -4,7 +4,7 @@ import React from 'react';
 import Link from "next/link";
 import BurgerMenu from "./BurgerMenu";
 import styles from "./styles/NavBar.module.css";
-import { useUser } from "../context/UserContext"
+import { useUser } from '../context/UserContext';
 
 /**
  * NavBar component that renders a navigation bar.

@@ -1,9 +1,9 @@
 import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
-import BreedingCard from "@/app/(pals)/pal/[palName]/components/BreedingCard"; 
+import BreedingCard from "@/app/(pals)/pal/[palId]/components/BreedingCard"; 
 import '@testing-library/jest-dom';
 import { toast } from 'react-toastify';
-import { addSavedBreedingCombo, removeSavedBreedingCombo } from "@/app/(pals)/pal/[palName]/actions";
+import { addSavedBreedingCombo, removeSavedBreedingCombo } from "@/app/(pals)/pal/[palId]/actions";
 
 // Mock the toast and action functions
 jest.mock('react-toastify', () => ({

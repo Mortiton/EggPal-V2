@@ -1,58 +1,24 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
-import { addFavoritePal, removeFavoritePal } from '../actions';
 import styles from "./styles/PalDetailsCard.module.css";
 import WorkIcon from "@/app/components/WorkIcon";
-import { toast } from 'react-toastify';
-
 
 /**
  * PalDetailsCard component that renders a card with details about a pal.
- * It displays a favorite icon, the pal's name, image, description, and base skills.
+ * It displays a favourite icon, the pal's name, image, description, and base skills.
  *
  * @component
  * @param {Object} props - The props that were defined by the caller of this component.
  * @param {Object} props.pal - The pal.
- * @param {Object} props.user - The user.
- * @param {Array} props.userFavorites - The user's favorite pals.
+ * @param {boolean} props.isFavourited - Whether the pal is favourited.
+ * @param {function} props.onToggleFavourite - Function to toggle the favourite status.
  * @returns {JSX.Element} A React component.
  */
-export default function PalDetailsCard({ pal, user, userFavorites }) {
-  const [isFavourited, setIsFavourited] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      setIsFavourited(userFavorites.includes(pal.id));
-    }
-  }, [userFavorites, pal.id, user]);
-
-  const handleToggleFavourite = async () => {
-    if (!user) {
-      toast.info('Please log in to favorite pals.');
-      return;
-    }
-    if (isLoading) return;
-    setIsLoading(true);
-
-    try {
-      if (isFavourited) {
-        await removeFavoritePal(user.id, pal.id);
-      } else {
-        await addFavoritePal(user.id, pal.id);
-      }
-      setIsFavourited(!isFavourited);
-    } catch (error) {
-      console.error('Error toggling favorite:', error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite }) {
   const workAttributes = {
     kindling: pal.kindling,
     watering: pal.watering,
@@ -75,7 +41,7 @@ export default function PalDetailsCard({ pal, user, userFavorites }) {
         className={styles.favoriteIcon}
         aria-label="Toggle Favourite"
         data-favourite={isFavourited ? "filled" : "empty"}
-        onClick={handleToggleFavourite}
+        onClick={onToggleFavourite}
         role="button"
         tabIndex="0"
       />
@@ -108,4 +74,4 @@ export default function PalDetailsCard({ pal, user, userFavorites }) {
   );
 }
 
-PalDetailsCard.displayName = 'PalDetailsCard'
+PalDetailsCard.displayName = 'PalDetailsCard';

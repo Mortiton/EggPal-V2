@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import BreedingList from "@/app/(pals)/pal/[palName]/components/BreedingList";
-import BreedingCard from "@/app/(pals)/pal/[palName]/components/BreedingCard";
+import BreedingList from "@/app/(pals)/pal/[palId]/components/BreedingList";
+import BreedingCard from "@/app/(pals)/pal/[palId]/components/BreedingCard";
 import SearchBar from "@/app/components/SearchBar";
 import '@testing-library/jest-dom/';
 

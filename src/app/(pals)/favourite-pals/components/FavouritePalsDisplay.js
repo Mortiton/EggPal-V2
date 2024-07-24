@@ -46,7 +46,7 @@ export default function FavouritePalsDisplay() {
           <Link
             className={styles.cardLink}
             key={pal.id}
-            href={`/pal/${encodeURIComponent(pal.name)}`}
+            href={`/pal/${encodeURIComponent(pal.id)}`}
             passHref
             role="listitem"
             aria-label={`View details for ${pal.name}`}
