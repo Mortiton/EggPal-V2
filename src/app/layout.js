@@ -6,7 +6,8 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
-import { UserProvider } from './context/userContext';
+import { UserProvider } from './context/UserContext';
+import { FavouritesProvider } from './context/FavouritesContext';
 
 /**
  * Metadata for the application
@@ -31,25 +32,27 @@ const mainFont = localFont({
  */
 const RootLayout = ({ children }) => {
   return (
-    <UserProvider>
-      <html lang="en">
-        <body className={mainFont.className}>
-          <header>
-            <NavBar />
-          </header>
-          <div className="page-container">
-            <main className="content-wrap">
-              {children}
-              <SpeedInsights />
-            </main>
-            <footer>
-              <Footer />
-            </footer>
-          </div>
-          <ToastContainer theme="dark" style={{ top: '100px' }} />
-          <div id="modal-root"></div>
-        </body>
-      </html>
+      <UserProvider>
+      <FavouritesProvider>
+        <html lang="en">
+          <body className={mainFont.className}>
+            <header>
+              <NavBar />
+            </header>
+            <div className="page-container">
+              <main className="content-wrap">
+                {children}
+                <SpeedInsights />
+              </main>
+              <footer>
+                <Footer />
+              </footer>
+            </div>
+            <ToastContainer theme="dark" style={{ top: '100px' }} />
+            <div id="modal-root"></div>
+          </body>
+        </html>
+      </FavouritesProvider>
     </UserProvider>
   );
 };

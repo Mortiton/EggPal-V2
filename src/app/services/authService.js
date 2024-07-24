@@ -1,6 +1,7 @@
 "use server"
 import { createClient } from "../utils/supabase/server";
 
+
 /**
  * Fetches the user data from Supabase.
  * 
