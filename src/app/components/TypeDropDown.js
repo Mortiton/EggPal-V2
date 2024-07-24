@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./styles/DropDown.module.css";
 
@@ -14,7 +16,8 @@ export default function TypeDropdown({ types, onSelectType }) {
   const [isOpen, setIsOpen] = useState(false); 
   const dropdownRef = useRef(null); 
   const buttonRef = useRef(null);
-  
+  const buttonId = 'type-dropdown-button'; 
+
   // Function to toggle whether the dropdown is open
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -48,12 +51,14 @@ export default function TypeDropdown({ types, onSelectType }) {
   return (
     <div ref={dropdownRef} className={styles.dropdown}>
       <button
+        id={buttonId}
         aria-label="Element Type"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={toggleDropdown}
         className={styles.dropdownButton}
         onKeyDown={handleKeyDown}
+        ref={buttonRef}
       >
         Element Type
       </button>
@@ -61,24 +66,24 @@ export default function TypeDropdown({ types, onSelectType }) {
         <div
           className={styles.dropdownContent}
           role="listbox"
-          aria-label="Element Type"
+          aria-labelledby={buttonId}
         >
           {types.map((type) => (
             <button
               role="option"
               aria-selected={false}
-              aria-label={type.name}
-              key={type.name}
+              aria-label={type.icon_name}
+              key={type.icon_name}
               onClick={() => {
-                onSelectType(type.name);
+                onSelectType(type.icon_name);
                 setIsOpen(false);
-                buttonRef;
+                buttonRef.current.focus();
               }}
               className={styles.dropdownItem}
             >
               <img
-                src={`/images/types/${type.name}.png`}
-                alt={type.name}
+                src={type.icon_url}
+                alt={type.icon_name}
                 className={styles.icon}
               />
             </button>
@@ -89,4 +94,4 @@ export default function TypeDropdown({ types, onSelectType }) {
   );
 }
 
-TypeDropdown.displayName = 'TypeDropdown'
+TypeDropdown.displayName = 'TypeDropdown';

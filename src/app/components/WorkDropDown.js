@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./styles/DropDown.module.css";
 
@@ -70,10 +72,10 @@ export default function WorkDropDown({ work, onSelectWork }) {
             <button
               role="option"
               aria-selected={false}
-              aria-label={workItem.name}
-              key={workItem.name}
+              aria-label={workItem.icon_name}
+              key={workItem.icon_name}
               onClick={() => {
-                onSelectWork(workItem.name);
+                onSelectWork(workItem.icon_name);
                 setIsOpen(false);
                 if (buttonRef.current) {
                   buttonRef.current.focus();
@@ -82,8 +84,8 @@ export default function WorkDropDown({ work, onSelectWork }) {
               className={styles.dropdownItem}
             >
               <img
-                src={`/images/work/${workItem.name}.png`}
-                alt={workItem.name}
+                src={workItem.icon_url}
+                alt={workItem.icon_name}
                 className={styles.icon}
               />
             </button>
@@ -94,4 +96,4 @@ export default function WorkDropDown({ work, onSelectWork }) {
   );
 }
 
-WorkDropDown.displayName = 'WorkDropDown'
+WorkDropDown.displayName = 'WorkDropDown';

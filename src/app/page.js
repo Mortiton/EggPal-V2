@@ -1,5 +1,5 @@
 import React from "react";
-import { getPals } from "./services/palService"
+import { getPals, getTypes, getWorkTypes } from "./services/palService"
 import PalList from "./components/PalList";
 import styles from "./page.module.css";
 
@@ -17,27 +17,28 @@ export const metadata = {
 
 /**
  * HomePage component that renders the home page.
- * It fetches data about pals using the getPals function and passes the data to the PalList component.
- * If the getPals function returns null (indicating an error), the PalList component will receive null as a prop.
+ * It fetches data about pals, work types, and types using service functions
+ * and passes the data to the respective components.
  *
  * @component
  * @returns {JSX.Element} A React component.
  */
 export default async function HomePage() {
-  // Fetch data about pals
-  const pals = await getPals();
+  // Fetch data about pals, work types, and types
+  const [pals, workTypes, types] = await Promise.all([
+    getPals(),
+    getWorkTypes(),
+    getTypes()
+  ]);
 
-  // Render the home page with the PalList component, passing the fetched data as a prop
+  // Render the home page with the PalList and dropdown components, passing the fetched data as props
   return (
-
     <div className={styles.container}>
       <div className={styles.innerContainer}>
-        <MemoPalList pals={pals} />
+        <PalList pals={pals} workTypes={workTypes} types={types} />
       </div>
     </div>
   );
 }
 
-const MemoPalList = React.memo(PalList);
-
-HomePage.displayName = 'HomePage'
+HomePage.displayName = 'HomePage';

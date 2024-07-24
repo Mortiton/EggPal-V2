@@ -13,6 +13,9 @@ import WorkIcon from "./WorkIcon";
  * @returns {JSX.Element} A React component.
  */
 export default function PalCard({ pal }) {
+  // Sort the skills based on the work_order
+  const sortedSkills = pal.skills.sort((a, b) => a.work_order - b.work_order);
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -55,7 +58,7 @@ export default function PalCard({ pal }) {
         </div>
         <h3 className={styles.cardTitle} aria-label={pal.name}>{pal.name}</h3>
         <div className={styles.workIcons} aria-label={`Work attributes of ${pal.name}`}>
-          {pal.skills.map((skill) => (
+          {sortedSkills.map((skill) => (
             <WorkIcon key={skill.skill_name} iconUrl={skill.skill_icon_url} value={skill.skill_level} />
           ))}
         </div>
@@ -63,3 +66,5 @@ export default function PalCard({ pal }) {
     </div>
   );
 }
+
+PalCard.displayName = 'PalCard';

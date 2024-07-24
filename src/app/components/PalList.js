@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from "react";
 import styles from "./styles/PalList.module.css";
@@ -16,10 +16,11 @@ import WorkDropDown from "./WorkDropDown";
  *
  * @component
  * @param {Object[]} pals - The list of pals to display.
+ * @param {Object[]} workTypes - The list of work types to filter by.
+ * @param {Object[]} types - The list of types to filter by.
  * @returns {JSX.Element} A React component.
  */
-const PalList = ({ pals }) => {
-
+const PalList = ({ pals, workTypes, types }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState(null);
   const [selectedWork, setSelectedWork] = useState(null);
@@ -62,37 +63,10 @@ const PalList = ({ pals }) => {
   const filteredPals = pals.filter((pal) => {
     const matchesSearch = pal.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = !selectedType || pal.type1 === selectedType || pal.type2 === selectedType;
-    const matchesWork = !selectedWork || (pal[selectedWork] || 0) > 0;
+    const matchesWork = !selectedWork || pal.skills.some(skill => skill.skill_name === selectedWork);
 
     return matchesSearch && matchesType && matchesWork;
   });
-
-  const types = [
-    { name: "neutral" },
-    { name: "dark" },
-    { name: "dragon" },
-    { name: "electric" },
-    { name: "fire" },
-    { name: "grass" },
-    { name: "ground" },
-    { name: "ice" },
-    { name: "water" },
-  ];
-
-  const work = [
-    { name: "kindling" },
-    { name: "watering" },
-    { name: "planting" },
-    { name: "generating_electricity" },
-    { name: "handiwork" },
-    { name: "gathering" },
-    { name: "lumbering" },
-    { name: "mining" },
-    { name: "medicine_production" },
-    { name: "cooling" },
-    { name: "transporting" },
-    { name: "farming" },
-  ];
 
   return (
     <div className={styles.container}>
@@ -106,7 +80,7 @@ const PalList = ({ pals }) => {
             aria-label="Type filter dropdown"
           />
           <WorkDropDown
-            work={work}
+            work={workTypes}
             onSelectWork={(workName) => setSelectedWork(workName)}
             aria-label="Work filter dropdown"          
           />
@@ -192,7 +166,6 @@ const PalList = ({ pals }) => {
   );
 };
 
-PalList.displayName = 'PalList'
+PalList.displayName = 'PalList';
 
 export default React.memo(PalList);
-
