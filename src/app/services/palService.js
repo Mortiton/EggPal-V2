@@ -1,111 +1,104 @@
-"use server"
+"use server";
 
-import React from "react";
 import { createClient } from "../utils/supabase/server";
+import { unstable_cache } from "next/cache";
 
-const fetchPals = async (ids = []) => {
-    console.log('Fetching pals from database');
-    const supabase = createClient();
-    const { data, error } = await supabase.rpc('get_pals', { ids: ids.length ? ids : null });
-  
-    if (error) {
-      throw new Error(`Error fetching pals: ${error.message}`);
-    }
-  
-    return data;
-  };
-  
-  const cachedFetchPals = React.cache(fetchPals);
-  
-  export async function getPals(ids = []) {
-    console.log('Fetching pals from cache or database');
-    return cachedFetchPals(ids);
-  }
+const CACHE_DURATION = 30 * 24 * 60 * 60; // 30 days in seconds
 
 /**
- * Fetches all unique work types and their corresponding icons from the icons table.
- *
- * @returns {Promise<Object[]>} A promise that resolves to an array of work types and icons.
- * @throws Will throw an error if the request fails.
+ * Creates a Supabase client.
+ * @returns {import('@supabase/ssr').SupabaseClient} A Supabase client instance.
+ */
+const getSupabaseClient = () => createClient();
+
+/**
+ * Fetches pal data from the database with caching.
+ * @param {number[]} ids - An array of pal IDs to fetch. If empty, fetches all pals.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of pal objects.
+ */
+export async function getPals(ids = []) {
+  const supabase = getSupabaseClient();
+  const fetchPals = unstable_cache(
+    async (supabase, ids) => {
+      console.log("Cache miss: Fetching pals from database");
+      const { data, error } = await supabase.rpc("get_pals", {
+        ids: ids.length ? ids : null,
+      });
+      if (error) throw new Error(`Error fetching pals: ${error.message}`);
+      return data;
+    },
+    ["pals"],
+    { revalidate: CACHE_DURATION }
+  );
+  return fetchPals(supabase, ids);
+}
+
+/**
+ * Fetches work types from the database with caching.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of work type objects.
  */
 export async function getWorkTypes() {
-  const supabase = createClient();
+  const supabase = getSupabaseClient();
+  const fetchWorkTypes = unstable_cache(
+    async (supabase) => {
+      const { data, error } = await supabase
+        .from("icons")
+        .select("icon_name, icon_url")
+        .in("Category", ["Work"])
+        .order("work_order", { ascending: true });
 
-  try {
-    const { data, error } = await supabase
-      .from("icons")
-      .select("icon_name, icon_url")
-      .in("Category", ["Work"])
-      .order("work_order", { ascending: true });
-
-    if (error) {
-      console.error("Supabase Error:", error);
-      throw new Error(`Error fetching work types: ${error.message}`);
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error fetching work types:", error);
-    return null;
-  }
+      if (error) throw new Error(`Error fetching work types: ${error.message}`);
+      return data;
+    },
+    ["work_types"],
+    { revalidate: CACHE_DURATION }
+  );
+  return fetchWorkTypes(supabase);
 }
 
 /**
- * Fetches all unique type categories and their corresponding order from the Category table.
- *
- * @returns {Promise<Object[]>} A promise that resolves to an array of type categories and their order.
- * @throws Will throw an error if the request fails.
+ * Fetches pal types from the database with caching.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of pal type objects.
  */
 export async function getTypes() {
-  const supabase = createClient();
+  const supabase = getSupabaseClient();
+  const fetchTypes = unstable_cache(
+    async (supabase) => {
+      const { data, error } = await supabase
+        .from("icons")
+        .select("icon_name, icon_url")
+        .in("Category", ["Type"])
+        .order("type_order", { ascending: true });
 
-  try {
-    const { data, error } = await supabase
-      .from("icons")
-      .select("icon_name, icon_url")
-      .in("Category", ["Type"])
-      .order("type_order", { ascending: true });
-
-    if (error) {
-      console.error("Supabase Error:", error);
-      throw new Error(`Error fetching type categories: ${error.message}`);
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error fetching type categories:", error);
-    return null;
-  }
+      if (error) throw new Error(`Error fetching pal types: ${error.message}`);
+      return data;
+    },
+    ["pal_types"],
+    { revalidate: CACHE_DURATION }
+  );
+  return fetchTypes(supabase);
 }
 
 /**
- * Fetches breeding combinations from the database.
- *
+ * Fetches breeding combinations from the database with caching.
  * @param {string} palName - The name of the pal to fetch breeding combinations for.
- * @returns {Promise<Object[]>} - A promise that resolves to an array of breeding combination objects.
- * @throws Will throw an error if the request fails.
- */
-const fetchBreedingCombinations = async (palName) => {
-  console.log('Fetching breeding combinations from database');
-  const supabase = createClient();
-  const { data, error } = await supabase.rpc('get_breeding_combos', { child_pal_name: palName });
-
-  if (error) {
-    throw new Error(`Error fetching breeding combinations: ${error.message}`);
-  }
-
-  return data;
-};
-
-const cachedFetchBreedingCombinations = React.cache(fetchBreedingCombinations);
-
-/**
- * Fetches breeding combinations from cache or database.
- *
- * @param {string} palName - The name of the pal to fetch breeding combinations for.
- * @returns {Promise<Object[]>} - A promise that resolves to an array of breeding combination objects.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of breeding combination objects.
  */
 export async function getBreedingCombinations(palName) {
-  console.log('Fetching breeding combinations from cache or database');
-  return cachedFetchBreedingCombinations(palName);
+  const supabase = getSupabaseClient();
+  const fetchBreedingCombinations = unstable_cache(
+    async (supabase, palName) => {
+      const { data, error } = await supabase.rpc("get_breeding_combos", {
+        child_pal_name: palName,
+      });
+      if (error)
+        throw new Error(
+          `Error fetching breeding combinations: ${error.message}`
+        );
+      return data;
+    },
+    ["breeding_combinations"],
+    { revalidate: CACHE_DURATION }
+  );
+  return fetchBreedingCombinations(supabase, palName);
 }
