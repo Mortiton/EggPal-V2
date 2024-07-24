@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./styles/BreedingCard.module.css";
@@ -14,18 +14,8 @@ import { useUser } from "@/app/context/UserContext";
 export default function BreedingCard({ parent1, parent2, breedingComboId }) {
   const { user } = useUser();
   const { savedCombinations, addCombination, removeCombination } = useSavedCombinations();
-  const [isSaved, setIsSaved] = useState(false);
 
-  const checkIfSaved = useCallback(() => {
-    if (user && savedCombinations) {
-      return savedCombinations.some(combo => combo.breeding_combo_id === breedingComboId);
-    }
-    return false;
-  }, [user, savedCombinations, breedingComboId]);
-
-  useEffect(() => {
-    setIsSaved(checkIfSaved());
-  }, [checkIfSaved]);
+  const isSaved = savedCombinations.some(combo => combo.breedingComboId === breedingComboId);
 
   const toggleSaved = async () => {
     if (!user) {
@@ -39,7 +29,6 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
       } else {
         await addCombination(breedingComboId);
       }
-      setIsSaved(!isSaved);
     } catch (error) {
       console.error('Error toggling saved status:', error.message);
       toast.error('Failed to update saved status');
