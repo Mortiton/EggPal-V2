@@ -12,7 +12,7 @@ export const metadata = {
   description:
     "EggPal- The Palworld database for breeding combinations and pals",
   keywords:
-    "home, pals, list, discover, palworld, pal, calculator, save, base skills",
+    "home, pals, list, discover, palworld, pal, calculator, save, base skills, filter",
 };
 
 /**

@@ -34,6 +34,16 @@ module.exports = {
           },
         ],
       },
+      {
+        // Define cache-control headers for images and icons
+        source: '/_next/image(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=2592000, stale-while-revalidate=604800', // 30 days max-age, 7 days stale-while-revalidate
+          },
+        ],
+      },
     ];
   },
 
@@ -46,12 +56,6 @@ module.exports = {
         include: path.resolve(__dirname, 'src/app/__tests__'), 
         loader: 'ignore-loader',
       });
-
-      // Optimize images using next/image (if using next/image, otherwise remove this block)
-      // config.module.rules.push({
-      //   test: /\.(png|jpe?g|gif|svg)$/i,
-      //   type: 'asset/resource',
-      // });
     }
 
     // Alias for cleaner imports
@@ -59,5 +63,21 @@ module.exports = {
     config.resolve.alias['@styles'] = path.join(__dirname, 'src/app/styles');
 
     return config;
+  },
+
+  // Image configuration
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'fnjmrcdmectyvrnoxamx.supabase.co',
+        pathname: '/storage/v1/object/public/EggPal/pals/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'fnjmrcdmectyvrnoxamx.supabase.co',
+        pathname: '/storage/v1/object/public/EggPal/icons/**',
+      },
+    ],
   },
 };
