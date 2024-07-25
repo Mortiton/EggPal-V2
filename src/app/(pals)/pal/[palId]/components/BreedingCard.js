@@ -9,7 +9,7 @@ import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as fasHeart, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toast } from 'react-toastify';
 import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
-import { useUser } from "@/app/context/UserContext";
+import { useUser } from "@/app/context/UserContext"
 
 export default function BreedingCard({ parent1, parent2, breedingComboId }) {
   const { user } = useUser();

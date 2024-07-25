@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useUser } from "@/app/context/UserContext";
+import { useUser } from "@/app/context/UserContext"
 import { useFavourites } from "@/app/context/FavouritesContext";
 import PalCard from "@/app/components/PalCard";
 import styles from "../page.module.css";
