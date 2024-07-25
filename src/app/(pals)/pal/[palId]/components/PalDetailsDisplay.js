@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useUser } from "@/app/context/UserContext"
+import { useUser } from "../../../../context/UserContext";
 import { useFavourites } from "@/app/context/FavouritesContext";
 import PalDetailsCard from "./PalDetailsCard";
 import BreedingList from "./BreedingList";

@@ -1,6 +1,5 @@
 import React from "react";
 import { getUser } from "@/app/services/authService";
-import { getFavouritePals } from "@/app/services/userService";
 import FavouritePalsDisplay from "./components/FavouritePalsDisplay";
 import { redirect } from "next/navigation";
 
