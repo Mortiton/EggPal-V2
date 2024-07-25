@@ -61,6 +61,7 @@ module.exports = {
     // Alias for cleaner imports
     config.resolve.alias['@components'] = path.join(__dirname, 'src/app/components');
     config.resolve.alias['@styles'] = path.join(__dirname, 'src/app/styles');
+    config.resolve.alias['@'] = path.join(__dirname, 'src');
 
     return config;
   },
