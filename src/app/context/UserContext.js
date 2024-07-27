@@ -6,6 +6,7 @@ const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -14,7 +15,9 @@ export const UserProvider = ({ children }) => {
         setUser(userData);
       } catch (error) {
         console.error('Failed to fetch user:', error);
-        setUser(null); // Ensure user is set to null if there's an error
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 

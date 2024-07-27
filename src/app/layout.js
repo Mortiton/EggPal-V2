@@ -32,6 +32,7 @@ const mainFont = localFont({
  * @returns {React.ReactNode} The layout with user data.
  */
 const RootLayout = ({ children }) => {
+  
   return (
     <UserProvider>
       <FavouritesProvider>

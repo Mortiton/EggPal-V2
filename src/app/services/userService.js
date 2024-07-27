@@ -13,22 +13,21 @@ import { getPals } from "./palService";
  * @throws Will throw an error if the favorite pals cannot be fetched.
  */
 export async function getFavouritePals(userId) {
-    const supabase = createClient();
-    const { data, error } = await supabase
-      .from('favourites')
-      .select('pal_id')
-      .eq('user_id', userId);
-  
-    if (error) {
-      throw new Error(error.message);
-    }
-  
-    const palIds = data.map(fav => fav.pal_id);
-    const pals = await getPals(palIds);
-  
-    return pals;
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('favourites')
+    .select('pal_id')
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(error.message);
   }
 
+  const palIds = data.map(fav => fav.pal_id);
+  const pals = await getPals(palIds);
+
+  return pals;
+}
   /**
  * Adds a pal to the user's favourites.
  * 

@@ -16,21 +16,21 @@ const getSupabaseClient = () => createClient();
  * @param {number[]} ids - An array of pal IDs to fetch. If empty, fetches all pals.
  * @returns {Promise<Object[]>} A promise that resolves to an array of pal objects.
  */
+const fetchPalsFromDB = async (supabase, ids) => {
+  const { data, error } = await supabase.rpc('get_pals', { ids: ids.length ? ids : null });
+  if (error) throw new Error(`Error fetching pals: ${error.message}`);
+  return data;
+};
+
+const getCachedPals = unstable_cache(
+  fetchPalsFromDB,
+  ['pals'],
+  { revalidate: CACHE_DURATION }
+);
+
 export async function getPals(ids = []) {
-  const supabase = getSupabaseClient();
-  const fetchPals = unstable_cache(
-    async (supabase, ids) => {
-      console.log("Cache miss: Fetching pals from database");
-      const { data, error } = await supabase.rpc("get_pals", {
-        ids: ids.length ? ids : null,
-      });
-      if (error) throw new Error(`Error fetching pals: ${error.message}`);
-      return data;
-    },
-    ["pals"],
-    { revalidate: CACHE_DURATION }
-  );
-  return fetchPals(supabase, ids);
+  const supabase = createClient();
+  return getCachedPals(supabase, ids);
 }
 
 /**
