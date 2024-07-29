@@ -1,21 +1,23 @@
-"use server"
+"use server";
 import { createClient } from "../utils/supabase/server";
-import { cookies } from 'next/headers'
-
+import { cookies } from "next/headers";
 
 /**
  * Fetches the user data from Supabase.
- * 
+ *
  * @returns {Promise<Object|null>} The user data or null if no user is authenticated.
  */
 export async function getUser() {
   const supabase = createClient();
 
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
   if (error) {
-    console.error('Failed to fetch user:', error.message);
-    return null; 
+    console.error("Failed to fetch user:", error.message);
+    return null;
   }
 
   return user;
@@ -23,17 +25,20 @@ export async function getUser() {
 
 /**
  * Fetches the current session from Supabase.
- * 
+ *
  * @returns {Promise<Object|null>} The session data or null if no session exists.
  */
 export async function getSession() {
-  const cookieStore = cookies()
+  const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { data: { session }, error } = await supabase.auth.getSession();
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
 
   if (error) {
-    console.error('Failed to fetch session:', error.message);
+    console.error("Failed to fetch session:", error.message);
     return null;
   }
 
@@ -42,7 +47,7 @@ export async function getSession() {
 
 /**
  * Logs in the user with the provided email and password.
- * 
+ *
  * @param {Object} values - The login values.
  * @param {string} values.email - The email address.
  * @param {string} values.password - The password.
@@ -55,7 +60,7 @@ export async function login({ email, password }) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    throw new Error('Invalid email or password');
+    throw new Error("Invalid email or password");
   }
 
   return { success: true };
@@ -63,7 +68,7 @@ export async function login({ email, password }) {
 
 export async function resetPassword(email) {
   const supabase = createClient();
-  const resetLinkRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`;  
+  const resetLinkRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`;
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: resetLinkRedirectUrl,
@@ -72,20 +77,27 @@ export async function resetPassword(email) {
   if (error) {
     throw new Error(error.message);
   }
+
+  return { message: "Password reset email sent successfully" };
 }
 
 export async function updateUserPassword({ password, token }) {
   const supabase = createClient();
 
-  const { data, error } = await supabase.auth.updateUser({ 
-    password: password 
-  }, {
-    token: token
-  })
+  const { data, error: verifyError } = await supabase.auth.verifyOtp({
+    token_hash: token,
+    type: "recovery",
+  });
 
-  if (error) {
-    throw new Error(error.message);
+  if (verifyError) {
+    throw new Error(verifyError.message);
   }
 
-  return { message: 'Password updated successfully' };
+  const { error: updateError } = await supabase.auth.updateUser({ password });
+
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
+
+  return { message: "Password updated successfully" };
 }

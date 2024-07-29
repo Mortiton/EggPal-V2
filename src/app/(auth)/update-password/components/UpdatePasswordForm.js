@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -49,6 +50,7 @@ const UpdatePasswordForm = ({ token }) => {
 
     setSubmitting(false);
   };
+
 
   const handleSuccessConfirm = () => {
     setIsSuccessModalOpen(false);

@@ -29,4 +29,4 @@ export default function UpdatePasswordPage({ searchParams }) {
   );
 }
 
-UpdatePasswordPage.displayName = 'UpdatePasswordPage'
+UpdatePasswordPage.displayName = 'UpdatePasswordPage';

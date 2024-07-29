@@ -6,9 +6,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
-import { UserProvider } from './context/UserContext';
 import { FavouritesProvider } from './context/FavouritesContext';
 import { SavedCombinationsProvider } from './context/SavedCombinationsContext';
+import { createClient } from "./utils/supabase/server";
 
 /**
  * Metadata for the application
@@ -31,33 +31,33 @@ const mainFont = localFont({
  * @param {React.ReactNode} props.children - The child components.
  * @returns {React.ReactNode} The layout with user data.
  */
-const RootLayout = ({ children }) => {
-  
+const RootLayout = async ({ children }) => {
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
   return (
-    <UserProvider>
-      <FavouritesProvider>
-        <SavedCombinationsProvider>
-          <html lang="en">
-            <body className={mainFont.className}>
-              <header>
-                <NavBar />
-              </header>
-              <div className="page-container">
-                <main className="content-wrap">
-                  {children}
-                  <SpeedInsights />
-                </main>
-                <footer>
-                  <Footer />
-                </footer>
-              </div>
-              <ToastContainer theme="dark" style={{ top: '100px' }} />
-              <div id="modal-root"></div>
-            </body>
-          </html>
-        </SavedCombinationsProvider>
-      </FavouritesProvider>
-    </UserProvider>
+    <FavouritesProvider initialSession={session}>
+      <SavedCombinationsProvider initialSession={session}>
+        <html lang="en">
+          <body className={mainFont.className}>
+            <header>
+              <NavBar />
+            </header>
+            <div className="page-container">
+              <main className="content-wrap">
+                {children}
+                <SpeedInsights />
+              </main>
+              <footer>
+                <Footer />
+              </footer>
+            </div>
+            <ToastContainer theme="dark" style={{ top: '100px' }} />
+            <div id="modal-root"></div>
+          </body>
+        </html>
+      </SavedCombinationsProvider>
+    </FavouritesProvider>
   );
 };
 
