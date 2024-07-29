@@ -60,3 +60,32 @@ export async function login({ email, password }) {
 
   return { success: true };
 }
+
+export async function resetPassword(email) {
+  const supabase = createClient();
+  const resetLinkRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/update-password`;  
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: resetLinkRedirectUrl,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function updateUserPassword({ password, token }) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase.auth.updateUser({ 
+    password: password 
+  }, {
+    token: token
+  })
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { message: 'Password updated successfully' };
+}

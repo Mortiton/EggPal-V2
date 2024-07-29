@@ -1,5 +1,6 @@
 import SignupForm from "./components/SignupForm";
 import styles from "../../components/styles/FormPage.module.css";
+import Link from "next/link";
 
 export const metadata = {
   title: "Sign Up",
@@ -31,6 +32,12 @@ export default function SignupPage({ searchParams }) {
         </p>
       )}
       <SignupForm />
+      <p className={styles.description}>
+        Already have an account?{" "}
+        <Link className={styles.link} href="./login">
+          Sign in
+        </Link>
+        </p>
     </div>
   );
 }

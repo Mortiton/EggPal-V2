@@ -1,22 +1,32 @@
 import React from 'react';
-import UpdatePasswordForm from './components/UpdatePasswordForm'; // Adjust path as necessary
+import UpdatePasswordForm from './components/UpdatePasswordForm';
 import styles from '../../components/styles/FormPage.module.css';
 
 export const metadata = {
-    title: 'Update Password',
-    description: 'Update your password'
-  };
-  
-  export default function UpdatePasswordPage({ searchParams }) {
-    const accessToken = searchParams.code;
-  
+  title: 'Update Password',
+  description: 'Update your password'
+};
+
+export default function UpdatePasswordPage({ searchParams }) {
+  const token = searchParams.token;
+  const type = searchParams.type;
+
+  if (!token || type !== 'recovery') {
     return (
       <div className={styles.container}>
-        <h1 className={styles.heading}>Update Your Password</h1>
-        <p className={styles.description}>Input your new password.</p>
-        <UpdatePasswordForm accessToken={accessToken} />
+        <h1 className={styles.heading}>Invalid Reset Link</h1>
+        <p className={styles.description}>The password reset link is invalid or has expired.</p>
       </div>
     );
   }
 
-  UpdatePasswordPage.displayName = 'UpdatePasswordPage'
+  return (
+    <div className={styles.container}>
+      <h1 className={styles.heading}>Update Your Password</h1>
+      <p className={styles.description}>Input your new password.</p>
+      <UpdatePasswordForm token={token} />
+    </div>
+  );
+}
+
+UpdatePasswordPage.displayName = 'UpdatePasswordPage'

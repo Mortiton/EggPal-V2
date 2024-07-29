@@ -4,44 +4,31 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { resetPassword } from "../actions";
+import { resetPassword } from "@/app/services/authService";
 import SuccessModal from "@/app/components/SuccessModal";
 import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
-
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
 });
 
-/**
- * ForgotPasswordForm component
- * @returns {JSX.Element} The rendered JSX element
- */
 const ForgotPasswordForm = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  /**
-   * Handle the confirmation action
-   */
   const handleConfirm = () => {
     setIsModalOpen(false);
     router.push("/login");
   };
 
-  /**
-   * Handle the form submission
-   * @param {Object} values - The form values
-   * @param {Object} actions - The formik actions
-   */
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await resetPassword(values.email);
       setIsModalOpen(true);
-      setSubmitting(false);
     } catch (error) {
       toast.error('Failed to send reset email: ' + error.message);
+    } finally {
       setSubmitting(false);
     }
   };
