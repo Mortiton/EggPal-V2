@@ -76,17 +76,16 @@ export default function UpdatePasswordForm() {
         }}
       >
         {({ isSubmitting }) => (
-          <Form className={styles.inputContainer}>
-            <label htmlFor="currentPassword" className={styles.label}>
+          <Form className={styles.inputContainer} >
+            <label htmlFor="current-password" className={styles.label}>
               Current Password:
             </label>
             <Field
-              id="currentPassword"
-              name="currentPassword"
+              id="current-password"
+              name="current_password"
               type="password"
               className={styles.input}
               aria-label="Current password input field"
-              autoComplete="off" 
             />
             <ErrorMessage
               name="currentPassword"
@@ -94,16 +93,16 @@ export default function UpdatePasswordForm() {
               className={styles.validation}
             />
 
-            <label htmlFor="newPassword" className={styles.label}>
+            <label htmlFor="new-password" className={styles.label}>
               New Password:
             </label>
             <Field
-              id="newPassword"
-              name="newPassword"
+              id="new-password"
+              name="new_password"
               type="password"
               className={styles.input}
               aria-label="New password input field"
-              autoComplete="new-password"
+              autocomplete="new-password"
             />
             <ErrorMessage
               name="newPassword"
@@ -111,16 +110,16 @@ export default function UpdatePasswordForm() {
               className={styles.validation}
             />
 
-            <label htmlFor="confirmNewPassword" className={styles.label}>
+            <label htmlFor="confirm-new-password" className={styles.label}>
               Confirm New Password:
             </label>
             <Field
-              id="confirmNewPassword"
-              name="confirmNewPassword"
+              id="confirm-new-password"
+              name="confirm_new_password"
               type="password"
               className={styles.input}
               aria-label="Confirm new password input field"
-              autoComplete="new-password"
+              autocomplete="new-password"
             />
             <ErrorMessage
               name="confirmNewPassword"
@@ -151,4 +150,4 @@ export default function UpdatePasswordForm() {
   );
 }
 
-UpdatePasswordForm.displayName = 'UpdatePasswordForm'
+UpdatePasswordForm.displayName = "UpdatePasswordForm";
