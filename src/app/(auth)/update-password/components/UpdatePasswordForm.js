@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -24,12 +24,6 @@ const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
   const [error, setError] = useState('');
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (!accessToken) {
-      setError('Reset token missing!');
-    }
-  }, [accessToken]);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     const { password, confirmPassword } = values;

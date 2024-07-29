@@ -23,7 +23,7 @@ export default function UpdatePasswordPage({ searchParams }) {
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Update Your Password</h1>
-      <p className={styles.description}>Input your new password.</p>
+      <p className={styles.description}>Enter your new password below.</p>
       <UpdatePasswordForm token={token} />
     </div>
   );
