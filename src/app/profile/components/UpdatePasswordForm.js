@@ -86,6 +86,7 @@ export default function UpdatePasswordForm() {
               type="password"
               className={styles.input}
               aria-label="Current password input field"
+              autoComplete="off" 
             />
             <ErrorMessage
               name="currentPassword"
@@ -102,6 +103,7 @@ export default function UpdatePasswordForm() {
               type="password"
               className={styles.input}
               aria-label="New password input field"
+              autoComplete="new-password"
             />
             <ErrorMessage
               name="newPassword"
@@ -118,6 +120,7 @@ export default function UpdatePasswordForm() {
               type="password"
               className={styles.input}
               aria-label="Confirm new password input field"
+              autoComplete="new-password"
             />
             <ErrorMessage
               name="confirmNewPassword"
