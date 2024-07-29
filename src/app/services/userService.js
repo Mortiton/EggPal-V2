@@ -1,63 +1,57 @@
 "use server";
+
 import { createClient } from "../utils/supabase/server";
 import { getPals } from "./palService";
 
 export async function getFavouritePals(userId) {
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from("favourites")
-    .select("pal_id")
-    .eq("user_id", userId);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  const palIds = data.map((fav) => fav.pal_id);
   
-  if (palIds.length === 0) {
-    return []; // Return an empty array if no favorites
+  try {
+    const { data, error } = await supabase
+      .from("favourites")
+      .select("pal_id")
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Error fetching favourite pal IDs:", error);
+      throw new Error(error.message);
+    }
+
+    const palIds = data.map((fav) => fav.pal_id);
+    
+    if (palIds.length === 0) {
+      return []; // Return an empty array if no favorites
+    }
+    
+    // Use getPals without caching for favorites
+    return await getPals(palIds);
+  } catch (error) {
+    console.error("Error in getFavouritePals:", error);
+    throw error;
   }
-  
-  // Use getPals without caching for favorites
-  return getPals(palIds);
 }
-/**
- * Adds a pal to the user's favourites.
- *
- * @param {string} userId - The ID of the authenticated user.
- * @param {string} palId - The ID of the pal to add to favourites.
- * @returns {Promise<void>}
- * @throws Will throw an error if the pal cannot be added to favourites.
- */
+
 export async function addFavouritePal(userId, palId) {
   const supabase = createClient();
   const { error } = await supabase
     .from("favourites")
-    .insert([{ user_id: userId, pal_id: palId }]);
+    .insert({ user_id: userId, pal_id: palId });
 
   if (error) {
+    console.error("Error adding favourite pal:", error);
     throw new Error(error.message);
   }
 }
 
-/**
- * Removes a pal from the user's favourites.
- *
- * @param {string} userId - The ID of the authenticated user.
- * @param {string} palId - The ID of the pal to remove from favourites.
- * @returns {Promise<void>}
- * @throws Will throw an error if the pal cannot be removed from favourites.
- */
 export async function removeFavouritePal(userId, palId) {
   const supabase = createClient();
   const { error } = await supabase
     .from("favourites")
     .delete()
-    .eq("user_id", userId)
-    .eq("pal_id", palId);
+    .match({ user_id: userId, pal_id: palId });
 
   if (error) {
+    console.error("Error removing favourite pal:", error);
     throw new Error(error.message);
   }
 }

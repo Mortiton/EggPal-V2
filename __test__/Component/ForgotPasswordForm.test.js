@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import ForgotPasswordForm from "@/app/(auth)/forgot-password/components/ForgotPasswordForm";
 import "@testing-library/jest-dom";
-import { resetPassword } from "@/app/(auth)/forgot-password/actions";
+import { resetPassword } from "../../src/app/(auth)/forgot-password/actions";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 

@@ -1,4 +1,4 @@
-import { resetPassword } from '@/app/(auth)/forgot-password/actions';
+import { resetPassword } from '../../src/app/(auth)/forgot-password/actions';
 import { createClient } from '@/app/utils/supabase/server';
 
 // Mock the Supabase client creation function
