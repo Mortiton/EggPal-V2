@@ -1,8 +1,8 @@
 "use client";
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getFavouritePals, addFavouritePal, removeFavouritePal } from '../services/userService';
-import { useUser } from './UserContext';
 import { toast } from 'react-toastify';
+import { createClient } from '@/app/utils/supabase/client';
 
 /**
  * FavouritesContext
@@ -17,16 +17,28 @@ const FavouritesContext = createContext();
  * @component
  * @param {Object} props - The component props.
  * @param {React.ReactNode} props.children - The child components.
+ * @param {Object} props.initialSession - The initial session object.
  * @returns {React.ReactNode} The provider with favourites data.
  */
-export function FavouritesProvider({ children }) {
-  const { user } = useUser();
+export function FavouritesProvider({ children, initialSession }) {
+  const [session, setSession] = useState(initialSession);
   const [favourites, setFavourites] = useState([]);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
+      setSession(newSession);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
 
   const loadFavourites = useCallback(async () => {
-    if (user) {
+    if (session?.user) {
       try {
-        const favs = await getFavouritePals(user.id);
+        const favs = await getFavouritePals(session.user.id);
         setFavourites(favs);
       } catch (error) {
         console.error('Failed to load favourite pals:', error);
@@ -35,45 +47,45 @@ export function FavouritesProvider({ children }) {
     } else {
       setFavourites([]); // Clear favourites when user logs out
     }
-  }, [user]);
+  }, [session]);
 
   useEffect(() => {
     loadFavourites();
   }, [loadFavourites]);
 
   const addFavourite = useCallback(async (pal) => {
-    if (!user) {
+    if (!session?.user) {
       toast.info('Please log in to add favourite pals');
       return;
     }
     try {
-      await addFavouritePal(user.id, pal.id);
+      await addFavouritePal(session.user.id, pal.id);
       setFavourites(prev => [...prev, pal]);
       toast.success(`${pal.name} added to favourites`);
     } catch (error) {
       console.error('Failed to add favourite:', error);
       toast.error(`Failed to add ${pal.name} to favourites`);
     }
-  }, [user]);
+  }, [session]);
 
   const removeFavourite = useCallback(async (palId) => {
-    if (!user) return;
+    if (!session?.user) return;
     try {
-      await removeFavouritePal(user.id, palId);
+      await removeFavouritePal(session.user.id, palId);
       setFavourites(prev => prev.filter(fav => fav.id !== palId));
       toast.success('Pal removed from favourites');
     } catch (error) {
       console.error('Failed to remove favourite:', error);
       toast.error('Failed to remove pal from favourites');
     }
-  }, [user]);
+  }, [session]);
 
   const isFavourite = useCallback((palId) => {
     return favourites.some(fav => fav.id === palId);
   }, [favourites]);
 
   return (
-    <FavouritesContext.Provider value={{ favourites, addFavourite, removeFavourite, isFavourite }}>
+    <FavouritesContext.Provider value={{ favourites, addFavourite, removeFavourite, isFavourite, session }}>
       {children}
     </FavouritesContext.Provider>
   );

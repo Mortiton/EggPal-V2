@@ -1,5 +1,6 @@
 "use server"
 import { createClient } from "../utils/supabase/server";
+import { cookies } from 'next/headers'
 
 
 /**
@@ -18,6 +19,25 @@ export async function getUser() {
   }
 
   return user;
+}
+
+/**
+ * Fetches the current session from Supabase.
+ * 
+ * @returns {Promise<Object|null>} The session data or null if no session exists.
+ */
+export async function getSession() {
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore);
+
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (error) {
+    console.error('Failed to fetch session:', error.message);
+    return null;
+  }
+
+  return session;
 }
 
 /**

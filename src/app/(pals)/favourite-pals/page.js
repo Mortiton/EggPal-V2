@@ -1,5 +1,6 @@
+// app/favourite-pals/page.js
 import React from "react";
-import { getUser } from "@/app/services/authService";
+import { getSession } from "@/app/services/authService";
 import FavouritePalsDisplay from "./components/FavouritePalsDisplay";
 import { redirect } from "next/navigation";
 
@@ -10,15 +11,15 @@ export const metadata = {
 
 /**
  * FavouritePalsPage component
- * Fetches and displays the user's favourite pals.
+ * Fetches the session and renders the FavouritePalsDisplay component.
  * @returns {JSX.Element} The rendered JSX element
  */
 export default async function FavouritePalsPage() {
-  const user = await getUser();
+  const session = await getSession();
 
-  if (!user) {
+  if (!session) {
     return redirect("/login");
   }
 
-  return <FavouritePalsDisplay />;
+  return <FavouritePalsDisplay initialSession={session} />;
 }

@@ -3,6 +3,7 @@ import Link from "next/link";
 import BurgerMenu from "./BurgerMenu";
 import styles from "./styles/NavBar.module.css";
 import { createClient } from "../utils/supabase/server";
+import { getSession } from "../services/authService";
 import { redirect } from "next/navigation";
 
 /**
@@ -15,11 +16,7 @@ import { redirect } from "next/navigation";
  * @returns {JSX.Element} A React component.
  */
 export default async function NavBar() {
-  const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
+  const session = await getSession();
   const isAuthenticated = !!session;
 
   const handleLogout = async () => {

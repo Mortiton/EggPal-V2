@@ -1,19 +1,30 @@
 "use client";
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getSavedBreedingCombosWithDetails, addSavedBreedingCombo, removeSavedBreedingCombo } from '../services/userService';
-import { useUser } from './UserContext';
 import { toast } from 'react-toastify';
+import { createClient } from '@/app/utils/supabase/client';
 
 const SavedCombinationsContext = createContext();
 
-export function SavedCombinationsProvider({ children }) {
-  const { user } = useUser();
+export function SavedCombinationsProvider({ children, initialSession }) {
+  const [session, setSession] = useState(initialSession);
   const [savedCombinations, setSavedCombinations] = useState([]);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
+      setSession(newSession);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
 
   const loadSavedCombinations = useCallback(async () => {
-    if (user) {
+    if (session?.user) {
       try {
-        const combos = await getSavedBreedingCombosWithDetails(user.id);
+        const combos = await getSavedBreedingCombosWithDetails(session.user.id);
         setSavedCombinations(combos);
       } catch (error) {
         console.error('Failed to load saved combinations:', error);
@@ -22,41 +33,41 @@ export function SavedCombinationsProvider({ children }) {
     } else {
       setSavedCombinations([]);
     }
-  }, [user]);
+  }, [session]);
 
   useEffect(() => {
     loadSavedCombinations();
   }, [loadSavedCombinations]);
 
   const addCombination = useCallback(async (breedingComboId) => {
-    if (!user) {
+    if (!session?.user) {
       toast.info('Please log in to save breeding combinations');
       return;
     }
     try {
-      await addSavedBreedingCombo(user.id, breedingComboId);
+      await addSavedBreedingCombo(session.user.id, breedingComboId);
       await loadSavedCombinations(); // Reload the saved combinations
       toast.success('Breeding combination saved');
     } catch (error) {
       console.error('Failed to add combination:', error);
       toast.error('Failed to save breeding combination');
     }
-  }, [user, loadSavedCombinations]);
+  }, [session, loadSavedCombinations]);
 
   const removeCombination = useCallback(async (comboId) => {
-    if (!user) return;
+    if (!session?.user) return;
     try {
-      await removeSavedBreedingCombo(user.id, comboId);
+      await removeSavedBreedingCombo(session.user.id, comboId);
       setSavedCombinations(prev => prev.filter(combo => combo.breedingComboId !== comboId));
       toast.success('Breeding combination removed');
     } catch (error) {
       console.error('Failed to remove combination:', error);
       toast.error('Failed to remove breeding combination');
     }
-  }, [user]);
+  }, [session]);
 
   return (
-    <SavedCombinationsContext.Provider value={{ savedCombinations, addCombination, removeCombination }}>
+    <SavedCombinationsContext.Provider value={{ savedCombinations, addCombination, removeCombination, session }}>
       {children}
     </SavedCombinationsContext.Provider>
   );

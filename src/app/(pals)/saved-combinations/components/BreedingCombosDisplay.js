@@ -7,7 +7,7 @@ import SavedBreedingList from "./SavedBreedingList";
 import styles from "./styles/BreedingCombosDisplay.module.css";
 
 export default function BreedingCombosDisplay() {
-  const { savedCombinations } = useSavedCombinations();
+  const { savedCombinations, session } = useSavedCombinations();
   const [selectedChild, setSelectedChild] = useState(null);
   const [groupedCombos, setGroupedCombos] = useState({});
 
@@ -26,7 +26,6 @@ export default function BreedingCombosDisplay() {
   const handleChildClick = (child) => {
     setSelectedChild((prevChild) => prevChild === child ? null : child);
   };
-
   return (
     <div className={styles.container}>
       <div className={styles.childGrid}>

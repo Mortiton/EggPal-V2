@@ -1,32 +1,31 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useUser } from "../../../context/UserContext"
 import { useFavourites } from "@/app/context/FavouritesContext";
 import PalCard from "@/app/components/PalCard";
 import styles from "../page.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function FavouritePalsDisplay() {
-  const { user } = useUser();
-  const { favourites } = useFavourites();
+export default function FavouritePalsDisplay({ initialSession }) {
+  const { favourites, session } = useFavourites();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) {
+    if (!session) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [session, router]);
 
-  if (!user) {
-    return null; 
+  if (!session) {
+    return null;
   }
 
   if (!favourites || favourites.length === 0) {
     return (
       <div className={styles.noFavText}>
-        No favourite pals found. Click the star icon on their pages to see them here.
+        No favourite pals found. Click the star icon on their pages to see them
+        here.
       </div>
     );
   }
