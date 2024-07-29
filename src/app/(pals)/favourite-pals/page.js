@@ -1,8 +1,8 @@
-// app/favourite-pals/page.js
 import React from "react";
 import { getSession } from "@/app/services/authService";
 import FavouritePalsDisplay from "./components/FavouritePalsDisplay";
 import { redirect } from "next/navigation";
+import { FavouritesProvider } from "@/app/context/FavouritesContext";
 
 export const metadata = {
   title: "Your Favourite Pals",
@@ -21,5 +21,9 @@ export default async function FavouritePalsPage() {
     return redirect("/login");
   }
 
-  return <FavouritePalsDisplay initialSession={session} />;
+  return (
+    <FavouritesProvider initialSession={session}>
+      <FavouritePalsDisplay />
+    </FavouritesProvider>
+  );
 }

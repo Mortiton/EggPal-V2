@@ -16,10 +16,17 @@ const getSupabaseClient = () => createClient();
  * @param {number[]} ids - An array of pal IDs to fetch. If empty, fetches all pals.
  * @returns {Promise<Object[]>} A promise that resolves to an array of pal objects.
  */
-const fetchPalsFromDB = async (supabase, ids) => {
-  const { data, error } = await supabase.rpc('get_pals', { ids: ids.length ? ids : null });
+const fetchPalsFromDB = async (supabase, ids = null) => {
+  const { data, error } = await supabase.rpc('get_pals', { ids: ids });
   if (error) throw new Error(`Error fetching pals: ${error.message}`);
-  return data;
+  
+  if (ids && ids.length > 0) {
+    // Filter results if specific ids were requested
+    return data.filter(pal => ids.includes(pal.id));
+  } else {
+    // Return all pals if no ids were specified
+    return data;
+  }
 };
 
 const getCachedPals = unstable_cache(
@@ -30,9 +37,15 @@ const getCachedPals = unstable_cache(
 
 export async function getPals(ids = []) {
   const supabase = createClient();
-  return getCachedPals(supabase, ids);
+  
+  if (ids.length > 0) {
+    // For specific pals (e.g., favorites), don't use cache
+    return fetchPalsFromDB(supabase, ids);
+  } else {
+    // For all pals (e.g., homepage), use cache
+    return getCachedPals(supabase, null);
+  }
 }
-
 /**
  * Fetches work types from the database with caching.
  * @returns {Promise<Object[]>} A promise that resolves to an array of work type objects.

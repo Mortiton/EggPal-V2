@@ -1,11 +1,10 @@
-import SignupForm from './components/SignupForm';
-import styles from '../../components/styles/FormPage.module.css';
+import SignupForm from "./components/SignupForm";
+import styles from "../../components/styles/FormPage.module.css";
 
 export const metadata = {
-  title: 'Login',
-  description: 'Enter your credentials to log into your account',
+  title: "Sign Up",
+  description: "Create an account to access EggPal features",
 };
-
 
 /**
  * SignupPage component that renders a signup page.
@@ -17,24 +16,23 @@ export const metadata = {
  * @returns {JSX.Element} A React component.
  */
 export default function SignupPage({ searchParams }) {
-  // Extract error from search parameters
   const error = searchParams?.error;
 
   return (
     <div className={styles.container}>
       <h2 className={styles.heading}>Sign Up</h2>
-      <p className={styles.description}>Create an account by entering your details below</p>
-      {/* Display error message if error exists */}
+      <p className={styles.description}>
+        Create an account by entering your details below
+      </p>
       {error && (
         <p className={styles.error}>
-          {error === 'password_mismatch' && 'Passwords do not match.'}
-          {error === 'signup_failed' && 'Signup failed. Please try again.'}
+          {error === "password_mismatch" && "Passwords do not match."}
+          {error === "signup_failed" && "Signup failed. Please try again."}
         </p>
       )}
-      {/* Render SignupForm component */}
       <SignupForm />
     </div>
   );
 }
 
-SignupPage.displayName = 'SignupPage'
+SignupPage.displayName = "SignupPage";

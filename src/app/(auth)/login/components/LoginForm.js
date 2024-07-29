@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useUser } from "@/app/context/UserContext"
 import styles from "@/app/components/styles/FormStyles.module.css";
+import { createClient } from '@/app/utils/supabase/client';
+import { toast } from 'react-toastify';
 
 /**
  * Validation schema for the login form using Yup.
@@ -30,29 +30,32 @@ const LoginSchema = Yup.object().shape({
  */
 export default function LoginForm() {
   const router = useRouter();
-  const { handleLogin } = useUser(); 
   const [error, setError] = useState(null);
+  const supabase = createClient();
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setError(null);
     try {
-      // Prevent default form submission behavior
-      event.preventDefault();
-      
-      // Attempt to login
-      await handleLogin(values);
-      // Navigate to home page on successful login
+      const { error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (error) throw error;
+
+      toast.success('Logged in successfully');
       router.push("/");
+      router.refresh(); // Refresh the page to update the session
     } catch (err) {
-      // Set error message on login failure
       setError(err.message);
+      toast.error('Login failed');
+    } finally {
       setSubmitting(false);
     }
   };
 
   return (
     <>
-      {/* Formik component for form handling */}
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={LoginSchema}
@@ -60,7 +63,6 @@ export default function LoginForm() {
       >
         {({ isSubmitting }) => (
           <Form className={styles.inputContainer}>
-            {/* Email field */}
             <label htmlFor="email" className={styles.label}>
               Email:
             </label>
@@ -81,7 +83,6 @@ export default function LoginForm() {
               role="alert"
             />
 
-            {/* Password field */}
             <label htmlFor="password" className={styles.label}>
               Password:
             </label>
@@ -102,14 +103,12 @@ export default function LoginForm() {
               role="alert"
             />
 
-            {/* Display error message if login fails */}
             {error && (
               <div className={styles.error} role="alert">
                 {error}
               </div>
             )}
 
-            {/* Submit button */}
             <button
               className={styles.button}
               type="submit"

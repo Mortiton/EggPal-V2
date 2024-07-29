@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 import BurgerMenu from "./BurgerMenu";
 import styles from "./styles/NavBar.module.css";
-import { createClient } from "../utils/supabase/server";
 import { getSession } from "../services/authService";
 import { redirect } from "next/navigation";
 
@@ -19,18 +18,18 @@ export default async function NavBar() {
   const session = await getSession();
   const isAuthenticated = !!session;
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/auth/signout", { method: "POST" });
-      if (response.ok) {
-        redirect("/");
-      } else {
-        console.error("Failed to logout:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Failed to logout:", error);
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await fetch("/auth/signout", { method: "POST" });
+  //     if (response.ok) {
+  //       redirect("/");
+  //     } else {
+  //       console.error("Failed to logout:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to logout:", error);
+  //   }
+  // };
 
   return (
     <nav className={styles.navbar}>
@@ -57,7 +56,7 @@ export default async function NavBar() {
             <Link href="/profile" className={styles.link} aria-label="Profile">
               Profile
             </Link>
-            <form action="auth/signout" method="post">
+            <form action="/auth/signout" method="post">
               <button
                 className={styles.logoutBtn}
                 type="submit"

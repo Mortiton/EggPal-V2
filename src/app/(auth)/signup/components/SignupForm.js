@@ -1,14 +1,13 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import TermsOfServiceModal from "./TermsOfServiceModal";
 import SuccessModal from "@/app/components/SuccessModal";
-import { signup, checkUserExists } from "../actions";
+import { createClient } from "@/app/utils/supabase/client";
+import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 // Define form validation schema using Yup
@@ -26,53 +25,52 @@ const SignupSchema = Yup.object().shape({
     .required("Required"),
 });
 
-/**
- * SignupForm component that renders a signup form.
- * It displays form fields for email, password, and confirmPassword, and buttons to submit the form or close the modals.
- * It also displays a PrivacyPolicyModal and a SuccessModal.
- *
- * @component
- * @returns {JSX.Element} A React component.
- */
 export default function SignupForm() {
   const router = useRouter();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [formData, setFormData] = useState(null);
   const [error, setError] = useState(null);
+  const supabase = createClient();
 
-  // Function to handle signup
   const handleSignup = async () => {
     if (formData) {
-      const data = new FormData();
-      data.append("email", formData.email);
-      data.append("password", formData.password);
       try {
-        await signup(data);
+        const { error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (error) throw error;
+
         setIsSuccessModalOpen(true);
       } catch (err) {
         setError(err.message);
+        toast.error("Signup failed");
       }
     }
   };
 
-  // Function to handle success confirmation
   const handleSuccessConfirm = () => {
     setIsSuccessModalOpen(false);
     router.push("/");
+    router.refresh(); // Refresh the page to update the session
   };
 
   return (
     <>
-     <Formik
+      <Formik
         initialValues={{ email: "", password: "", confirmPassword: "" }}
         validationSchema={SignupSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          setError(null);  
+          setError(null);
           setFormData(values);
           try {
-            const userExists = await checkUserExists(values.email);
-            if (userExists) {
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email: values.email,
+              password: values.password,
+            });
+            if (data?.user) {
               setError("User already registered");
               setSubmitting(false);
               return;
@@ -104,7 +102,7 @@ export default function SignupForm() {
               id="emailError"
               role="alert"
             />
-            
+
             <label htmlFor="password" className={styles.label}>
               Password:
             </label>
@@ -175,4 +173,4 @@ export default function SignupForm() {
   );
 }
 
-SignupForm.displayName = 'SignupForm'
+SignupForm.displayName = "SignupForm";

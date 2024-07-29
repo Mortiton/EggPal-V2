@@ -4,22 +4,8 @@ import { getFavouritePals, addFavouritePal, removeFavouritePal } from '../servic
 import { toast } from 'react-toastify';
 import { createClient } from '@/app/utils/supabase/client';
 
-/**
- * FavouritesContext
- * Context for managing user's favourite pals.
- */
 const FavouritesContext = createContext();
 
-/**
- * FavouritesProvider
- * Provides favourites context to the application.
- *
- * @component
- * @param {Object} props - The component props.
- * @param {React.ReactNode} props.children - The child components.
- * @param {Object} props.initialSession - The initial session object.
- * @returns {React.ReactNode} The provider with favourites data.
- */
 export function FavouritesProvider({ children, initialSession }) {
   const [session, setSession] = useState(initialSession);
   const [favourites, setFavourites] = useState([]);
@@ -91,12 +77,6 @@ export function FavouritesProvider({ children, initialSession }) {
   );
 }
 
-/**
- * useFavourites
- * Custom hook to use the FavouritesContext.
- *
- * @returns {Object} The current favourites and related functions.
- */
 export const useFavourites = () => {
   const context = useContext(FavouritesContext);
   if (context === undefined) {

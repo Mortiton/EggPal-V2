@@ -7,19 +7,20 @@ import styles from "./styles/BreedingCard.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as fasHeart, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
-import { useUser } from "../../../../context/UserContext";
 
 export default function BreedingCard({ parent1, parent2, breedingComboId }) {
-  const { user } = useUser();
-  const { savedCombinations, addCombination, removeCombination } = useSavedCombinations();
+  const { savedCombinations, addCombination, removeCombination, session } =
+    useSavedCombinations();
 
-  const isSaved = savedCombinations.some(combo => combo.breedingComboId === breedingComboId);
+  const isSaved = savedCombinations.some(
+    (combo) => combo.breedingComboId === breedingComboId
+  );
 
   const toggleSaved = async () => {
-    if (!user) {
-      toast.info('Please log in to save breeding combinations.');
+    if (!session?.user) {
+      toast.info("Please log in to save breeding combinations.");
       return;
     }
 
@@ -30,15 +31,19 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
         await addCombination(breedingComboId);
       }
     } catch (error) {
-      console.error('Error toggling saved status:', error.message);
-      toast.error('Failed to update saved status');
+      console.error("Error toggling saved status:", error.message);
+      toast.error("Failed to update saved status");
     }
   };
 
   return (
     <div className={styles.card}>
       <div className={styles.parent}>
-        <Link href={`/pal/${parent1.id}`} passHref aria-label={`Link to ${parent1.name}`}>
+        <Link
+          href={`/pal/${parent1.id}`}
+          passHref
+          aria-label={`Link to ${parent1.name}`}
+        >
           <Image
             src={parent1.image}
             alt={parent1.name}
@@ -56,7 +61,11 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
         aria-label="plus"
       />
       <div className={styles.parent}>
-        <Link href={`/pal/${parent2.id}`} passHref aria-label={`Link to ${parent2.name}`}>
+        <Link
+          href={`/pal/${parent2.id}`}
+          passHref
+          aria-label={`Link to ${parent2.name}`}
+        >
           <Image
             src={parent2.image}
             alt={parent2.name}
@@ -79,4 +88,4 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
   );
 }
 
-BreedingCard.displayName = 'BreedingCard';
+BreedingCard.displayName = "BreedingCard";

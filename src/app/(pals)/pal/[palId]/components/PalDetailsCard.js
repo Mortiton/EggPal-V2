@@ -4,27 +4,20 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import styles from "./styles/PalDetailsCard.module.css";
 
-/**
- * PalDetailsCard component that renders a card with details about a pal.
- * It displays a favourite icon, the pal's name, image, description, and base skills.
- *
- * @component
- * @param {Object} props - The props that were defined by the caller of this component.
- * @param {Object} props.pal - The pal.
- * @param {boolean} props.isFavourited - Whether the pal is favourited.
- * @param {function} props.onToggleFavourite - Function to toggle the favourite status.
- * @param {Object} props.user - The user object.
- * @returns {JSX.Element} A React component.
- */
-export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite, user }) {
+export default function PalDetailsCard({
+  pal,
+  isFavourited,
+  onToggleFavourite,
+  session,
+}) {
   const { skills } = pal;
 
   const handleFavouriteClick = () => {
-    if (!user) {
-      toast.info('Please sign in to favourite pals.');
+    if (!session?.user) {
+      toast.info("Please sign in to favourite pals.");
       return;
     }
     onToggleFavourite();
@@ -52,11 +45,22 @@ export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite, u
       />
       <p className={styles.description}>{pal.description}</p>
       <h2>Base Skills</h2>
-      <div className={styles.baseSkills} role="list" aria-label="List of base skills">
+      <div
+        className={styles.baseSkills}
+        role="list"
+        aria-label="List of base skills"
+      >
         {skills.map((skill) => (
           <div className={styles.workEntry} key={skill.skill_name}>
-            <Image src={skill.skill_icon_url} alt={skill.skill_name} width={24} height={24} />
-            <span className={styles.workName}>{skill.skill_name.replace("_", " ")}:</span>
+            <Image
+              src={skill.skill_icon_url}
+              alt={skill.skill_name}
+              width={24}
+              height={24}
+            />
+            <span className={styles.workName}>
+              {skill.skill_name.replace("_", " ")}:
+            </span>
             <span className={styles.level}>{skill.skill_level}</span>
           </div>
         ))}
@@ -65,4 +69,4 @@ export default function PalDetailsCard({ pal, isFavourited, onToggleFavourite, u
   );
 }
 
-PalDetailsCard.displayName = 'PalDetailsCard';
+PalDetailsCard.displayName = "PalDetailsCard";

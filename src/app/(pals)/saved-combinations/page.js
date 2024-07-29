@@ -20,7 +20,6 @@ export default async function SavedBreedingPage() {
     <SavedCombinationsProvider initialSession={session}>
       <div className={styles.container}>
         <h2 className={styles.title}>Saved Breeding Combinations</h2>
-        <p className={styles.description}>Click on a pal to view its saved breeding combinations.</p>
         <BreedingCombosDisplay />
       </div>
     </SavedCombinationsProvider>

@@ -43,7 +43,7 @@ export default function BurgerMenu({ isAuthenticated }) {
     e.preventDefault();
     setIsLoggingOut(true);
     try {
-      const response = await fetch('auth/signout', { method: 'POST' });
+      const response = await fetch('/auth/signout', { method: 'POST' });
       if (response.ok) {
         // Handle successful logout (e.g., redirect)
         window.location.href = '/';

@@ -1,24 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useUser } from "../../../../context/UserContext";
 import { useFavourites } from "@/app/context/FavouritesContext";
 import PalDetailsCard from "./PalDetailsCard";
 import BreedingList from "./BreedingList";
 import { getBreedingCombinations } from "@/app/services/palService";
 import styles from "../page.module.css";
+import { toast } from "react-toastify";
 
-/**
- * PalDetailsDisplay component that renders Pal details and breeding combinations.
- *
- * @component
- * @param {Object} props - The props that were defined by the caller of this component.
- * @param {Object} props.pal - The pal details.
- * @returns {JSX.Element} A React component.
- */
 const PalDetailsDisplay = ({ pal }) => {
-  const { user } = useUser();
-  const { favourites, addFavourite, removeFavourite } = useFavourites();
+  const { favourites, addFavourite, removeFavourite, session } =
+    useFavourites();
   const [breedingCombos, setBreedingCombos] = useState([]);
 
   useEffect(() => {
@@ -27,19 +19,21 @@ const PalDetailsDisplay = ({ pal }) => {
         const combos = await getBreedingCombinations(pal.name);
         setBreedingCombos(combos);
       } catch (error) {
-        console.error('Error fetching breeding combinations:', error);
-        toast.error('Failed to load breeding combinations');
+        console.error("Error fetching breeding combinations:", error);
+        toast.error("Failed to load breeding combinations");
       }
     };
 
     fetchBreedingCombos();
   }, [pal.name]);
 
-  const isFavourited = user ? favourites.some((fav) => fav.id === pal.id) : false;
+  const isFavourited = session?.user
+    ? favourites.some((fav) => fav.id === pal.id)
+    : false;
 
   const handleToggleFavourite = () => {
-    if (!user) {
-      toast.info('Please log in to favourite pals.');
+    if (!session?.user) {
+      toast.info("Please log in to favourite pals.");
       return;
     }
     if (isFavourited) {
@@ -56,7 +50,7 @@ const PalDetailsDisplay = ({ pal }) => {
           pal={pal}
           isFavourited={isFavourited}
           onToggleFavourite={handleToggleFavourite}
-          user={user}
+          session={session}
         />
       </div>
       <div className={styles.breedingContainer}>

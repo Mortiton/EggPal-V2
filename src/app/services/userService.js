@@ -2,13 +2,6 @@
 import { createClient } from "../utils/supabase/server";
 import { getPals } from "./palService";
 
-/**
- * Fetches the favorite pals of the authenticated user.
- *
- * @param {string} userId - The ID of the authenticated user.
- * @returns {Promise<Object[]>} The favorite pals of the user.
- * @throws Will throw an error if the favorite pals cannot be fetched.
- */
 export async function getFavouritePals(userId) {
   const supabase = createClient();
   const { data, error } = await supabase
@@ -21,9 +14,13 @@ export async function getFavouritePals(userId) {
   }
 
   const palIds = data.map((fav) => fav.pal_id);
-  const pals = await getPals(palIds);
-
-  return pals;
+  
+  if (palIds.length === 0) {
+    return []; // Return an empty array if no favorites
+  }
+  
+  // Use getPals without caching for favorites
+  return getPals(palIds);
 }
 /**
  * Adds a pal to the user's favourites.
