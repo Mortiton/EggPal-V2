@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useState } from "react";
-import { deleteUser } from "../actions";
+import { deleteUser } from "@/app/services/profileService";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 /**

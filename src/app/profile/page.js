@@ -1,4 +1,4 @@
-import { createClient } from '@/app/utils/supabase/server';
+import { getUser } from '@/app/services/authService';
 import UpdateEmailForm from './components/UpdateEmailForm';
 import UpdatePasswordForm from './components/UpdatePasswordForm';
 import DeleteUserForm from './components/DeleteUserForm';
@@ -20,22 +20,13 @@ export const metadata = {
  * @returns {JSX.Element} A React component.
  */
 export default async function ProfilePage() {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // If the user is not authenticated, redirect to the login page
-  if (!user) {
-    redirect('/login');
-  }
-
+ const user = getUser();
   // Render the profile page
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Profile</h1>
       <p className={styles.description}>Update your account details below</p>
-      <UpdateEmailForm user={user} />
+      <UpdateEmailForm />
       <UpdatePasswordForm />
       <DeleteUserForm />
     </div>

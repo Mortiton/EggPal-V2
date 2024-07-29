@@ -6,17 +6,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import styles from "./styles/BurgerMenu.module.css";
 
-/**
- * A responsive navigation menu component that toggles between a hamburger icon and a dropdown menu.
- *
- * @component
- * @param {Object} props - The properties passed to the component.
- * @param {Object} props.user - The user object. If present, the menu will show user-specific options.
- *
- * @returns {React.Element} The rendered React element.
- */
-export default function BurgerMenu({ user }) {
+// Custom hook for handling clicks outside of a component
+function useClickOutside(ref, callback) {
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        callback();
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, callback]);
+}
+
+export default function BurgerMenu({ isAuthenticated }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const menuRef = useRef(null);
   const firstLinkRef = useRef(null);
 
@@ -24,23 +31,31 @@ export default function BurgerMenu({ user }) {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  useClickOutside(menuRef, () => setIsMenuOpen(false));
 
   useEffect(() => {
     if (isMenuOpen && firstLinkRef.current) {
       firstLinkRef.current.focus();
     }
   }, [isMenuOpen]);
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    setIsLoggingOut(true);
+    try {
+      const response = await fetch('auth/signout', { method: 'POST' });
+      if (response.ok) {
+        // Handle successful logout (e.g., redirect)
+        window.location.href = '/';
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <div className={styles.burgerMenu} ref={menuRef}>
@@ -52,57 +67,57 @@ export default function BurgerMenu({ user }) {
       >
         <FontAwesomeIcon icon={faBars} />
       </button>
-      {isMenuOpen && (
-        <div className={styles.navLinksActive} role="menu">
-          {user ? (
-            <>
-              <Link
-                href="/favourite-pals"
-                className={styles.link}
-                role="menuitem"
-                ref={firstLinkRef}
-              >
-                Favourite Pals
-              </Link>
-              <Link
-                href="/saved-combinations"
-                className={styles.link}
-                role="menuitem"
-              >
-                Saved Combinations
-              </Link>
-              <Link href="/profile" className={styles.link} role="menuitem">
-                Profile
-              </Link>
-              <form action="auth/signout" method="post">
-                <button
-                  className={styles.logoutBtn}
-                  type="submit"
-                  role="menuitem"
-                >
-                  Logout
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className={styles.link}
-                role="menuitem"
-                ref={firstLinkRef}
-              >
-                Login
-              </Link>
-              <Link href="/signup" className={styles.link} role="menuitem">
-                Signup
-              </Link>
-            </>
-          )}
-        </div>
-      )}
+      <div 
+        className={`${styles.navLinks} ${isMenuOpen ? styles.navLinksActive : ''}`} 
+        role="menu"
+      >
+        {isAuthenticated ? (
+          <>
+            <Link
+              href="/favourite-pals"
+              className={styles.link}
+              role="menuitem"
+              ref={firstLinkRef}
+            >
+              Favourite Pals
+            </Link>
+            <Link
+              href="/saved-combinations"
+              className={styles.link}
+              role="menuitem"
+            >
+              Saved Combinations
+            </Link>
+            <Link href="/profile" className={styles.link} role="menuitem">
+              Profile
+            </Link>
+            <button
+              className={styles.logoutBtn}
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              role="menuitem"
+            >
+              {isLoggingOut ? 'Logging out...' : 'Logout'}
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/login"
+              className={styles.link}
+              role="menuitem"
+              ref={firstLinkRef}
+            >
+              Login
+            </Link>
+            <Link href="/signup" className={styles.link} role="menuitem">
+              Signup
+            </Link>
+          </>
+        )}
+      </div>
     </div>
   );
 }
 
-BurgerMenu.displayName = 'BurgerMenu'
+BurgerMenu.displayName = 'BurgerMenu';

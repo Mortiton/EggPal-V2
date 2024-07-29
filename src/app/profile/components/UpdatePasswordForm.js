@@ -4,7 +4,7 @@ import React from "react";
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { updatePassword } from "../actions";
+import { updatePassword } from "@/app/services/profileService";
 import SuccessModal from "@/app/components/SuccessModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 

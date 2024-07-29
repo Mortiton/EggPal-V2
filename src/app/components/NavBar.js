@@ -1,10 +1,9 @@
-"use client";
-
-import React from 'react';
+import React from "react";
 import Link from "next/link";
 import BurgerMenu from "./BurgerMenu";
 import styles from "./styles/NavBar.module.css";
-import { useUser } from '@/app/context/UserContext';
+import { createClient } from "../utils/supabase/server";
+import { redirect } from "next/navigation";
 
 /**
  * NavBar component that renders a navigation bar.
@@ -15,8 +14,26 @@ import { useUser } from '@/app/context/UserContext';
  * @component
  * @returns {JSX.Element} A React component.
  */
-export default function NavBar() {
-  const { user, logout } = useUser();
+export default async function NavBar() {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const isAuthenticated = !!session;
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/auth/signout", { method: "POST" });
+      if (response.ok) {
+        redirect("/");
+      } else {
+        console.error("Failed to logout:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
+  };
 
   return (
     <nav className={styles.navbar}>
@@ -24,7 +41,7 @@ export default function NavBar() {
         EggPal
       </Link>
       <div className={styles.navLinks}>
-        {user ? (
+        {isAuthenticated ? (
           <>
             <Link
               href="/favourite-pals"
@@ -43,14 +60,16 @@ export default function NavBar() {
             <Link href="/profile" className={styles.link} aria-label="Profile">
               Profile
             </Link>
-            <button
-              className={styles.logoutBtn}
-              type="button"
-              aria-label="Logout"
-              onClick={logout}
-            >
-              Logout
-            </button>
+            <form action="auth/signout" method="post">
+              <button
+                className={styles.logoutBtn}
+                type="submit"
+                role="menuitem"
+                aria-label="logout"
+              >
+                Logout
+              </button>
+            </form>
           </>
         ) : (
           <>
@@ -63,9 +82,9 @@ export default function NavBar() {
           </>
         )}
       </div>
-      <BurgerMenu user={user} />
+      <BurgerMenu isAuthenticated={isAuthenticated} />
     </nav>
   );
 }
 
-NavBar.displayName = 'NavBar';
+NavBar.displayName = "NavBar";

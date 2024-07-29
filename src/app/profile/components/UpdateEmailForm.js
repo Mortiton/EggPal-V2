@@ -4,7 +4,7 @@ import React from "react";
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { updateEmail } from "../actions";
+import { updateEmail } from "@/app/services/profileService";
 import SuccessModal from "@/app/components/SuccessModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
@@ -22,7 +22,7 @@ const UpdateEmailSchema = Yup.object().shape({
  * @param {Object} user - The user whose email is being updated.
  * @returns {JSX.Element} A React component.
  */
-export default function UpdateEmailForm({ user }) {
+export default function UpdateEmailForm() {
   const [error, setError] = useState(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
@@ -54,7 +54,7 @@ export default function UpdateEmailForm({ user }) {
   return (
     <>
       <Formik
-        initialValues={{ email: user.email }}
+        initialValues={{ email: "" }}
         validationSchema={UpdateEmailSchema}
         onSubmit={async (values, { setSubmitting }) => {
           await handleEmailUpdate(values);
