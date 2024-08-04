@@ -26,7 +26,7 @@ export default function UpdateEmailForm() {
   const [error, setError] = useState(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-   /**
+  /**
    * Function to handle updating the email.
    * It sets the error state if there is an error updating the email.
    * It sets the success modal state to open if the email is updated successfully.
@@ -43,7 +43,7 @@ export default function UpdateEmailForm() {
     }
   };
 
-   /**
+  /**
    * Function to handle confirming the success modal.
    * It sets the success modal state to close.
    */
@@ -66,12 +66,32 @@ export default function UpdateEmailForm() {
             <label htmlFor="email" className={styles.label}>
               Email:
             </label>
-            <Field id="email" name="email" type="email" className={styles.input} aria-label="Email input field"/>
-            <ErrorMessage name="email" component="div" className={styles.validation} />
+            <Field
+              id="email"
+              name="email"
+              type="email"
+              className={styles.input}
+              aria-label="Email input field"
+              autoComplete="email"
+            />
+            <ErrorMessage
+              name="email"
+              component="div"
+              className={styles.validation}
+            />
 
-            {error && <div className={styles.error} role="alert">{error}</div>}
+            {error && (
+              <div className={styles.error} role="alert">
+                {error}
+              </div>
+            )}
 
-            <button className={styles.button} type="submit" disabled={isSubmitting} aria-label="Update email button">
+            <button
+              className={styles.button}
+              type="submit"
+              disabled={isSubmitting}
+              aria-label="Update email button"
+            >
               Update Email
             </button>
           </Form>
@@ -87,4 +107,4 @@ export default function UpdateEmailForm() {
   );
 }
 
-UpdateEmailForm.displayName = 'UpdateEmailForm'
+UpdateEmailForm.displayName = "UpdateEmailForm";
