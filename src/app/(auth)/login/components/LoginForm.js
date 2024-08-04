@@ -74,6 +74,7 @@ export default function LoginForm() {
               aria-label="Email address"
               aria-required="true"
               aria-describedby="emailError"
+              autoComplete="email"
             />
             <ErrorMessage
               name="email"
@@ -94,6 +95,7 @@ export default function LoginForm() {
               aria-label="Password"
               aria-required="true"
               aria-describedby="passwordError"
+              autoComplete="current-password"
             />
             <ErrorMessage
               name="password"
