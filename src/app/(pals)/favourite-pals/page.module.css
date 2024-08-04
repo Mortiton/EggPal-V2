@@ -52,5 +52,8 @@
     .container {
         width: 100%;
     }
+    .palGrid {
+        gap: 0px;
+    }
   }
   
