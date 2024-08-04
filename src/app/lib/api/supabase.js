@@ -1,6 +1,8 @@
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const CACHE_DURATION = 30 * 24 * 60 * 60;
+const ALL_PALS_CACHE_DURATION = 30 * 24 * 60 * 60; // 30 days in seconds
+const INDIVIDUAL_PAL_CACHE_DURATION = 60 * 60; // 1 hour in seconds
 
 const headers = {
   'apikey': supabaseAnonKey,
@@ -8,19 +10,29 @@ const headers = {
   'Content-Type': 'application/json'
 };
 
-export async function getPals() {
+export async function getPals(ids = null) {
   const response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_pals`, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ ids: null }),
-    next: { revalidate: 3600 }
+    body: JSON.stringify({ ids: ids }),
+    next: { 
+      revalidate: ids && ids.length === 1 ? INDIVIDUAL_PAL_CACHE_DURATION : ALL_PALS_CACHE_DURATION 
+    }
   });
 
   if (!response.ok) {
     throw new Error('Failed to fetch pals');
   }
 
-  return response.json();
+  const data = await response.json();
+
+  if (ids && ids.length > 0) {
+    // Filter results if specific ids were requested
+    return data.filter(pal => ids.includes(pal.id));
+  } else {
+    // Return all pals if no ids were specified
+    return data;
+  }
 }
 
 export async function getWorkTypes() {

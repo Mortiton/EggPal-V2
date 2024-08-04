@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "../utils/supabase/server";
-import { getPals } from "./palService";
+import { getPals } from "../../../archived-files/palService";
 
 export async function getFavouritePals(userId) {
   const supabase = createClient();

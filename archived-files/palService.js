@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "../utils/supabase/server";
+import { createClient } from "../src/app/utils/supabase/server";
 import { unstable_cache } from "next/cache";
 
 const CACHE_DURATION = 30 * 24 * 60 * 60; // 30 days in seconds
