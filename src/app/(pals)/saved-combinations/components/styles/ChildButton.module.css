@@ -1,69 +1,58 @@
 .childContainer {
-    margin-bottom: 20px;
-  }
-  
-  .childButton {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px;
-    background-color: #303030;
-    color: #b27fe5;
-    border: 1px solid #b27fe5;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 120px;
-    height: 150px;
-  }
-  
-  .childButton:hover {
-    background-color: #515050;
-    transform: scale(1.05);
-  }
-
-  
-  .childImage {
-    border-radius: 50%;
-    font-size: 14px;
-  }
-  
-  .childName {
-    margin-top: 10px;
-    font-weight: bold;
-    height: 30px;
-  }
-  
-  .combosContainer {
-    margin-top: 10px;
-  }
-  
-  .selected {
-    background-color: #515050; 
-  }
-
-
-@media (max-width: 768px) {
-  .childButton {
-    width: 120px; 
-    height: 180px; 
-  }
-
-  .childName {
-    font-size: 16px; 
-  }
-
+  margin-bottom: 20px;
 }
+
+.childButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  background-color: #303030;
+  color: #b27fe5;
+  border: 1px solid #b27fe5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 120px;
+  height: 150px;
+}
+
+.childButton:hover {
+  background-color: #515050;
+  transform: scale(1.05);
+}
+
+.childImage {
+  border-radius: 50%;
+}
+
+.childName {
+  margin-top: 10px;
+  font-weight: bold;
+  height: 30px;
+  font-size: 16px;
+}
+
+.selected {
+  background-color: #515050;
+}
+
+/* Media Queries */
 
 @media (max-width: 480px) {
   .childButton {
-    width: 90px; 
-    height: 140px; 
+    width: 90px;
+    height: 140px;
   }
 
   .childName {
-    font-size: 14px; 
+    font-size: 14px;
+  }
+
+  .childImage {
+    width: 80px;
+    height: 80px;
   }
 }
