@@ -57,7 +57,7 @@ export async function getWorkTypes() {
       const { data, error } = await supabase
         .from("icons")
         .select("icon_name, icon_url")
-        .in("Category", ["Work"])
+        .in("category", ["Work"])
         .order("work_order", { ascending: true });
 
       if (error) throw new Error(`Error fetching work types: ${error.message}`);
@@ -80,7 +80,7 @@ export async function getTypes() {
       const { data, error } = await supabase
         .from("icons")
         .select("icon_name, icon_url")
-        .in("Category", ["Type"])
+        .in("category", ["Type"])
         .order("type_order", { ascending: true });
 
       if (error) throw new Error(`Error fetching pal types: ${error.message}`);
