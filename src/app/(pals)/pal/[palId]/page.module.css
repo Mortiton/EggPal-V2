@@ -1,52 +1,49 @@
 .mainContainer {
-    display: flex;
-    flex-direction: column; 
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 100vw;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.palDetailsContainer, 
+.breedingContainer {
+  width: 100%;
+  max-width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.breedingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.breedingList {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .mainContainer {
+    flex-direction: row;
     flex-wrap: wrap;
-    width:100%;
+    justify-content: flex-start;
+    align-items: flex-start;
   }
-  
+
   .palDetailsContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
+    flex: 1 1 300px;
   }
-  
+
   .breedingContainer {
-    display: flex;
-    padding: 50px;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    flex: 2 1 600px;
   }
-  
-  .breedingList {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .palDetailsContainer, .breedingContainer {
-    width: 100%; 
-    padding: 10px; 
-  }
-  
-  @media (min-width: 768px) {
-    .mainContainer {
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: flex-start;
-    }
-  
-    .palDetailsContainer {
-      flex: 1;
-
-    }
-  
-    .breedingContainer {
-      flex: 2;
-    }
-  }
+}

@@ -1,81 +1,88 @@
 .card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #303030;
-    padding: 10px 20px;
-    height: 150px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    position: relative;
-    max-width: 300px;
-    flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #303030;
+  padding: 10px 20px;
+  height: 150px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  max-width: 300px;
+  flex-grow: 1;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  background-color: #515050;
+}
+
+.parent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px;
+}
+
+.parentImage {
+  width: 80px; 
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 5px;
+}
+
+.parentName {
+  font-size: 12px;
+  width: 80px;
+  text-align: center;
+}
+
+.plusIcon, .favouriteIcon {
+  margin: 10px 0;
+  height: 20px;
+}
+
+.favouriteIcon {
+  position: absolute;
+  right: 5px;
+  top: 0px;
+  cursor: pointer;
+}
+
+@media (min-width: 576px) {
+  .card {
+    flex-direction: row;
   }
 
-  .card:hover {
-    transform: scale(1.05);
-    background-color: #515050;
-  }
-  
-  .parent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100px;
-  }
-  
-  .parentImage {
-    width: 80px; 
-    height: 80px;
-    border-radius: 50%;
-    margin-bottom: 5px;
-  }
-  
   .parentName {
-    font-size: 12px;
-    width: 80px;
-    text-align: center;
+    font-size: 14px;
+    width: 115px;
   }
-  
+
   .plusIcon, .favouriteIcon {
-    margin: 10px 0;
-    height: 20px;
+    margin: 0 10px;
   }
-  
   .favouriteIcon {
-    position: absolute;
-    right: 0px;
     top: 5px;
-    cursor: pointer;
+    right: 0;
   }
-  
-  @media (min-width: 350px) {
-    .card {
-      flex-direction: row;
-    }
-    
+}
 
-  
-    .parentName {
-      font-size: 14px;
-      width: 115px;
-    }
-  
-    .plusIcon, .favouriteIcon {
-      margin: 0 10px;
-    }
-  
+@media (min-width: 992px) {
+  .card {
+    margin-left: 10px;
   }
-  
-  @media (min-width: 768px) {
-    .card {
-      margin-left: 10px;
-    }
-  
 
-  
-    .parentName {
-      font-size: 16px;
-    }
+  .parentName {
+    font-size: 16px;
   }
-  
+
+  .plusIcon, .favouriteIcon {
+    margin: 0 10px;
+  }
+  .favouriteIcon {
+    top: 5px;
+    right: 0;
+  }
+}
