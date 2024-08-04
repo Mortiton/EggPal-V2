@@ -1,10 +1,10 @@
 import React from "react";
-import { getPals } from "@/app/services/palService";
 import PalDetailsDisplay from "./components/PalDetailsDisplay";
 import styles from "./page.module.css";
 import { getSession } from "@/app/services/authService";
 import { FavouritesProvider } from "@/app/context/FavouritesContext";
 import { SavedCombinationsProvider } from "@/app/context/SavedCombinationsContext";
+import { getPals, getBreedingCombinations } from '@/app/lib/api/supabase';
 
 export async function generateMetadata({ params }) {
   const palId = params.palId;
@@ -27,20 +27,25 @@ export async function generateMetadata({ params }) {
 
 export default async function PalPage({ params }) {
   const palId = params.palId;
-  const palData = await getPals([palId]);
-  const session = await getSession();
+  const [palData, session] = await Promise.all([
+    getPals([palId]),
+    getSession()
+  ]);
 
   if (!palData || palData.length === 0) {
     return <div>No Pal information available.</div>;
   }
 
   const pal = palData[0];
+  const breedingCombos = await getBreedingCombinations(pal.name);
+
+  console.log('Breeding Combinations:', breedingCombos); // Add this line for debugging
 
   return (
     <FavouritesProvider initialSession={session}>
       <SavedCombinationsProvider initialSession={session}>
         <div className={styles.mainContainer}>
-          <PalDetailsDisplay pal={pal} />
+          <PalDetailsDisplay pal={pal} breedingCombos={breedingCombos} />
         </div>
       </SavedCombinationsProvider>
     </FavouritesProvider>

@@ -1,5 +1,6 @@
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const CACHE_DURATION = 30 * 24 * 60 * 60;
 
 const headers = {
   'apikey': supabaseAnonKey,
@@ -61,4 +62,21 @@ export async function getCardData() {
     console.error('Error fetching card data:', error);
     throw error;
   }
+}
+
+export async function getBreedingCombinations(palName) {
+  const response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_breeding_combos`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ child_pal_name: palName }),
+    next: { revalidate: CACHE_DURATION }
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    console.error(`Error fetching breeding combinations: ${response.status} ${response.statusText} ${errorBody}`);
+    return []; // Return an empty array instead of throwing an error
+  }
+
+  return response.json();
 }

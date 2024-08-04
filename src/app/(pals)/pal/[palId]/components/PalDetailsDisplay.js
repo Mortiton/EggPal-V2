@@ -1,31 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useFavourites } from "@/app/context/FavouritesContext";
 import PalDetailsCard from "./PalDetailsCard";
 import BreedingList from "./BreedingList";
-import { getBreedingCombinations } from "@/app/services/palService";
 import styles from "../page.module.css";
 import { toast } from "react-toastify";
 
-const PalDetailsDisplay = ({ pal }) => {
-  const { favourites, addFavourite, removeFavourite, session } =
-    useFavourites();
-  const [breedingCombos, setBreedingCombos] = useState([]);
-
-  useEffect(() => {
-    const fetchBreedingCombos = async () => {
-      try {
-        const combos = await getBreedingCombinations(pal.name);
-        setBreedingCombos(combos);
-      } catch (error) {
-        console.error("Error fetching breeding combinations:", error);
-        toast.error("Failed to load breeding combinations");
-      }
-    };
-
-    fetchBreedingCombos();
-  }, [pal.name]);
+const PalDetailsDisplay = ({ pal, breedingCombos }) => {
+  const { favourites, addFavourite, removeFavourite, session } = useFavourites();
 
   const isFavourited = session?.user
     ? favourites.some((fav) => fav.id === pal.id)
