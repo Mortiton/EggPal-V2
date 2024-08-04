@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./styles/BreedingCard.module.css";
@@ -14,11 +14,12 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
   const { savedCombinations, addCombination, removeCombination, session } =
     useSavedCombinations();
 
-  const isSaved = savedCombinations.some(
-    (combo) => combo.breedingComboId === breedingComboId
+  const isSaved = useMemo(() => 
+    savedCombinations.some((combo) => combo.breedingComboId === breedingComboId),
+    [savedCombinations, breedingComboId]
   );
 
-  const toggleSaved = async () => {
+  const toggleSaved = useCallback(async () => {
     if (!session?.user) {
       toast.info("Please log in to save breeding combinations.");
       return;
@@ -32,9 +33,9 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
       }
     } catch (error) {
       console.error("Error toggling saved status:", error.message);
-      toast.error("Failed to update saved status");
     }
-  };
+  }, [session, isSaved, breedingComboId, addCombination, removeCombination]);
+
 
   return (
     <div className={styles.card}>
@@ -89,3 +90,4 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
 }
 
 BreedingCard.displayName = "BreedingCard";
+

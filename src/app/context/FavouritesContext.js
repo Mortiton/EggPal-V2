@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { createClient } from '@/app/utils/supabase/client';
 
@@ -48,11 +48,13 @@ export function FavouritesProvider({ children, initialSession }) {
     loadFavourites();
   }, [session]);
 
-  const addFavourite = async (pal) => {
+  const addFavourite = useCallback(async (pal) => {
     if (!session?.user) {
       toast.info('Please log in to add favourite pals');
       return;
     }
+    // Optimistic update
+    setFavourites(prev => [...prev, pal]);
     try {
       const response = await fetch('/api/favourites', {
         method: 'POST',
@@ -64,16 +66,20 @@ export function FavouritesProvider({ children, initialSession }) {
       if (!response.ok) {
         throw new Error('Failed to add favourite');
       }
-      setFavourites(prev => [...prev, pal]);
       toast.success(`${pal.name} added to favourites`);
     } catch (error) {
+      // Revert optimistic update on error
+      setFavourites(prev => prev.filter(fav => fav.id !== pal.id));
       console.error('Failed to add favourite:', error);
       toast.error(`Failed to add ${pal.name} to favourites`);
     }
-  };
+  }, [session]);
 
-  const removeFavourite = async (palId) => {
+  const removeFavourite = useCallback(async (palId) => {
     if (!session?.user) return;
+    // Optimistic update
+    const removedPal = favourites.find(fav => fav.id === palId);
+    setFavourites(prev => prev.filter(fav => fav.id !== palId));
     try {
       const response = await fetch(`/api/favourites?userId=${session.user.id}&palId=${palId}`, {
         method: 'DELETE',
@@ -81,17 +87,18 @@ export function FavouritesProvider({ children, initialSession }) {
       if (!response.ok) {
         throw new Error('Failed to remove favourite');
       }
-      setFavourites(prev => prev.filter(fav => fav.id !== palId));
       toast.success('Pal removed from favourites');
     } catch (error) {
+      // Revert optimistic update on error
+      setFavourites(prev => [...prev, removedPal]);
       console.error('Failed to remove favourite:', error);
       toast.error('Failed to remove pal from favourites');
     }
-  };
+  }, [session, favourites]);
 
-  const isFavourite = (palId) => {
+  const isFavourite = useCallback((palId) => {
     return favourites.some(fav => fav.id === palId);
-  };
+  }, [favourites]);
 
   const value = {
     favourites,

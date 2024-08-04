@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { useFavourites } from "@/app/context/FavouritesContext";
 import PalDetailsCard from "./PalDetailsCard";
 import BreedingList from "./BreedingList";
@@ -10,11 +10,12 @@ import { toast } from "react-toastify";
 const PalDetailsDisplay = ({ pal, breedingCombos }) => {
   const { favourites, addFavourite, removeFavourite, session } = useFavourites();
 
-  const isFavourited = session?.user
-    ? favourites.some((fav) => fav.id === pal.id)
-    : false;
+  const isFavourited = useMemo(() => 
+    session?.user ? favourites.some((fav) => fav.id === pal.id) : false,
+    [session, favourites, pal.id]
+  );
 
-  const handleToggleFavourite = () => {
+  const handleToggleFavourite = useCallback(() => {
     if (!session?.user) {
       toast.info("Please log in to favourite pals.");
       return;
@@ -24,7 +25,7 @@ const PalDetailsDisplay = ({ pal, breedingCombos }) => {
     } else {
       addFavourite(pal);
     }
-  };
+  }, [session, isFavourited, pal, addFavourite, removeFavourite]);
 
   return (
     <div className={styles.mainContainer}>
@@ -46,4 +47,4 @@ const PalDetailsDisplay = ({ pal, breedingCombos }) => {
 
 PalDetailsDisplay.displayName = "PalDetailsDisplay";
 
-export default PalDetailsDisplay;
+export default React.memo(PalDetailsDisplay);

@@ -52,6 +52,8 @@ export function SavedCombinationsProvider({ children, initialSession }) {
       toast.info('Please log in to save breeding combinations');
       return;
     }
+    // Optimistic update
+    setSavedCombinations(prev => [...prev, { breedingComboId }]);
     try {
       const response = await fetch('/api/saved-combinations', {
         method: 'POST',
@@ -63,16 +65,19 @@ export function SavedCombinationsProvider({ children, initialSession }) {
       if (!response.ok) {
         throw new Error('Failed to save breeding combination');
       }
-      await loadSavedCombinations();
       toast.success('Breeding combination saved');
     } catch (error) {
+      // Revert optimistic update on error
+      setSavedCombinations(prev => prev.filter(combo => combo.breedingComboId !== breedingComboId));
       console.error('Failed to add combination:', error);
       toast.error('Failed to save breeding combination');
     }
-  }, [session, loadSavedCombinations]);
+  }, [session]);
 
   const removeCombination = useCallback(async (comboId) => {
     if (!session?.user) return;
+    // Optimistic update
+    setSavedCombinations(prev => prev.filter(combo => combo.breedingComboId !== comboId));
     try {
       const response = await fetch(`/api/saved-combinations?userId=${session.user.id}&comboId=${comboId}`, {
         method: 'DELETE',
@@ -80,9 +85,10 @@ export function SavedCombinationsProvider({ children, initialSession }) {
       if (!response.ok) {
         throw new Error('Failed to remove breeding combination');
       }
-      setSavedCombinations(prev => prev.filter(combo => combo.breedingComboId !== comboId));
       toast.success('Breeding combination removed');
     } catch (error) {
+      // Revert optimistic update on error
+      setSavedCombinations(prev => [...prev, { breedingComboId: comboId }]);
       console.error('Failed to remove combination:', error);
       toast.error('Failed to remove breeding combination');
     }
