@@ -3,8 +3,8 @@ import styles from "../../components/styles/FormPage.module.css";
 import Link from "next/link";
 
 export const metadata = {
-  title: 'Login',
-  description: 'Enter your credentials to log into your account',
+  title: "Login",
+  description: "Enter your credentials to log into your account",
 };
 
 /**
@@ -27,13 +27,13 @@ export default function LoginPage() {
 
       <LoginForm />
       <p className={styles.description}>
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link className={styles.link} href="./signup">
           Sign up
         </Link>
-        </p>
+      </p>
     </div>
   );
 }
 
-LoginPage.displayName = 'LoginPage';
+LoginPage.displayName = "LoginPage";
