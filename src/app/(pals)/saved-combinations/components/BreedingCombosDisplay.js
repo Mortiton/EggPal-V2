@@ -28,7 +28,11 @@ export default function BreedingCombosDisplay() {
   };
 
   if (isLoading) {
-    return <div>Loading your saved breeding combinations...</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+      </div>
+    );
   }
 
   const hasSavedCombos = Object.keys(groupedCombos).length > 0;
