@@ -12,10 +12,11 @@
 
 .palDetailsContainer, 
 .breedingContainer {
-  width: 100%;
+  width: 90%;
   max-width: 100%;
   padding: 10px;
   box-sizing: border-box;
+  margin-right: 30px;
 }
 
 .breedingContainer {
