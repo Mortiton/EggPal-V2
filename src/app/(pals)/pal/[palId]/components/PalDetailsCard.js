@@ -41,7 +41,7 @@ export default function PalDetailsCard({
         className={styles.image}
         width={120}
         height={120}
-        unoptimized
+        loading="lazy"
       />
       <p className={styles.description}>{pal.description}</p>
       <h2>Base Skills</h2>
@@ -57,6 +57,7 @@ export default function PalDetailsCard({
               alt={skill.skill_name}
               width={24}
               height={24}
+              loading="lazy"
             />
             <span className={styles.workName}>
               {skill.skill_name.replace("_", " ")}:

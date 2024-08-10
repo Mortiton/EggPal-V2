@@ -51,7 +51,7 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
             className={styles.parentImage}
             height={80}
             width={80}
-            unoptimized
+            loading="lazy"
           />
         </Link>
         <span className={styles.parentName}>{parent1.name}</span>
@@ -73,7 +73,7 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
             className={styles.parentImage}
             height={80}
             width={80}
-            unoptimized
+            loading="lazy"
           />
         </Link>
         <span className={styles.parentName}>{parent2.name}</span>
