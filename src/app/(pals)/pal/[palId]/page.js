@@ -39,7 +39,6 @@ export default async function PalPage({ params }) {
   const pal = palData[0];
   const breedingCombos = await getBreedingCombinations(pal.name);
 
-  console.log('Breeding Combinations:', breedingCombos); // Add this line for debugging
 
   return (
     <FavouritesProvider initialSession={session}>
