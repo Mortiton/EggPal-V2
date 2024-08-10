@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import styles from "./styles/PalCard.module.css";
 import WorkIcon from "./WorkIcon";
+import { getBlurDataURL } from "../lib/imageUtils";
 
 /**
  * PalCard component that renders a card for a pal.
@@ -16,6 +17,9 @@ export default function PalCard({ pal }) {
   // Sort the skills based on the work_order
   const sortedSkills = pal.skills.sort((a, b) => a.work_order - b.work_order);
 
+  const blurDataURL = getBlurDataURL();
+
+  
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -27,7 +31,7 @@ export default function PalCard({ pal }) {
               width={24}
               height={24}
               className={styles.typeIcon}
-              priority
+              loading="lazy"
             />
           )}
           {pal.type2_icon_url && (
@@ -37,7 +41,7 @@ export default function PalCard({ pal }) {
               width={24}
               height={24}
               className={styles.typeIcon}
-              priority
+              loading="lazy"
             />
           )}
         </div>
@@ -50,9 +54,9 @@ export default function PalCard({ pal }) {
               width={100}
               height={100}
               style={{ objectFit: 'cover' }}
-              priority
+              loading='lazy' 
               placeholder="blur"
-              blurDataURL={pal.image_url}
+              blurDataURL={blurDataURL}
             />
           )}
         </div>
