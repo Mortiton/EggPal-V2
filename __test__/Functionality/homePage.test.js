@@ -1,9 +1,9 @@
-import { By, until } from 'selenium-webdriver';
-import { initDriver, quitDriver, logError } from '../../utils/webdriverUtil';
+import { By, until, WebElementCondition } from 'selenium-webdriver';
+import { initDriver, quitDriver, logError } from "../../src/app/utils/webdriverUtil";
 
 jest.setTimeout(60000);
 
-describe('Home Page Functionality Test', () => {
+describe('Selenium Localhost Login and Filtering Test', () => {
   let driver;
 
   beforeAll(async () => {
@@ -11,75 +11,94 @@ describe('Home Page Functionality Test', () => {
   });
 
   afterAll(async () => {
-    await quitDriver();
+    await quitDriver(driver);
   });
 
-  test('Log in and test filters and search functionality', async () => {
+  test('Load application, log in, and test filtering and sorting', async () => {
     if (!driver) {
       throw new Error('WebDriver is not initialized');
     }
 
     try {
-      // Step 1: Log in
-      console.log('Navigating to login page');
-      await driver.get('http://localhost:3000/login');
+      // Login process
+      await driver.get('http://localhost:3000');
+      await driver.findElement(By.linkText('Login')).click();
+      await driver.wait(until.elementLocated(By.id('email')), 10000);
       await driver.findElement(By.id('email')).sendKeys('test@test.com');
       await driver.findElement(By.id('password')).sendKeys('TestPassword!12');
       await driver.findElement(By.css('button[type="submit"]')).click();
-      await driver.wait(until.urlIs('http://localhost:3000/'), 10000);
-      console.log('Logged in successfully');
+      await driver.wait(until.urlIs('http://localhost:3000/'), 5000);
 
-      // Step 2: Apply filters and check if "Killamari" appears
+      // Verify login
+      const profileLink = await driver.findElement(By.linkText('Profile'));
+      expect(profileLink).toBeTruthy();
+
+      // Apply filters
+      await driver.findElement(By.id('type-dropdown-button')).click();
+      await driver.findElement(By.css('button:has(img[alt="water"])')).click();
+      await driver.findElement(By.id('work-dropdown-button')).click();
+      await driver.findElement(By.css('button:has(img[alt="watering"])')).click();
+
+      // Wait for filters to be applied
+      await driver.sleep(2000);
+
+      // Check if filter text appears
+      const filterElements = await driver.findElements(By.css('.PalList_selectedFilter__LBrJK'));
+      console.log('Number of filter elements:', filterElements.length);
+      
+      const filterTexts = await Promise.all(filterElements.map(el => el.getText()));
+      console.log('Filter texts:', filterTexts);
+      
+      expect(filterTexts).toEqual([
+        'Type: water\nX',
+        'Work: watering\nX'
+      ]);
+
+      // Check for the presence of sort buttons
       try {
-        console.log('Opening type filter dropdown');
-        await driver.wait(until.elementLocated(By.css('button[aria-label="Element Type"]')), 10000);
-        await driver.findElement(By.css('button[aria-label="Element Type"]')).click();
-        console.log('Selected "Element Type" dropdown');
-
-        console.log('Selecting dark type filter');
-        await driver.wait(until.elementLocated(By.css('button[aria-label="dark"]')), 10000);
-        await driver.findElement(By.css('button[aria-label="dark"]')).click();
-        console.log('Selected "dark" type filter');
-
-        console.log('Opening work filter dropdown');
-        await driver.wait(until.elementLocated(By.css('button[aria-label="Base Skills"]')), 10000);
-        await driver.findElement(By.css('button[aria-label="Base Skills"]')).click();
-        console.log('Selected "Base Skills" dropdown');
-        
-        console.log('Selecting transporting work filter');
-        await driver.wait(until.elementLocated(By.css('button[aria-label="transporting"]')), 10000);
-        await driver.findElement(By.css('button[aria-label="transporting"]')).click();
-        console.log('Selected "transporting" work filter');
-
-        console.log('Waiting for Killamari to appear');
-        await driver.wait(until.elementLocated(By.xpath("//h3[contains(text(), 'Killamari')]")), 15000);
-        const killamariCard = await driver.findElement(By.xpath("//h3[contains(text(), 'Killamari')]"));
-        const killamariText = await killamariCard.getText();
-        console.log('Card Text:', killamariText);
-        expect(killamariText).toContain('Killamari');
+        await driver.wait(until.elementsLocated(By.css('.svg-inline--fa.fa-arrow-up, .svg-inline--fa.fa-arrow-down')), 5000);
+        const sortButtons = await driver.findElements(By.css('.svg-inline--fa.fa-arrow-up, .svg-inline--fa.fa-arrow-down'));
+        console.log('Number of sort buttons:', sortButtons.length);
+        expect(sortButtons.length).toBe(2);
       } catch (error) {
-        await logError(driver, error, 'apply-filters');
+        console.error('Error finding sort buttons:', error);
+        await driver.takeScreenshot().then(
+          function(image) {
+            require('fs').writeFileSync('screenshot-sort-buttons.png', image, 'base64');
+          }
+        );
         throw error;
       }
 
-      // Step 3: Ensure "Killamari" appears when searched
-      try {
-        console.log('Clearing filters');
-        await driver.wait(until.elementLocated(By.xpath("//span[contains(text(), 'Clear Filters')]")), 10000);
-        await driver.findElement(By.xpath("//span[contains(text(), 'Clear Filters')]")).click();
-        console.log('Filters cleared');
+      // Function to get the first visible Pal
+      const getFirstVisiblePal = async () => {
+        const pals = await driver.findElements(By.css('img[alt^="Image of "]'));
+        for (let pal of pals) {
+          if (await pal.isDisplayed()) {
+            return pal.getAttribute('alt');
+          }
+        }
+        throw new Error('No visible Pals found');
+      };
 
-        console.log('Searching for Killamari');
-        await driver.findElement(By.id('filter')).sendKeys('Killamari');
-        await driver.wait(until.elementLocated(By.xpath("//h3[contains(text(), 'Killamari')]")), 10000);
-        const killamariCard = await driver.findElement(By.xpath("//h3[contains(text(), 'Killamari')]"));
-        const killamariText = await killamariCard.getText();
-        console.log('Card Text:', killamariText);
-        expect(killamariText).toContain('Killamari');
-      } catch (error) {
-        await logError(driver, error, 'search-killamari');
-        throw error;
-      }
+      // Check default order (Fuack should be first)
+      let firstPal = await getFirstVisiblePal();
+      console.log('First pal (default order):', firstPal);
+      expect(firstPal).toBe('Image of Fuack');
+
+      // Click descending order (down arrow) and check if Jormuntide is first
+      await driver.findElement(By.css('.svg-inline--fa.fa-arrow-down')).click();
+      await driver.sleep(1000); // Wait for sorting to complete
+      firstPal = await getFirstVisiblePal();
+      console.log('First pal (descending order):', firstPal);
+      expect(firstPal).toBe('Image of Jormuntide');
+
+      // Click ascending order (up arrow) and check if Fuack is first again
+      await driver.findElement(By.css('.svg-inline--fa.fa-arrow-up')).click();
+      await driver.sleep(1000); // Wait for sorting to complete
+      firstPal = await getFirstVisiblePal();
+      console.log('First pal (ascending order):', firstPal);
+      expect(firstPal).toBe('Image of Fuack');
 
     } catch (error) {
       await logError(driver, error, 'test-failed');

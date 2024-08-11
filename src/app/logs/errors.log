@@ -293,3 +293,69 @@ Wait timed out after 10106ms
   (Session info: chrome-headless-shell=126.0.6478.114)
 2024-06-22T18:16:33.650Z - test-failed: javascript error: arguments[0].click is not a function
   (Session info: chrome-headless-shell=126.0.6478.114)
+2024-08-11T18:11:16.442Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:12:59.725Z - test-failed: Waiting for URL to be "http://localhost:3000/"
+Wait timed out after 10171ms
+2024-08-11T18:13:40.243Z - test-failed: Waiting for URL to be "http://localhost:3000/"
+Wait timed out after 10124ms
+2024-08-11T18:14:27.621Z - test-failed: Waiting for URL to be "http://localhost:3000/"
+Wait timed out after 10130ms
+2024-08-11T18:16:00.670Z - test-failed: Waiting for URL to be "http://localhost:3000/pal/Killamari"
+Wait timed out after 10135ms
+2024-08-11T18:16:43.684Z - test-failed: Waiting for URL to be "http://localhost:3000/pal/Killamari"
+Wait timed out after 10036ms
+2024-08-11T18:19:24.261Z - test-failed: Waiting for URL to be "http://localhost:3000/pal/Killamari"
+Wait timed out after 10202ms
+2024-08-11T18:19:48.811Z - test-failed: Waiting for URL to be "http://localhost:3000/pal/Killamari"
+Wait timed out after 10201ms
+2024-08-11T18:19:54.768Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:20:05.193Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:26:56.696Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"button[aria-label="Water"]"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:27:09.796Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"button[aria-label="Water"]"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:27:32.128Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"button[aria-label="Water"]"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:28:55.014Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":".selected-filters-container"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:30:30.685Z - test-failed: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected value: [32m"Type: Water"[39m
+Received array: [31m["Type: water[39m
+[31mX", "Work: watering[39m
+[31mX"][39m
+2024-08-11T18:31:21.451Z - test-failed: [2mexpect([22m[31mreceived[39m[2m).[22mtoContain[2m([22m[32mexpected[39m[2m) // indexOf[22m
+
+Expected value: [32mStringMatching /Type:\s*water\s*X/[39m
+Received array: [31m["Type: water[39m
+[31mX", "Work: watering[39m
+[31mX"][39m
+
+[2mLooks like you wanted to test for object/array equality with the stricter `toContain` matcher. You probably need to use `toContainEqual` instead.[22m
+2024-08-11T18:32:11.498Z - test-failed: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m2[39m
+Received: [31m0[39m
+2024-08-11T18:33:19.029Z - test-failed: Waiting for at least one element to be located By(css selector, .PalList_sortButtonGroup__hOIgv button)
+Wait timed out after 5128ms
+2024-08-11T18:34:26.395Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":".PalList_cardContainer__8Ep_j a:first-child h3"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:47:58.258Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"svg.favouriteIcon"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:48:14.291Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"svg.favouriteIcon"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:49:51.998Z - test-failed: javascript error: arguments[0].click is not a function
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:50:47.418Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"body > div:nth-child(2) > main:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1)"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:52:44.247Z - test-failed: Waiting for element to be located By(css selector, button.childButton)
+Wait timed out after 10136ms
+2024-08-11T18:54:28.042Z - test-failed: no such element: Unable to locate element: {"method":"css selector","selector":"a[aria-label^='Link to']"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-11T18:59:05.214Z - test-failed: Waiting for element to be located By(xpath, //div[.//a[@aria-label='Link to Lamball'] and .//a[@aria-label='Link to Leezpunk']])
+Wait timed out after 10022ms
+2024-08-11T19:02:06.390Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":"//div[contains(text(), 'NO SAVED BREEDING COMBINATIONS FOUND')]"}
+  (Session info: chrome-headless-shell=127.0.6533.100)
