@@ -1,78 +1,85 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import BurgerMenu from '@/app/components/BurgerMenu';
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// Mock the FontAwesomeIcon component to avoid errors during testing
+// Mock the next/link component
+jest.mock('next/link', () => {
+  return ({ children, href }) => {
+    return <a href={href}>{children}</a>;
+  };
+});
+
+// Mock FontAwesomeIcon
 jest.mock("@fortawesome/react-fontawesome", () => ({
-  FontAwesomeIcon: () => <div />,
+  FontAwesomeIcon: () => <div data-testid="mock-icon" />,
 }));
 
-describe('BurgerMenu Component', () => {
-  /**
-   * Test to verify the component renders without crashing.
-   */
-  it('renders without crashing', () => {
-    render(<BurgerMenu user={null} />);
+describe('BurgerMenu', () => {
+  // Test initial render
+  it('renders the hamburger button', () => {
+    render(<BurgerMenu isAuthenticated={false} />);
+    const hamburgerButton = screen.getByRole('button', { name: /toggle navigation menu/i });
+    expect(hamburgerButton).toBeInTheDocument();
   });
 
-  /**
-   * Test to verify the menu toggles when the hamburger icon is clicked.
-   */
-  it('toggles menu when hamburger icon is clicked', () => {
-    render(<BurgerMenu user={null} />);
-
-    const button = screen.getByRole('button', { name: /toggle navigation menu/i });
-    fireEvent.click(button);
-
+  // Test menu opening
+  it('opens the menu when the hamburger button is clicked', () => {
+    render(<BurgerMenu isAuthenticated={false} />);
+    const hamburgerButton = screen.getByRole('button', { name: /toggle navigation menu/i });
+    fireEvent.click(hamburgerButton);
     const menu = screen.getByRole('menu');
-    expect(menu).toBeInTheDocument();
+    expect(menu).toHaveClass('navLinksActive');
   });
 
-  /**
-   * Test to verify clicking outside the menu closes it.
-   */
-  it('closes menu when clicking outside', () => {
-    render(<BurgerMenu user={null} />);
-
-    const button = screen.getByRole('button', { name: /toggle navigation menu/i });
-    fireEvent.click(button);
-
-    let menu = screen.getByRole('menu');
-    expect(menu).toBeInTheDocument();
-
-    fireEvent.mouseDown(document);
-    expect(menu).not.toBeInTheDocument();
+  // Test unauthenticated user view
+  it('displays login and signup links for unauthenticated users', () => {
+    render(<BurgerMenu isAuthenticated={false} />);
+    const hamburgerButton = screen.getByRole('button', { name: /toggle navigation menu/i });
+    fireEvent.click(hamburgerButton);
+    expect(screen.getByRole('link', { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /signup/i })).toBeInTheDocument();
   });
 
-  /**
-   * Test to verify the menu displays user-specific options when a user is logged in.
-   */
-  it('displays user-specific options when user is logged in', () => {
-    const user = { id: 1, name: 'Test User' };
-    render(<BurgerMenu user={user} />);
-
-    const button = screen.getByRole('button', { name: /toggle navigation menu/i });
-    fireEvent.click(button);
-
-    expect(screen.getByText(/Favourite Pals/i)).toBeInTheDocument();
-    expect(screen.getByText(/Saved Combinations/i)).toBeInTheDocument();
-    expect(screen.getByText(/Profile/i)).toBeInTheDocument();
-    expect(screen.getByText(/Logout/i)).toBeInTheDocument();
+  // Test authenticated user view
+  it('displays appropriate links for authenticated users', () => {
+    render(<BurgerMenu isAuthenticated={true} />);
+    const hamburgerButton = screen.getByRole('button', { name: /toggle navigation menu/i });
+    fireEvent.click(hamburgerButton);
+    expect(screen.getByRole('link', { name: /favourite pals/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /saved combinations/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /profile/i })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: /logout/i })).toBeInTheDocument();
   });
 
-  /**
-   * Test to verify the menu displays guest-specific options when no user is logged in.
-   */
-  it('displays guest-specific options when no user is logged in', () => {
-    render(<BurgerMenu user={null} />);
+  // Test logout functionality
+  it('handles logout correctly', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+      })
+    );
+    global.window.location = { href: 'http://localhost/' };
 
-    const button = screen.getByRole('button', { name: /toggle navigation menu/i });
-    fireEvent.click(button);
+    render(<BurgerMenu isAuthenticated={true} />);
+    const hamburgerButton = screen.getByRole('button', { name: /toggle navigation menu/i });
+    fireEvent.click(hamburgerButton);
+    const logoutButton = screen.getByRole('menuitem', { name: /logout/i });
+    fireEvent.click(logoutButton);
 
-    expect(screen.getByText(/Login/i)).toBeInTheDocument();
-    expect(screen.getByText(/Signup/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/auth/signout', { method: 'POST' });
+      expect(global.window.location.href).toBe('http://localhost/');
+    });
+  });
+
+  // Test menu closing when clicking outside
+  it('closes the menu when clicking outside', () => {
+    render(<BurgerMenu isAuthenticated={false} />);
+    const hamburgerButton = screen.getByRole('button', { name: /toggle navigation menu/i });
+    fireEvent.click(hamburgerButton);
+    fireEvent.mouseDown(document.body);
+    const menu = screen.getByRole('menu');
+    expect(menu).not.toHaveClass('navLinksActive');
   });
 });

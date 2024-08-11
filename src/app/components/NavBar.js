@@ -18,18 +18,6 @@ export default async function NavBar() {
   const session = await getSession();
   const isAuthenticated = !!session;
 
-  // const handleLogout = async () => {
-  //   try {
-  //     const response = await fetch("/auth/signout", { method: "POST" });
-  //     if (response.ok) {
-  //       redirect("/");
-  //     } else {
-  //       console.error("Failed to logout:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to logout:", error);
-  //   }
-  // };
 
   return (
     <nav className={styles.navbar}>

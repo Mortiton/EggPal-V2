@@ -1,112 +1,175 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import ForgotPasswordForm from "@/app/(auth)/forgot-password/components/ForgotPasswordForm";
 import "@testing-library/jest-dom";
-import { resetPassword } from "../../src/app/(auth)/forgot-password/actions";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import ForgotPasswordForm from "@/app/(auth)/forgot-password/components/ForgotPasswordForm";
 
-// Mock the resetPassword action and useRouter hook
-jest.mock("@/app/(auth)/forgot-password/actions", () => ({
-  resetPassword: jest.fn(),
-}));
-jest.mock("next/navigation", () => ({
+// Mock the next/navigation module
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock("react-toastify", () => ({
+
+// Mock the authService
+jest.mock("@/app/services/authService", () => ({
+  resetPassword: jest.fn(),
+}));
+
+// Mock the SuccessModal component
+jest.mock("@/app/components/SuccessModal", () => {
+  return function DummySuccessModal({ isOpen, onConfirm, message }) {
+    return isOpen ? (
+      <div data-testid="success-modal">
+        {message}
+        <button onClick={onConfirm}>Confirm</button>
+      </div>
+    ) : null;
+  };
+});
+
+// Mock react-toastify
+jest.mock('react-toastify', () => ({
   toast: {
     error: jest.fn(),
   },
 }));
-jest.mock("@/app/components/SuccessModal", () =>
-  jest.fn(({ isOpen, onConfirm, message }) =>
-    isOpen ? <div role="dialog">{message}</div> : null
-  )
-);
 
-describe("ForgotPasswordForm Component", () => {
-  const mockPush = jest.fn();
-  useRouter.mockReturnValue({ push: mockPush });
+// Mock the CSS module
+jest.mock('@/app/components/styles/FormStyles.module.css', () => ({
+  inputContainer: 'mockInputContainer',
+  label: 'mockLabel',
+  input: 'mockInput',
+  validation: 'mockValidation',
+  button: 'mockButton',
+}));
+
+describe('ForgotPasswordForm Component', () => {
+  let mockPush;
 
   beforeEach(() => {
+    // Clear all mocks before each test to ensure a clean slate
     jest.clearAllMocks();
+    mockPush = jest.fn();
+    require('next/navigation').useRouter.mockImplementation(() => ({
+      push: mockPush,
+    }));
   });
 
-  // Test case to render the component
-  it("renders the ForgotPasswordForm component correctly", () => {
+  it('renders the form correctly', () => {
     render(<ForgotPasswordForm />);
-
-    // Check if the email field and submit button are displayed
-    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
-    expect(screen.getByLabelText("Send reset link")).toBeInTheDocument();
+    
+    // Ensure the email input and submit button are present in the document
+    expect(screen.getByLabelText('Email:')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Send reset link' })).toBeInTheDocument();
   });
 
-  // Test case for form validation
-  it("validates the email field correctly", async () => {
+  it('displays validation error for invalid email', async () => {
     render(<ForgotPasswordForm />);
+    
+    const emailInput = screen.getByLabelText('Email:');
+    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+    fireEvent.blur(emailInput);  
 
-    // Click the submit button without entering an email
-    fireEvent.click(screen.getByLabelText("Send reset link"));
+    const submitButton = screen.getByRole('button', { name: 'Send reset link' });
+    fireEvent.click(submitButton);
 
-    // Check if the validation message is displayed
-    expect(await screen.findByRole("alert")).toHaveTextContent("Required");
-
-    // Enter an invalid email and submit
-    fireEvent.change(screen.getByLabelText("Email address"), {
-      target: { value: "invalid-email" },
-    });
-    fireEvent.click(screen.getByLabelText("Send reset link"));
-
-    // Check if the validation message is displayed for the invalid email
+    // Wait for and check if the validation error message appears
     await waitFor(() => {
-      expect(screen.getByRole("alert")).toHaveTextContent("Invalid email");
+      const errorElement = screen.getByText((content, element) => {
+        return element.tagName.toLowerCase() === 'div' && 
+               content.toLowerCase().includes('invalid email');
+      }, { timeout: 3000 });
+      expect(errorElement).toBeInTheDocument();
     });
   });
 
-  // Test case for successful form submission
-  it("submits the form successfully", async () => {
-    resetPassword.mockResolvedValueOnce();
+  it('displays validation error for empty email', async () => {
     render(<ForgotPasswordForm />);
+    
+    // Attempt to submit the form without entering an email
+    fireEvent.click(screen.getByRole('button', { name: 'Send reset link' }));
 
-    // Enter a valid email and submit
-    fireEvent.change(screen.getByLabelText("Email address"), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.click(screen.getByLabelText("Send reset link"));
-
-    // Check if the resetPassword action is called with the correct email
+    // Check if the 'Required' error message appears
     await waitFor(() => {
-      expect(resetPassword).toHaveBeenCalledWith("test@example.com");
+      expect(screen.getByText('Required')).toBeInTheDocument();
     });
-
-    // Check if the success modal is displayed
-    expect(await screen.findByRole("dialog")).toHaveTextContent(
-      "Password reset email sent! Check your inbox."
-    );
   });
 
-  // Test case for failed form submission
-  it("handles form submission failure", async () => {
-    const errorMessage = "Network Error";
-    resetPassword.mockRejectedValueOnce(new Error(errorMessage));
+  it('submits the form with valid email and shows success modal', async () => {
+    const { resetPassword } = require("@/app/services/authService");
+    resetPassword.mockResolvedValue();
+
     render(<ForgotPasswordForm />);
+    
+    // Enter a valid email and submit the form
+    fireEvent.change(screen.getByLabelText('Email:'), { target: { value: 'test@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send reset link' }));
 
-    // Enter a valid email and submit
-    fireEvent.change(screen.getByLabelText("Email address"), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.click(screen.getByLabelText("Send reset link"));
-
-    // Check if the resetPassword action is called with the correct email
+    // Check if the resetPassword function was called and the success modal appears
     await waitFor(() => {
-      expect(resetPassword).toHaveBeenCalledWith("test@example.com");
+      expect(resetPassword).toHaveBeenCalledWith('test@example.com');
+      expect(screen.getByTestId('success-modal')).toBeInTheDocument();
+      expect(screen.getByText('Password reset email sent! Check your inbox.')).toBeInTheDocument();
+    });
+  });
+
+  it('handles error when password reset fails', async () => {
+    const { resetPassword } = require("@/app/services/authService");
+    const error = new Error('Reset failed');
+    resetPassword.mockRejectedValue(error);
+
+    const { toast } = require('react-toastify');
+
+    render(<ForgotPasswordForm />);
+    
+    // Enter an email and submit the form
+    fireEvent.change(screen.getByLabelText('Email:'), { target: { value: 'test@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send reset link' }));
+
+    // Check if the error toast is displayed with the correct message
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Failed to send reset email: Reset failed');
+    });
+  });
+
+  it('redirects to login page after confirming success modal', async () => {
+    const { resetPassword } = require("@/app/services/authService");
+    resetPassword.mockResolvedValue();
+
+    render(<ForgotPasswordForm />);
+    
+    // Submit the form with a valid email
+    fireEvent.change(screen.getByLabelText('Email:'), { target: { value: 'test@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send reset link' }));
+
+    // Click the confirm button in the success modal
+    await waitFor(() => {
+      fireEvent.click(screen.getByText('Confirm'));
     });
 
-    // Check if the toast error is displayed
+    // Check if the user is redirected to the login page
+    expect(mockPush).toHaveBeenCalledWith('/login');
+  });
+
+  it('disables submit button while submitting', async () => {
+    const { resetPassword } = require("@/app/services/authService");
+    resetPassword.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
+
+    render(<ForgotPasswordForm />);
+    
+    // Submit the form with a valid email
+    fireEvent.change(screen.getByLabelText('Email:'), { target: { value: 'test@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send reset link' }));
+
+    // Check if the submit button is disabled immediately after submission
+    expect(screen.getByRole('button', { name: 'Send reset link' })).toBeDisabled();
+
+    // Check if the submit button is re-enabled after the submission is complete
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith(
-        `Failed to send reset email: ${errorMessage}`
-      );
+      expect(screen.getByRole('button', { name: 'Send reset link' })).not.toBeDisabled();
     });
+  });
+
+  it('has correct display name', () => {
+    // Ensure the component has the correct display name
+    expect(ForgotPasswordForm.displayName).toBe('ForgotPasswordForm');
   });
 });

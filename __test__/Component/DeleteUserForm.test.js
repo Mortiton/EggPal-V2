@@ -1,72 +1,76 @@
+
+
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import DeleteUserForm from '@/app/profile/components/DeleteUserForm';
-import { deleteUser } from '@/app/profile/actions';
+import { deleteUser } from '@/app/services/profileService';
 
-// Mock the deleteUser function
-jest.mock('@/app/profile/actions', () => ({
+// Mock the profileService module
+jest.mock('@/app/services/profileService', () => ({
   deleteUser: jest.fn(),
 }));
 
-/**
- * Test suite for the DeleteUserForm component.
- */
-describe('DeleteUserForm component', () => {
+// Mock the CSS module
+jest.mock('@/app/components/styles/FormStyles.module.css', () => ({
+  inputContainer: 'mockInputContainer',
+  error: 'mockError',
+  button: 'mockButton',
+  cancelButton: 'mockCancelButton',
+}));
 
-  beforeEach(() => {
-    deleteUser.mockClear();
+describe('DeleteUserForm Component', () => {
+  // Test case: Initial render
+  it('renders the initial delete button', () => {
+    render(<DeleteUserForm />);
+    const deleteButton = screen.getByText('Delete Account');
+    expect(deleteButton).toBeInTheDocument();
+    expect(deleteButton).toHaveStyle({ backgroundColor: 'red', color: 'white' });
   });
 
-  test('renders the delete button initially', () => {
+  // Test case: Confirmation buttons appear after initial click
+  it('shows confirmation buttons when delete is clicked', () => {
     render(<DeleteUserForm />);
-
-    expect(screen.getByText(/Delete Account/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Delete Account'));
+    
+    expect(screen.getByText('Are you sure? Confirm Delete')).toBeInTheDocument();
+    expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
 
-  test('shows confirmation buttons when delete button is clicked', () => {
+  // Test case: Cancel button functionality
+  it('hides confirmation buttons when cancel is clicked', () => {
     render(<DeleteUserForm />);
-
-    fireEvent.click(screen.getByText(/Delete Account/i));
-
-    expect(screen.getByText(/Are you sure\? Confirm Delete/i)).toBeInTheDocument();
-    expect(screen.getByText(/Cancel/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Delete Account'));
+    fireEvent.click(screen.getByText('Cancel'));
+    
+    expect(screen.queryByText('Are you sure? Confirm Delete')).not.toBeInTheDocument();
+    expect(screen.getByText('Delete Account')).toBeInTheDocument();
   });
 
-  test('cancels the delete action when cancel button is clicked', () => {
+  // Test case: Successful user deletion
+  it('calls deleteUser when confirm delete is clicked', async () => {
+    deleteUser.mockResolvedValue();
     render(<DeleteUserForm />);
-
-    fireEvent.click(screen.getByText(/Delete Account/i));
-    fireEvent.click(screen.getByText(/Cancel/i));
-
-    expect(screen.queryByText(/Are you sure\? Confirm Delete/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/Delete Account/i)).toBeInTheDocument();
-  });
-
-  test('calls deleteUser and handles success', async () => {
-    deleteUser.mockResolvedValueOnce({});
-
-    render(<DeleteUserForm />);
-
-    fireEvent.click(screen.getByText(/Delete Account/i));
-    fireEvent.click(screen.getByText(/Are you sure\? Confirm Delete/i));
-
+    
+    fireEvent.click(screen.getByText('Delete Account'));
+    fireEvent.click(screen.getByText('Are you sure? Confirm Delete'));
+    
     await waitFor(() => {
       expect(deleteUser).toHaveBeenCalled();
     });
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
-  test('shows error message when deleteUser fails', async () => {
-    const errorMessage = 'Delete failed';
-    deleteUser.mockRejectedValueOnce(new Error(errorMessage));
-
+  // Test case: Error handling
+  it('displays an error message when deleteUser fails', async () => {
+    const errorMessage = 'Failed to delete user';
+    deleteUser.mockRejectedValue(new Error(errorMessage));
     render(<DeleteUserForm />);
-
-    fireEvent.click(screen.getByText(/Delete Account/i));
-    fireEvent.click(screen.getByText(/Are you sure\? Confirm Delete/i));
-
+    
+    fireEvent.click(screen.getByText('Delete Account'));
+    fireEvent.click(screen.getByText('Are you sure? Confirm Delete'));
+    
     await waitFor(() => {
-      expect(deleteUser).toHaveBeenCalled();
       expect(screen.getByRole('alert')).toHaveTextContent(errorMessage);
     });
   });
