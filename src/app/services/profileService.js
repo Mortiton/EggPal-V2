@@ -46,7 +46,7 @@ export async function deleteUser() {
     throw new Error("User not authenticated");
   }
 
-  const { error } = await supabaseAdmin.rpc('delete_user');
+  const { error } = await supabaseAdmin.rpc('deleteUser');
 
   if (error) {
     throw new Error(error.message);

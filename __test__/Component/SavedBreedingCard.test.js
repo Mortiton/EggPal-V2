@@ -2,13 +2,13 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import SavedBreedingCard from "@/app/(pals)/saved-combinations/components/SavedBreedingCard";
 
-// Mock the necessary dependencies
+// Mock the next/image component
 jest.mock('next/image', () => ({
   __esModule: true,
   default: (props) => <img {...props} />,
 }));
 
-// Mock the next/image component
+// Mock the next/link component
 jest.mock('next/link', () => ({
   __esModule: true,
   default: ({ children, href }) => <a href={href}>{children}</a>,
