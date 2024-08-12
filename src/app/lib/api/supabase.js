@@ -10,28 +10,66 @@ const headers = {
   'Content-Type': 'application/json'
 };
 
-export async function getPals(ids = null) {
-  const response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_pals`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ ids: ids }),
-    next: { 
-      revalidate: ids && ids.length === 1 ? INDIVIDUAL_PAL_CACHE_DURATION : ALL_PALS_CACHE_DURATION 
-    }
-  });
+// export async function getPals(ids = null) {
+//   const response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_pals`, {
+//     method: 'POST',
+//     headers,
+//     body: JSON.stringify({ ids: ids }),
+//     next: { 
+//       revalidate: ids && ids.length === 1 ? INDIVIDUAL_PAL_CACHE_DURATION : ALL_PALS_CACHE_DURATION 
+//     }
+//   });
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch pals');
+//   if (!response.ok) {
+//     throw new Error('Failed to fetch pals');
+//   }
+
+//   const data = await response.json();
+
+//   if (ids && ids.length > 0) {
+//     // Filter results if specific ids were requested
+//     return data.filter(pal => ids.includes(pal.id));
+//   } else {
+//     // Return all pals if no ids were specified
+//     return data;
+//   }
+// }
+
+export async function getPals(ids = null) {
+  const url = new URL(`${supabaseUrl}/rest/v1/rpc/get_pals`);
+  if (ids !== null) {
+    // Convert ids to a comma-separated string
+    const idsString = Array.isArray(ids) ? ids.join(',') : ids;
+    url.searchParams.append('ids', idsString);
   }
 
-  const data = await response.json();
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+      next: { 
+        revalidate: ids && ids.length === 1 ? INDIVIDUAL_PAL_CACHE_DURATION : ALL_PALS_CACHE_DURATION 
+      }
+    });
 
-  if (ids && ids.length > 0) {
-    // Filter results if specific ids were requested
-    return data.filter(pal => ids.includes(pal.id));
-  } else {
-    // Return all pals if no ids were specified
-    return data;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch pals: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    if (ids) {
+      // Convert ids to an array if it's a string
+      const idArray = Array.isArray(ids) ? ids : [ids];
+      // Filter results if specific ids were requested
+      return data.filter(pal => idArray.includes(pal.id.toString()));
+    } else {
+      // Return all pals if no ids were specified
+      return data;
+    }
+  } catch (error) {
+    console.error(`Error in getPals: ${error.message}`);
+    throw error;
   }
 }
 
@@ -76,6 +114,7 @@ export async function getCardData() {
   }
 }
 
+
 export async function getBreedingCombinations(palName) {
   const response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_breeding_combos`, {
     method: 'POST',
@@ -87,7 +126,7 @@ export async function getBreedingCombinations(palName) {
   if (!response.ok) {
     const errorBody = await response.text();
     console.error(`Error fetching breeding combinations: ${response.status} ${response.statusText} ${errorBody}`);
-    return []; // Return an empty array instead of throwing an error
+    return []; 
   }
 
   return response.json();
