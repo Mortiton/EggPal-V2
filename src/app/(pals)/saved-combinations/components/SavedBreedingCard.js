@@ -34,7 +34,7 @@ export default function SavedBreedingCard({
             className={styles.parentImage}
             height={80}
             width={80}
-            unoptimized
+            unoptimized="true"
           />
         </Link>
         <span className={styles.parentName}>{parent1.name}</span>
@@ -56,7 +56,7 @@ export default function SavedBreedingCard({
             className={styles.parentImage}
             height={80}
             width={80}
-            unoptimized
+            unoptimized="true"
           />
         </Link>
         <span className={styles.parentName}>{parent2.name}</span>

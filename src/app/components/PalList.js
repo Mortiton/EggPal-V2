@@ -15,7 +15,7 @@ const PalList = ({ pals, workTypes, types }) => {
   const [selectedType, setSelectedType] = useState(null);
   const [selectedWork, setSelectedWork] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [sortOrder, setSortOrder] = useState(null); // 'asc' or 'desc' or null
+  const [sortOrder, setSortOrder] = useState(null); 
 
   useEffect(() => {
     const container = document.querySelector('.page-container');

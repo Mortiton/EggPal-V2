@@ -1,136 +1,201 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import LoginForm from "@/app/(auth)/login/components/LoginForm";
-import "@testing-library/jest-dom/";
-import { login } from "@/app/(auth)/login/actions";
-import { useRouter } from "next/navigation";
 
-// Mock the login action and useRouter hook
-jest.mock("@/app/(auth)/login/actions", () => ({
-  login: jest.fn(),
-}));
+// Mock the next/navigation module
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
 }));
 
+// Mock the Supabase client
+jest.mock("@/app/utils/supabase/client", () => ({
+  createClient: jest.fn(() => ({
+    auth: {
+      signInWithPassword: jest.fn(),
+    },
+  })),
+}));
+
+// Mock react-toastify
+jest.mock("react-toastify", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
+// Mock the CSS module
+jest.mock("@/app/components/styles/FormStyles.module.css", () => ({
+  inputContainer: "mockInputContainer",
+  label: "mockLabel",
+  input: "mockInput",
+  validation: "mockValidation",
+  button: "mockButton",
+  error: "mockError",
+}));
+
 describe("LoginForm Component", () => {
-  const mockPush = jest.fn();
-  useRouter.mockReturnValue({ push: mockPush });
+  let mockPush;
+  let mockRefresh;
+  let mockSignInWithPassword;
 
   beforeEach(() => {
+    // Clear all mocks before each test to ensure a clean slate
     jest.clearAllMocks();
+
+    // Set up mocks for router functions and Supabase auth
+    mockPush = jest.fn();
+    mockRefresh = jest.fn();
+    mockSignInWithPassword = jest.fn();
+
+    require("next/navigation").useRouter.mockImplementation(() => ({
+      push: mockPush,
+      refresh: mockRefresh,
+    }));
+
+    require("@/app/utils/supabase/client").createClient.mockImplementation(
+      () => ({
+        auth: {
+          signInWithPassword: mockSignInWithPassword,
+        },
+      })
+    );
   });
 
-  // Test case to render the component
-  it("renders the LoginForm component correctly", () => {
+  it("renders the login form correctly", () => {
     render(<LoginForm />);
 
-    // Check if the email and password fields and the submit button are displayed
-    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
-    expect(screen.getByLabelText("Password")).toBeInTheDocument();
-    expect(screen.getByLabelText("Log in")).toBeInTheDocument();
+    // Check if all necessary form elements are present
+    expect(screen.getByLabelText("Email:")).toBeInTheDocument();
+    expect(screen.getByLabelText("Password:")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Log in" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Forgot Password" })
+    ).toBeInTheDocument();
   });
 
-  // Test case for form validation
-  it("validates the email and password fields correctly", async () => {
+  it("displays validation errors for empty fields", async () => {
     render(<LoginForm />);
 
-    // Click the submit button without entering any values
-    fireEvent.click(screen.getByLabelText("Log in"));
+    // Submit the form without entering any data
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
 
-    // Check if the validation messages are displayed
-    const requiredAlerts = await screen.findAllByText("Required");
-    expect(requiredAlerts).toHaveLength(2);
-
-    // Enter an invalid email and submit
-    fireEvent.change(screen.getByLabelText("Email address"), {
-      target: { value: "invalid-email" },
-    });
-    fireEvent.click(screen.getByLabelText("Log in"));
-
-    // Check if the validation message for invalid email is displayed
-    const invalidEmailAlert = await screen.findByText("Invalid email");
-    expect(invalidEmailAlert).toBeInTheDocument();
-
-    const passwordRequiredAlert = await screen.findByText("Required");
-    expect(passwordRequiredAlert).toBeInTheDocument();
-
-    // Enter valid email but no password and submit
-    fireEvent.change(screen.getByLabelText("Email address"), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.click(screen.getByLabelText("Log in"));
-
-    // Check if the validation message for required password is displayed
-    const alertsAfterEmail = await screen.findAllByText("Required");
-    expect(alertsAfterEmail).toHaveLength(1);
-  });
-
-  // Test case for successful form submission
-  it("submits the form successfully", async () => {
-    login.mockResolvedValueOnce();
-    render(<LoginForm />);
-
-    // Enter valid email and password and submit
-    fireEvent.change(screen.getByLabelText("Email address"), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText("Password"), {
-      target: { value: "password" },
-    });
-    fireEvent.click(screen.getByLabelText("Log in"));
-
-    // Check if the login action is called with the correct values
+    // Check if validation error messages appear
     await waitFor(() => {
-      expect(login).toHaveBeenCalledWith({
+      expect(screen.getAllByText("Required")).toHaveLength(2);
+    });
+  });
+
+  it('displays validation error for invalid email', async () => {
+    render(<LoginForm />);
+    
+    // Enter an invalid email and submit the form
+    fireEvent.change(screen.getByLabelText('Email:'), { target: { value: 'invalid-email' } });
+    fireEvent.blur(screen.getByLabelText('Email:')); // Trigger blur event to ensure validation runs
+    fireEvent.click(screen.getByRole('button', { name: 'Log in' }));
+
+    // Check if the email validation error message appears
+    await waitFor(() => {
+      const errorElement = screen.getByText((content, element) => {
+        return element.tagName.toLowerCase() === 'div' && 
+               content.toLowerCase().includes('invalid email');
+      }, { timeout: 3000 });
+      expect(errorElement).toBeInTheDocument();
+    });
+  });
+
+  it("submits the form with valid credentials and handles successful login", async () => {
+    mockSignInWithPassword.mockResolvedValue({ error: null });
+
+    render(<LoginForm />);
+
+    // Fill in valid credentials and submit the form
+    fireEvent.change(screen.getByLabelText("Email:"), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Password:"), {
+      target: { value: "password123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+
+    // Check if the login process is handled correctly
+    await waitFor(() => {
+      expect(mockSignInWithPassword).toHaveBeenCalledWith({
         email: "test@example.com",
-        password: "password",
+        password: "password123",
       });
-    });
-
-    // Check if the router push is called to navigate to home page
-    await waitFor(() => {
+      expect(require("react-toastify").toast.success).toHaveBeenCalledWith(
+        "Logged in successfully"
+      );
       expect(mockPush).toHaveBeenCalledWith("/");
+      expect(mockRefresh).toHaveBeenCalled();
     });
   });
 
-  // Test case for failed form submission
-  it("handles form submission failure", async () => {
+  it("handles login failure and displays error message", async () => {
     const errorMessage = "Invalid credentials";
-    login.mockRejectedValueOnce(new Error(errorMessage));
+    mockSignInWithPassword.mockResolvedValue({
+      error: new Error(errorMessage),
+    });
+
     render(<LoginForm />);
 
-    // Enter valid email and password and submit
-    fireEvent.change(screen.getByLabelText("Email address"), {
+    // Fill in credentials and submit the form
+    fireEvent.change(screen.getByLabelText("Email:"), {
       target: { value: "test@example.com" },
     });
-    fireEvent.change(screen.getByLabelText("Password"), {
-      target: { value: "password" },
+    fireEvent.change(screen.getByLabelText("Password:"), {
+      target: { value: "wrongpassword" },
     });
-    fireEvent.click(screen.getByLabelText("Log in"));
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
 
-    // Check if the login action is called with the correct values
+    // Check if the error is handled and displayed correctly
     await waitFor(() => {
-      expect(login).toHaveBeenCalledWith({
-        email: "test@example.com",
-        password: "password",
-      });
-    });
-
-    // Check if the error message is displayed
-    await waitFor(() => {
-      expect(screen.getByRole("alert")).toHaveTextContent(errorMessage);
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+      expect(require("react-toastify").toast.error).toHaveBeenCalledWith(
+        "Login failed"
+      );
     });
   });
 
-  // Test case for "Forgot Password" button
-  it("navigates to forgot password page on button click", () => {
+  it('navigates to forgot password page when "Forgot Password" is clicked', () => {
     render(<LoginForm />);
 
     // Click the "Forgot Password" button
-    fireEvent.click(screen.getByLabelText("Forgot Password"));
+    fireEvent.click(screen.getByRole("button", { name: "Forgot Password" }));
 
-    // Check if the router push is called to navigate to forgot password page
+    // Check if the router navigates to the forgot password page
     expect(mockPush).toHaveBeenCalledWith("/forgot-password");
+  });
+
+  it("disables submit button while form is submitting", async () => {
+    mockSignInWithPassword.mockImplementation(
+      () => new Promise((resolve) => setTimeout(resolve, 100))
+    );
+
+    render(<LoginForm />);
+
+    // Fill in credentials and submit the form
+    fireEvent.change(screen.getByLabelText("Email:"), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText("Password:"), {
+      target: { value: "password123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Log in" }));
+
+    // Check if the submit button is disabled immediately after submission
+    expect(screen.getByRole("button", { name: "Log in" })).toBeDisabled();
+
+    // Check if the submit button is re-enabled after the submission is complete
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Log in" })).not.toBeDisabled();
+    });
+  });
+
+  it("has correct display name", () => {
+    // Ensure the component has the correct display name
+    expect(LoginForm.displayName).toBe("LoginForm");
   });
 });

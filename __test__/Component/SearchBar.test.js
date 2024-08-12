@@ -1,34 +1,64 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom'; 
 import SearchBar from '@/app/components/SearchBar'; 
 
-describe('SearchBar component', () => {
-  test('renders search bar correctly', () => {
-    render(<SearchBar onSearch={() => {}} value="" />);
+// Mock the CSS module to avoid issues with CSS imports during testing
+jest.mock('./styles/SearchBar.module.css', () => ({
+  searchContainer: 'mockSearchContainer',
+  searchInput: 'mockSearchInput',
+}));
 
-    // Check if the search input is rendered
-    const searchInput = screen.getByPlaceholderText('Search Pals...');
+describe('SearchBar', () => {
+  // Test case to ensure the SearchBar renders correctly
+  it('renders the search input field', () => {
+    render(<SearchBar onSearch={() => {}} />);
+    
+    // Verify that the search input is present and has the correct attributes
+    const searchInput = screen.getByLabelText('Search for pals');
     expect(searchInput).toBeInTheDocument();
+    expect(searchInput).toHaveAttribute('type', 'text');
+    expect(searchInput).toHaveAttribute('name', 'filter');
+    expect(searchInput).toHaveAttribute('placeholder', 'Search Pals...');
   });
 
-  test('calls onSearch function when user types', () => {
+  // Test case to check if the onSearch function is called when typing
+  it('calls onSearch function when typing', () => {
+    // Create a mock function to pass as onSearch prop
     const mockOnSearch = jest.fn();
-    render(<SearchBar onSearch={mockOnSearch} value="" />);
-
-    // Simulate user typing in the search bar
-    const searchInput = screen.getByPlaceholderText('Search Pals...');
-    fireEvent.change(searchInput, { target: { value: 'Test Pal' } });
-
-    // Check if the onSearch function is called with the correct value
-    expect(mockOnSearch).toHaveBeenCalledWith('Test Pal');
+    render(<SearchBar onSearch={mockOnSearch} />);
+    
+    // Simulate user typing in the search input
+    const searchInput = screen.getByLabelText('Search for pals');
+    fireEvent.change(searchInput, { target: { value: 'Cattiva' } });
+    
+    // Verify that the onSearch function was called with the correct value
+    expect(mockOnSearch).toHaveBeenCalledWith('Cattiva');
   });
 
-  test('sets the value of the search input', () => {
-    render(<SearchBar onSearch={() => {}} value="Test Pal" />);
+  // Test case to ensure the search input displays the provided value
+  it('displays the provided value in the search input', () => {
+    const initialValue = 'Lamball';
+    render(<SearchBar onSearch={() => {}} value={initialValue} />);
+    
+    // Check if the search input displays the initial value
+    const searchInput = screen.getByLabelText('Search for pals');
+    expect(searchInput).toHaveValue(initialValue);
+  });
 
-    // Check if the search input value is set correctly
-    const searchInput = screen.getByPlaceholderText('Search Pals...');
-    expect(searchInput.value).toBe('Test Pal');
+  // Test case to verify that the component has the correct display name
+  it('has the correct display name', () => {
+    expect(SearchBar.displayName).toBe('SearchBar');
+  });
+
+  // Test case to check if the component applies the correct CSS classes
+  it('applies the correct CSS classes', () => {
+    render(<SearchBar onSearch={() => {}} />);
+    
+    // Verify that the container and input elements have the correct CSS classes
+    const container = screen.getByLabelText('Search for pals').parentElement;
+    expect(container).toHaveClass('mockSearchContainer');
+    
+    const searchInput = screen.getByLabelText('Search for pals');
+    expect(searchInput).toHaveClass('mockSearchInput');
   });
 });
