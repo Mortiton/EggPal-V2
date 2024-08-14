@@ -7,16 +7,17 @@ import BreedingList from "./BreedingList";
 import styles from "../page.module.css";
 import { toast } from "react-toastify";
 
-const PalDetailsDisplay = ({ pal, breedingCombos }) => {
-  const { favourites, addFavourite, removeFavourite, session } = useFavourites();
+const PalDetailsDisplay = ({ pal, breedingCombos, user }) => {
+  const { favourites, addFavourite, removeFavourite } = useFavourites();
 
   const isFavourited = useMemo(() => 
-    session?.user ? favourites.some((fav) => fav.id === pal.id) : false,
-    [session, favourites, pal.id]
+    user ? favourites.some((fav) => fav.id === pal.id) : false,
+    [user, favourites, pal.id]
   );
 
+
   const handleToggleFavourite = useCallback(() => {
-    if (!session?.user) {
+    if (!user) {
       toast.info("Please log in to favourite pals.");
       return;
     }
@@ -25,7 +26,7 @@ const PalDetailsDisplay = ({ pal, breedingCombos }) => {
     } else {
       addFavourite(pal);
     }
-  }, [session, isFavourited, pal, addFavourite, removeFavourite]);
+  }, [user, isFavourited, pal, addFavourite, removeFavourite]);
 
   return (
     <div className={styles.mainContainer}>
@@ -34,12 +35,12 @@ const PalDetailsDisplay = ({ pal, breedingCombos }) => {
           pal={pal}
           isFavourited={isFavourited}
           onToggleFavourite={handleToggleFavourite}
-          session={session}
+          user={user}
         />
       </div>
       <div className={styles.breedingContainer}>
         <h2>Breeding Combinations</h2>
-        <BreedingList breedingCombos={breedingCombos} />
+        <BreedingList breedingCombos={breedingCombos} user={user}/>
       </div>
     </div>
   );

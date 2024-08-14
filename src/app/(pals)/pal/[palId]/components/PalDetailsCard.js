@@ -11,12 +11,12 @@ export default function PalDetailsCard({
   pal,
   isFavourited,
   onToggleFavourite,
-  session,
+  user,
 }) {
   const { skills } = pal;
 
   const handleFavouriteClick = () => {
-    if (!session?.user) {
+    if (!user) { // Check if the user is authenticated and display a toast if not
       toast.info("Please sign in to favourite pals.");
       return;
     }

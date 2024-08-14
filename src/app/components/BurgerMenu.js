@@ -45,7 +45,6 @@ export default function BurgerMenu({ isAuthenticated }) {
     try {
       const response = await fetch('/auth/signout', { method: 'POST' });
       if (response.ok) {
-        // Handle successful logout (e.g., redirect)
         window.location.href = '/';
       } else {
         console.error('Logout failed');

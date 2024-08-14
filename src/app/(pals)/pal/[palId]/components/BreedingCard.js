@@ -10,9 +10,8 @@ import { faHeart as fasHeart, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
 
-export default function BreedingCard({ parent1, parent2, breedingComboId }) {
-  const { savedCombinations, addCombination, removeCombination, session } =
-    useSavedCombinations();
+export default function BreedingCard({ parent1, parent2, breedingComboId, user }) {
+  const { savedCombinations, addCombination, removeCombination } = useSavedCombinations();
 
   const isSaved = useMemo(() => 
     savedCombinations.some((combo) => combo.breedingComboId === breedingComboId),
@@ -20,7 +19,7 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
   );
 
   const toggleSaved = useCallback(async () => {
-    if (!session?.user) {
+    if (!user) { // Check if user is authenticated and display toast if not
       toast.info("Please log in to save breeding combinations.");
       return;
     }
@@ -34,7 +33,7 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
     } catch (error) {
       console.error("Error toggling saved status:", error.message);
     }
-  }, [session, isSaved, breedingComboId, addCombination, removeCombination]);
+  }, [user, isSaved, breedingComboId, addCombination, removeCombination]);
 
 
   return (

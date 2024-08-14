@@ -14,7 +14,7 @@ import styles from "./styles/BreedingList.module.css";
  * @param {Array} props.breedingCombos - The breeding combinations.
  * @returns {JSX.Element} A React component.
  */
-const BreedingList = ({ breedingCombos }) => {
+const BreedingList = ({ breedingCombos, user }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCombos = breedingCombos.filter((combo) => {
@@ -54,6 +54,7 @@ const BreedingList = ({ breedingCombos }) => {
                 image: combo.parent2_image,
               }}
               breedingComboId={combo.id}
+              user={user}
             />
           ))}
         </div>

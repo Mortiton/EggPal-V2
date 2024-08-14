@@ -2,37 +2,45 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { createClient } from '@/app/utils/supabase/client';
 
 const FavouritesContext = createContext(null);
 
-export function FavouritesProvider({ children, initialSession }) {
-  const [session, setSession] = useState(initialSession);
+/**
+ * FavouritesProvider component that wraps children components and provides
+ * the favourites context to manage user's favourite pals.
+ * 
+ * @param {Object} props - The properties object.
+ * @param {React.ReactNode} props.children - The children components to be wrapped.
+ * @param {Object} props.initialUser - The initial user object containing user information.
+ * @returns {JSX.Element} The context provider for favourites.
+ */
+export function FavouritesProvider({ children, initialUser }) {
+  const [user, setUser] = useState(initialUser);
   const [favourites, setFavourites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClient();
 
+  // Effect to update the user state when the initialUser prop changes.
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, newSession) => {
-      setSession(newSession);
-    });
+    setUser(initialUser);
+  }, [initialUser]);
 
-    return () => subscription.unsubscribe();
-  }, [supabase]);
-
+  // Effect to load the user's favourite pals whenever the user changes.
   useEffect(() => {
     const loadFavourites = async () => {
-      if (session?.user) {
+      if (user?.id) {
         setIsLoading(true);
         try {
-          const response = await fetch(`/api/favourites?userId=${session.user.id}`);
+          const response = await fetch(`/api/favourites`, {
+            headers: {
+              'x-user-id': user.id, // Pass user ID in headers
+            },
+          });
           if (!response.ok) {
             throw new Error('Failed to fetch favourites');
           }
           const favs = await response.json();
-          setFavourites(favs);
+          setFavourites(favs); // Ensure favourites are set correctly
+          // console.log('Fetched favourites:', favs); // Debugging output
         } catch (error) {
           console.error('Failed to load favourite pals:', error);
           toast.error('Failed to load favourite pals');
@@ -45,12 +53,17 @@ export function FavouritesProvider({ children, initialSession }) {
       }
     };
 
-    loadFavourites();
-  }, [session]);
+    loadFavourites(); // Fetch favourites whenever user changes
+  }, [user]);
 
+  /**
+   * Adds a pal to the user's favourites list.
+   * 
+   * @param {Object} pal - The pal object to be added to favourites.
+   */
   const addFavourite = useCallback(async (pal) => {
-    if (!session?.user) {
-      toast.info('Please log in to add favourite pals');
+    if (!user?.id) {
+      toast.info('Please log in to add favourite pals.');
       return;
     }
     // Optimistic update
@@ -60,8 +73,9 @@ export function FavouritesProvider({ children, initialSession }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-user-id': user.id, // Pass user ID in headers
         },
-        body: JSON.stringify({ userId: session.user.id, palId: pal.id }),
+        body: JSON.stringify({ palId: pal.id }),
       });
       if (!response.ok) {
         throw new Error('Failed to add favourite');
@@ -73,16 +87,24 @@ export function FavouritesProvider({ children, initialSession }) {
       console.error('Failed to add favourite:', error);
       toast.error(`Failed to add ${pal.name} to favourites`);
     }
-  }, [session]);
+  }, [user]);
 
+  /**
+   * Removes a pal from the user's favourites list.
+   * 
+   * @param {string} palId - The ID of the pal to be removed from favourites.
+   */
   const removeFavourite = useCallback(async (palId) => {
-    if (!session?.user) return;
+    if (!user?.id) return;
     // Optimistic update
     const removedPal = favourites.find(fav => fav.id === palId);
     setFavourites(prev => prev.filter(fav => fav.id !== palId));
     try {
-      const response = await fetch(`/api/favourites?userId=${session.user.id}&palId=${palId}`, {
+      const response = await fetch(`/api/favourites?palId=${palId}`, {
         method: 'DELETE',
+        headers: {
+          'x-user-id': user.id, // Pass user ID in headers
+        },
       });
       if (!response.ok) {
         throw new Error('Failed to remove favourite');
@@ -94,18 +116,25 @@ export function FavouritesProvider({ children, initialSession }) {
       console.error('Failed to remove favourite:', error);
       toast.error('Failed to remove pal from favourites');
     }
-  }, [session, favourites]);
+  }, [user, favourites]);
 
+  /**
+   * Checks if a specific pal is in the user's favourites list.
+   * 
+   * @param {string} palId - The ID of the pal to check.
+   * @returns {boolean} True if the pal is in the favourites, otherwise false.
+   */
   const isFavourite = useCallback((palId) => {
     return favourites.some(fav => fav.id === palId);
   }, [favourites]);
 
+  // The context value provided to children components
   const value = {
     favourites,
     addFavourite,
     removeFavourite,
     isFavourite,
-    session,
+    user,
     isLoading,
   };
 
@@ -116,6 +145,12 @@ export function FavouritesProvider({ children, initialSession }) {
   );
 }
 
+/**
+ * Custom hook to use the FavouritesContext.
+ * 
+ * @returns {Object} The favourites context value.
+ * @throws Will throw an error if used outside of FavouritesProvider.
+ */
 export const useFavourites = () => {
   const context = useContext(FavouritesContext);
   if (context === undefined) {

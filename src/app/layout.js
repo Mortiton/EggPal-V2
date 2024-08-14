@@ -8,11 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import { FavouritesProvider } from "./context/FavouritesContext";
 import { SavedCombinationsProvider } from "./context/SavedCombinationsContext";
-import { createClient } from "./utils/supabase/server";
+import { getUser } from "./utils/getUser";
 
-/**
- * Metadata for the application
- */
 export const metadata = {
   title: "EggPal",
   description: "Palworld Breeding Companion",
@@ -23,49 +20,44 @@ const mainFont = localFont({
   display: "swap",
 });
 
-/**
- * RootLayout
- * The main layout component for the application.
- *
- * @param {Object} props - The component props.
- * @param {React.ReactNode} props.children - The child components.
- * @returns {React.ReactNode} The layout with user data.
- */
 const RootLayout = async ({ children }) => {
-  const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const user = await getUser();
+  console.log(user)
 
   return (
-    <FavouritesProvider initialSession={session}>
-      <SavedCombinationsProvider initialSession={session}>
-        <html lang="en">
-          <body className={mainFont.className}>
-            <header>
-              <NavBar />
-            </header>
-            <div className="page-container">
-              <main className="content-wrap">
-                {children}
-                <SpeedInsights />
-              </main>
-              <footer>
-                <Footer />
-              </footer>
-            </div>
-            <ToastContainer
-              theme="dark"
-              style={{ top: "100px" }}
-              autoClose={1000} 
-              hideProgressBar={true} 
-              position="top-left" 
-            />
-            <div id="modal-root"></div>
-          </body>
-        </html>
-      </SavedCombinationsProvider>
-    </FavouritesProvider>
+    <html lang="en">
+      <body className={mainFont.className}>
+          <FavouritesProvider initialUser={user}>
+            <SavedCombinationsProvider initialUser={user}>
+              <header>
+                <NavBar user={user} />
+              </header>
+              <div className="page-container">
+                <main className="content-wrap">
+                  {React.Children.map(children, (child) =>
+                    React.isValidElement(child)
+                      ? React.cloneElement(child, { user })
+                      : child
+                  )}
+                  <SpeedInsights />
+                </main>
+
+                <footer>
+                  <Footer />
+                </footer>
+              </div>
+              <ToastContainer
+                theme="dark"
+                style={{ top: "100px" }}
+                autoClose={1000}
+                hideProgressBar={true}
+                position="top-left"
+              />
+              <div id="modal-root"></div>
+            </SavedCombinationsProvider>
+          </FavouritesProvider>
+      </body>
+    </html>
   );
 };
 

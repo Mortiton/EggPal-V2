@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { getFavouritePals, addFavouritePal, removeFavouritePal } from '@/app/services/userService';
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get('userId');
+  // Extract the user ID from the request headers
+  const userId = request.headers.get('x-user-id');
 
   if (!userId) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
@@ -19,7 +19,10 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const { userId, palId } = await request.json();
+  const { palId } = await request.json();
+  
+  // Extract the user ID from the request headers
+  const userId = request.headers.get('x-user-id');
 
   if (!userId || !palId) {
     return NextResponse.json({ error: 'User ID and Pal ID are required' }, { status: 400 });
@@ -36,8 +39,10 @@ export async function POST(request) {
 
 export async function DELETE(request) {
   const { searchParams } = new URL(request.url);
-  const userId = searchParams.get('userId');
   const palId = searchParams.get('palId');
+  
+  // Extract the user ID from the request headers
+  const userId = request.headers.get('x-user-id');
 
   if (!userId || !palId) {
     return NextResponse.json({ error: 'User ID and Pal ID are required' }, { status: 400 });

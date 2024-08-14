@@ -1,6 +1,8 @@
 "use server";
 import { createClient } from "../utils/supabase/server";
 import { cookies } from "next/headers";
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 /**
  * Fetches the user data from Supabase.
@@ -84,6 +86,8 @@ export async function login(formData) {
   if (error) {
     return { error: "Invalid email or password" };
   }
+
+  revalidatePath('/', 'layout')
 
   return { success: true, user: data.user };
 }
