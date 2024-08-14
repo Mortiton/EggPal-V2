@@ -26,17 +26,13 @@ export default function UpdateEmailForm() {
   const [error, setError] = useState(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  /**
-   * Function to handle updating the email.
-   * It sets the error state if there is an error updating the email.
-   * It sets the success modal state to open if the email is updated successfully.
-   *
-   * @param {Object} values - The form values.
-   */
   const handleEmailUpdate = async (values) => {
     setError(null);
     try {
-      await updateEmail(values.email);
+      const result = await updateEmail(values.email);
+      if (result.error) {
+        throw new Error(result.error);
+      }
       setIsSuccessModalOpen(true);
     } catch (err) {
       setError(err.message);

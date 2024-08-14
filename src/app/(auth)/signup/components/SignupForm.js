@@ -94,6 +94,7 @@ export default function SignupForm() {
               className={styles.input}
               aria-required="true"
               aria-describedby="emailError"
+              autoComplete="email"
             />
             <ErrorMessage
               name="email"
@@ -113,6 +114,7 @@ export default function SignupForm() {
               className={styles.input}
               aria-required="true"
               aria-describedby="passwordError"
+              autoComplete="new-password"
             />
             <ErrorMessage
               name="password"
@@ -132,6 +134,7 @@ export default function SignupForm() {
               className={styles.input}
               aria-required="true"
               aria-describedby="confirmPasswordError"
+              autoComplete="new-password"
             />
             <ErrorMessage
               name="confirmPassword"

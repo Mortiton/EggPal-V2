@@ -7,10 +7,18 @@ import { getUser } from './authService';
 
 export async function updateEmail(email) {
   const supabase = createClient();
-  const { error } = await supabase.auth.updateUser({ email });
 
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const { error } = await supabase.auth.updateUser({ email });
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    revalidatePath('/profile');
+    return { success: true };
+  } catch (error) {
+    return { error: error.message };
   }
 }
 

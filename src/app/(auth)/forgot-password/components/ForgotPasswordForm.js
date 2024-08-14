@@ -52,6 +52,7 @@ const ForgotPasswordForm = () => {
               className={styles.input}
               aria-label="Email address"
               aria-required="true"
+              autoComplete="email"
             />
             <ErrorMessage
               name="email"

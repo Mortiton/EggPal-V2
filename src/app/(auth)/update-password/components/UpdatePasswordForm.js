@@ -74,6 +74,7 @@ const UpdatePasswordForm = ({ token }) => {
               className={styles.input}
               aria-required="true"
               aria-describedby="passwordError"
+              autoComplete="new-password"
             />
             <ErrorMessage
               name="password"
@@ -91,6 +92,7 @@ const UpdatePasswordForm = ({ token }) => {
               className={styles.input}
               aria-required="true"
               aria-describedby="confirmPasswordError"
+              autoComplete="new-password"
             />
             <ErrorMessage
               name="confirmPassword"

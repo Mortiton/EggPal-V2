@@ -46,6 +46,28 @@ export async function getSession() {
 }
 
 /**
+ * Check if a user exists in the database.
+ *
+ * @param {string} email - The email of the user to check.
+ * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the user exists.
+ * @throws {Error} If an error occurs while checking if the user exists.
+ */
+export async function checkUserExists(email) {
+  const supabase = createClient();
+
+  // Call the custom function to check if the user exists
+  const { data, error } = await supabase
+    .rpc('check_user_exists', { email });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // If data is returned, the user exists
+  return data.length > 0;
+}
+
+/**
  * Logs in the user with the provided email and password.
  *
  * @param {Object} values - The login values.

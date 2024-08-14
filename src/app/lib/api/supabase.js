@@ -10,30 +10,6 @@ const headers = {
   'Content-Type': 'application/json'
 };
 
-// export async function getPals(ids = null) {
-//   const response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_pals`, {
-//     method: 'POST',
-//     headers,
-//     body: JSON.stringify({ ids: ids }),
-//     next: { 
-//       revalidate: ids && ids.length === 1 ? INDIVIDUAL_PAL_CACHE_DURATION : ALL_PALS_CACHE_DURATION 
-//     }
-//   });
-
-//   if (!response.ok) {
-//     throw new Error('Failed to fetch pals');
-//   }
-
-//   const data = await response.json();
-
-//   if (ids && ids.length > 0) {
-//     // Filter results if specific ids were requested
-//     return data.filter(pal => ids.includes(pal.id));
-//   } else {
-//     // Return all pals if no ids were specified
-//     return data;
-//   }
-// }
 
 export async function getPals(ids = null) {
   const url = new URL(`${supabaseUrl}/rest/v1/rpc/get_pals`);
