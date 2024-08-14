@@ -70,22 +70,22 @@ export async function checkUserExists(email) {
 /**
  * Logs in the user with the provided email and password.
  *
- * @param {Object} values - The login values.
- * @param {string} values.email - The email address.
- * @param {string} values.password - The password.
+ * @param {Object} formData - The login form data.
  * @returns {Promise<Object>} The login result.
- * @throws Will throw an error if login fails.
  */
-export async function login({ email, password }) {
+export async function login(formData) {
+  const email = formData.get("email");
+  const password = formData.get("password");
+
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    throw new Error("Invalid email or password");
+    return { error: "Invalid email or password" };
   }
 
-  return { success: true };
+  return { success: true, user: data.user };
 }
 
 export async function resetPassword(email) {
