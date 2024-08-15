@@ -70,7 +70,7 @@ const UpdatePasswordForm = ({ token }) => {
   const handleSuccessConfirm = () => {
     console.log("Modal confirmed, redirecting to login");
     setIsSuccessModalOpen(false);
-    router.push("/login"); 
+    router.push("/login"); // Redirect to the login page
   };
 
   return (
