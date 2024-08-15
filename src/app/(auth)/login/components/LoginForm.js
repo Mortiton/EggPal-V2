@@ -47,7 +47,7 @@ export default function LoginForm() {
 
       toast.success('Logged in successfully');
       router.push("/");
-      router.refresh(); // Refresh the page to update the session
+      router.refresh(); 
     } catch (err) {
       setError(err.message);
       toast.error('Login failed');
