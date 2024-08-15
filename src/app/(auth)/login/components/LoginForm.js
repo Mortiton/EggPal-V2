@@ -1,38 +1,36 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import styles from "@/app/components/styles/FormStyles.module.css";
 import { toast } from 'react-toastify';
 import { login } from "@/app/services/authService";
-import { useFormStatus } from "react-dom";
 
+/**
+ * Validation schema for the login form using Yup.
+ * Ensures that email is a valid email format and that both email and password are required fields.
+ * @type {Yup.ObjectSchema}
+ */
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().required("Required"),
 });
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <button
-      className={styles.button}
-      type="submit"
-      disabled={pending}
-      aria-busy={pending}
-      aria-live="polite"
-      aria-label="Log in"
-    >
-      Log In
-    </button>
-  );
-}
-
+/**
+ * LoginForm component that renders a login form using Formik.
+ * Handles user login, form validation, and error display.
+ *
+ * @component
+ * @example
+ * return (
+ *   <LoginForm />
+ * )
+ */
 export default function LoginForm() {
   const router = useRouter();
-  const [error, setError] = React.useState(null);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setError(null);
@@ -49,7 +47,7 @@ export default function LoginForm() {
 
       toast.success('Logged in successfully');
       router.push("/");
-
+      router.refresh(); // Refresh the page to update the session
     } catch (err) {
       setError(err.message);
       toast.error('Login failed');
@@ -114,7 +112,16 @@ export default function LoginForm() {
             </div>
           )}
 
-          <SubmitButton />
+          <button
+            className={styles.button}
+            type="submit"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+            aria-live="polite"
+            aria-label="Log in"
+          >
+            Log In
+          </button>
           <button
             type="button"
             aria-label="Forgot Password"

@@ -72,24 +72,42 @@ export async function checkUserExists(email) {
 /**
  * Logs in the user with the provided email and password.
  *
- * @param {Object} formData - The login form data.
- * @returns {Promise<Object>} The login result.
+ * @param {FormData} formData - The login form data.
+ * @returns {Promise<Object>} The login result, either a success or error message.
  */
 export async function login(formData) {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  const supabase = createClient();
-
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if (error) {
-    return { error: "Invalid email or password" };
+  if (!email || !password) {
+    return { error: "Email and password are required" };
   }
 
-  revalidatePath('/', 'layout')
+  const supabase = createClient();
 
-  return { success: true, user: data.user };
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      // Handle Supabase error
+      return { error: error.message || "Invalid email or password" };
+    }
+
+    if (!data?.user) {
+      // Handle unexpected case where user data is not returned
+      return { error: "Login failed. Please try again." };
+    }
+
+    // Trigger a revalidation to ensure the session is updated
+    revalidatePath('/', 'layout');
+
+    return { success: true, user: data.user };
+
+  } catch (err) {
+    // Handle unexpected errors (network issues, etc.)
+    console.error("Unexpected error during login:", err);
+    return { error: "An unexpected error occurred. Please try again." };
+  }
 }
 
 export async function resetPassword(email) {
