@@ -25,7 +25,7 @@ export async function generateMetadata({ params }) {
 
 export default async function PalPage({ params }) {
   const user = await getUser();
-  console.log('User in PalPage:', user);
+  // console.log('User in PalPage:', user);
   const palId = params.palId;
   //Fetch the palData based on Pal ID within the URL
   const palData = await getPals([palId]);

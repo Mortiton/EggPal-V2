@@ -1,8 +1,7 @@
 import React from "react";
-import { getSession } from "@/app/services/authService";
 import FavouritePalsDisplay from "./components/FavouritePalsDisplay";
 import { redirect } from "next/navigation";
-import { FavouritesProvider } from "@/app/context/FavouritesContext";
+import { getUser } from '@/app/utils/getUser';
 
 export const metadata = {
   title: "Your Favourite Pals",
@@ -15,15 +14,15 @@ export const metadata = {
  * @returns {JSX.Element} The rendered JSX element
  */
 export default async function FavouritePalsPage() {
-  const session = await getSession();
+  const user = await getUser();
 
-  if (!session) {
+  if (!user) {
     return redirect("/login");
   }
 
   return (
-    <FavouritesProvider initialSession={session}>
+
       <FavouritePalsDisplay />
-    </FavouritesProvider>
+
   );
 }

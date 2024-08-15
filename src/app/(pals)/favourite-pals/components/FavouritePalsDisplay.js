@@ -7,9 +7,9 @@ import styles from "../page.module.css";
 import Link from "next/link";
 
 export default function FavouritePalsDisplay() {
-  const { favourites, session, isLoading } = useFavourites();
+  const { favourites, user, isLoading } = useFavourites();
 
-  if (!session) {
+  if (!user) {
     return <div>Please log in to view your favourite pals.</div>;
   }
 
