@@ -1,102 +1,74 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import styles from "@/app/components/styles/FormStyles.module.css";
-import { toast } from 'react-toastify';
-import { login } from "@/app/services/authService";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { updateUserPassword } from '@/app/services/authService';
+import styles from '@/app/components/styles/FormStyles.module.css';
 
-/**
- * Validation schema for the login form using Yup.
- * Ensures that email is a valid email format and that both email and password are required fields.
- * @type {Yup.ObjectSchema}
- */
-const LoginSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().required("Required"),
+const UpdatePasswordSchema = Yup.object().shape({
+  password: Yup.string()
+    .required("Required")
+    .min(8, "Password is too short - should be 8 chars minimum.")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$/,
+      "Password must contain an uppercase letter, a lowercase letter, a number, and a special character."
+    ),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Required"),
 });
 
-/**
- * LoginForm component that renders a login form using Formik.
- * Handles user login, form validation, and error display.
- *
- * @component
- * @example
- * return (
- *   <LoginForm />
- * )
- */
-export default function LoginForm() {
+const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    setError(null);
-    const formData = new FormData();
-    formData.append("email", values.email);
-    formData.append("password", values.password);
+    const { password, confirmPassword } = values;
+
+    if (!token) {
+      setError('Reset token missing!');
+      setSubmitting(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords must match');
+      setSubmitting(false);
+      return;
+    }
 
     try {
-      const result = await login(formData);
-
+      const result = await updateUserPassword({ password, token });
       if (result.error) {
-        throw new Error(result.error);
+        setError(result.error);
+      } else if (result.success) {
+        router.push('/login?passwordUpdated=true');
       }
-
-      toast.success('Logged in successfully');
-      router.push("/");
-      router.refresh(); 
     } catch (err) {
-      setError(err.message);
-      toast.error('Login failed');
-    } finally {
-      setSubmitting(false);
+      setError(err.message || 'An unexpected error occurred');
     }
+
+    setSubmitting(false);
   };
 
   return (
     <Formik
-      initialValues={{ email: "", password: "" }}
-      validationSchema={LoginSchema}
+      initialValues={{ password: '', confirmPassword: '' }}
+      validationSchema={UpdatePasswordSchema}
       onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
         <Form className={styles.inputContainer}>
-          <label htmlFor="email" className={styles.label}>
-            Email:
-          </label>
-          <Field
-            id="email"
-            name="email"
-            type="email"
-            className={styles.input}
-            aria-label="Email address"
-            aria-required="true"
-            aria-describedby="emailError"
-            autoComplete="email"
-          />
-          <ErrorMessage
-            name="email"
-            component="div"
-            className={styles.validation}
-            id="emailError"
-            role="alert"
-          />
-
-          <label htmlFor="password" className={styles.label}>
-            Password:
-          </label>
+          <label htmlFor="password" className={styles.label}>New Password:</label>
           <Field
             id="password"
             name="password"
             type="password"
             className={styles.input}
-            aria-label="Password"
             aria-required="true"
             aria-describedby="passwordError"
-            autoComplete="current-password"
           />
           <ErrorMessage
             name="password"
@@ -106,34 +78,40 @@ export default function LoginForm() {
             role="alert"
           />
 
-          {error && (
-            <div className={styles.error} role="alert">
-              {error}
-            </div>
-          )}
+          <label htmlFor="confirmPassword" className={styles.label}>Confirm New Password:</label>
+          <Field
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            className={styles.input}
+            aria-required="true"
+            aria-describedby="confirmPasswordError"
+          />
+          <ErrorMessage
+            name="confirmPassword"
+            component="div"
+            className={styles.validation}
+            id="confirmPasswordError"
+            role="alert"
+          />
+
+          {error && <div className={styles.error}>{error}</div>}
 
           <button
-            className={styles.button}
             type="submit"
+            className={styles.button}
             disabled={isSubmitting}
             aria-busy={isSubmitting}
             aria-live="polite"
-            aria-label="Log in"
           >
-            Log In
-          </button>
-          <button
-            type="button"
-            aria-label="Forgot Password"
-            className={styles.button}
-            onClick={() => router.push("/forgot-password")}
-          >
-            Forgot Password
+            Update Password
           </button>
         </Form>
       )}
     </Formik>
   );
-}
+};
 
-LoginForm.displayName = "LoginForm";
+UpdatePasswordForm.displayName = 'UpdatePasswordForm'
+
+export default UpdatePasswordForm;

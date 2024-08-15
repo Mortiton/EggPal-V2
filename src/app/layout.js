@@ -22,40 +22,40 @@ const mainFont = localFont({
 
 const RootLayout = async ({ children }) => {
   const user = await getUser();
-  console.log(user)
+  console.log(user);
 
   return (
     <html lang="en">
       <body className={mainFont.className}>
-          <FavouritesProvider initialUser={user}>
-            <SavedCombinationsProvider initialUser={user}>
-              <header>
-                <NavBar user={user} />
-              </header>
-              <div className="page-container">
-                <main className="content-wrap">
-                  {React.Children.map(children, (child) =>
-                    React.isValidElement(child)
-                      ? React.cloneElement(child, { user })
-                      : child
-                  )}
-                  <SpeedInsights />
-                </main>
+        <FavouritesProvider initialUser={user}>
+          <SavedCombinationsProvider initialUser={user}>
+            <header>
+              <NavBar user={user} />
+            </header>
+            <div className="page-container">
+              <main className="content-wrap">
+                {React.Children.map(children, (child) =>
+                  React.isValidElement(child)
+                    ? React.cloneElement(child, { user })
+                    : child
+                )}
+                <SpeedInsights />
+              </main>
 
-                <footer>
-                  <Footer />
-                </footer>
-              </div>
-              <ToastContainer
-                theme="dark"
-                style={{ top: "100px" }}
-                autoClose={1000}
-                hideProgressBar={true}
-                position="top-left"
-              />
-              <div id="modal-root"></div>
-            </SavedCombinationsProvider>
-          </FavouritesProvider>
+              <footer>
+                <Footer />
+              </footer>
+            </div>
+            <ToastContainer
+              theme="dark"
+              style={{ top: "100px" }}
+              autoClose={1000}
+              hideProgressBar={true}
+              position="top-left"
+            />
+          </SavedCombinationsProvider>
+        </FavouritesProvider>
+        <div id="modal-root"></div>
       </body>
     </html>
   );

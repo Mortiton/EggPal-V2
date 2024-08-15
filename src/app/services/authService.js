@@ -70,6 +70,35 @@ export async function checkUserExists(email) {
 }
 
 /**
+ * Sign up a new user.
+ *
+ * @param {FormData} formData - The form data containing the user's email and password.
+ * @throws {Error} If an error occurs while signing up the user.
+ */
+export async function signup(formData) {
+  const supabase = createClient();
+
+  const data = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  };
+
+  const userExists = await checkUserExists(data.email);
+
+  if (userExists) {
+    throw new Error("User already registered");
+  }
+  const { error } = await supabase.auth.signUp(data);
+
+  if (error) {
+    redirect("/error");
+  }
+
+  // Revalidate the cache for the root path
+  revalidatePath("/", "layout");
+}
+
+/**
  * Logs in the user with the provided email and password.
  *
  * @param {FormData} formData - The login form data.
@@ -126,22 +155,39 @@ export async function resetPassword(email) {
 }
 
 export async function updateUserPassword({ password, token }) {
+  console.log("updateUserPassword called with token:", token);
   const supabase = createClient();
 
-  const { data, error: verifyError } = await supabase.auth.verifyOtp({
-    token_hash: token,
-    type: "recovery",
-  });
+  try {
+    console.log("Verifying OTP...");
+    const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
+      token_hash: token,
+      type: 'recovery'
+    });
 
-  if (verifyError) {
-    throw new Error(verifyError.message);
+    if (verifyError) {
+      console.error("OTP verification error:", verifyError);
+      return { error: verifyError.message };
+    }
+
+    console.log("OTP verified successfully:", verifyData);
+
+    console.log("Updating user password...");
+    const { data: updateData, error: updateError } = await supabase.auth.updateUser({ password });
+
+    if (updateError) {
+      console.error("Password update error:", updateError);
+      return { error: updateError.message };
+    }
+
+    console.log("Password updated successfully:", updateData);
+
+    revalidatePath('/');
+    
+    return { success: true };
+
+  } catch (error) {
+    console.error("Unexpected error in updateUserPassword:", error);
+    return { error: error.message };
   }
-
-  const { error: updateError } = await supabase.auth.updateUser({ password });
-
-  if (updateError) {
-    throw new Error(updateError.message);
-  }
-
-  return { message: "Password updated successfully" };
 }

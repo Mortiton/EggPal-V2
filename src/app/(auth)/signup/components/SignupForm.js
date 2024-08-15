@@ -6,9 +6,9 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import TermsOfServiceModal from "./TermsOfServiceModal";
 import SuccessModal from "@/app/components/SuccessModal";
-import { createClient } from "@/app/utils/supabase/client";
 import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
+import { signup, checkUserExists } from "@/app/services/authService";
 
 // Define form validation schema using Yup
 const SignupSchema = Yup.object().shape({
@@ -29,25 +29,41 @@ export default function SignupForm() {
   const router = useRouter();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [formData, setFormData] = useState(null);
   const [error, setError] = useState(null);
-  const supabase = createClient();
+  const [formValues, setFormValues] = useState(null);
+
+  const handleCheckUserAndOpenModal = async (values) => {
+    try {
+      const userExists = await checkUserExists(values.email);
+      if (userExists) {
+        setError("User already registered");
+      } else {
+        setFormValues(values);
+        setIsTermsModalOpen(true);
+      }
+    } catch (err) {
+      setError("An error occurred while checking user existence");
+      toast.error("Signup process failed");
+    }
+  };
 
   const handleSignup = async () => {
-    if (formData) {
-      try {
-        const { error } = await supabase.auth.signUp({
-          email: formData.email,
-          password: formData.password,
-        });
+    if (!formValues) return;
 
-        if (error) throw error;
+    try {
+      const formData = new FormData();
+      formData.append("email", formValues.email);
+      formData.append("password", formValues.password);
 
-        setIsSuccessModalOpen(true);
-      } catch (err) {
+      await signup(formData);
+      setIsSuccessModalOpen(true);
+    } catch (err) {
+      if (err instanceof Error) {
         setError(err.message);
-        toast.error("Signup failed");
+      } else {
+        setError("An unexpected error occurred");
       }
+      toast.error("Signup failed");
     }
   };
 
@@ -64,21 +80,7 @@ export default function SignupForm() {
         validationSchema={SignupSchema}
         onSubmit={async (values, { setSubmitting }) => {
           setError(null);
-          setFormData(values);
-          try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-              email: values.email,
-              password: values.password,
-            });
-            if (data?.user) {
-              setError("User already registered");
-              setSubmitting(false);
-              return;
-            }
-            setIsTermsModalOpen(true);
-          } catch (err) {
-            setError(err.message);
-          }
+          await handleCheckUserAndOpenModal(values);
           setSubmitting(false);
         }}
       >

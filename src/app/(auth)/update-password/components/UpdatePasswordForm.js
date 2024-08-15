@@ -1,12 +1,11 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { updateUserPassword } from '@/app/services/authService';
-import SuccessModal from '@/app/components/SuccessModal';
-import styles from '@/app/components/styles/FormStyles.module.css';
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import SuccessModal from "@/app/components/SuccessModal";
+import styles from "@/app/components/styles/FormStyles.module.css";
 
 const UpdatePasswordSchema = Yup.object().shape({
   password: Yup.string()
@@ -23,50 +22,69 @@ const UpdatePasswordSchema = Yup.object().shape({
 
 const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     const { password, confirmPassword } = values;
 
     if (!token) {
-      setError('Reset token missing!');
+      setError("Reset token missing!");
       setSubmitting(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords must match');
+      setError("Passwords must match");
       setSubmitting(false);
       return;
     }
 
     try {
-      await updateUserPassword({ password, token });
+      const response = await fetch('/api/update-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password, token }),
+      });
+
+      const result = await response.json();
+
+      if (result.error) {
+        setError(result.error);
+        setSubmitting(false);
+        return;
+      }
+
+      // Password reset was successful, show the success modal
+      console.log("Setting success modal to open");
       setIsSuccessModalOpen(true);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
   };
 
-
   const handleSuccessConfirm = () => {
+    console.log("Modal confirmed, redirecting to login");
     setIsSuccessModalOpen(false);
-    router.push('/');
+    router.push("/login"); 
   };
 
   return (
     <>
       <Formik
-        initialValues={{ password: '', confirmPassword: '' }}
+        initialValues={{ password: "", confirmPassword: "" }}
         validationSchema={UpdatePasswordSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form className={styles.inputContainer}>
-            <label htmlFor="password" className={styles.label}>New Password:</label>
+            <label htmlFor="password" className={styles.label}>
+              New Password:
+            </label>
             <Field
               id="password"
               name="password"
@@ -74,7 +92,6 @@ const UpdatePasswordForm = ({ token }) => {
               className={styles.input}
               aria-required="true"
               aria-describedby="passwordError"
-              autoComplete="new-password"
             />
             <ErrorMessage
               name="password"
@@ -84,7 +101,9 @@ const UpdatePasswordForm = ({ token }) => {
               role="alert"
             />
 
-            <label htmlFor="confirmPassword" className={styles.label}>Confirm New Password:</label>
+            <label htmlFor="confirmPassword" className={styles.label}>
+              Confirm New Password:
+            </label>
             <Field
               id="confirmPassword"
               name="confirmPassword"
@@ -92,7 +111,6 @@ const UpdatePasswordForm = ({ token }) => {
               className={styles.input}
               aria-required="true"
               aria-describedby="confirmPasswordError"
-              autoComplete="new-password"
             />
             <ErrorMessage
               name="confirmPassword"
@@ -126,6 +144,6 @@ const UpdatePasswordForm = ({ token }) => {
   );
 };
 
-UpdatePasswordForm.displayName = 'UpdatePasswordForm'
+UpdatePasswordForm.displayName = "UpdatePasswordForm";
 
 export default UpdatePasswordForm;

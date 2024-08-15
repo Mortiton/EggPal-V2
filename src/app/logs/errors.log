@@ -359,3 +359,5 @@ Wait timed out after 10136ms
 Wait timed out after 10022ms
 2024-08-11T19:02:06.390Z - test-failed: no such element: Unable to locate element: {"method":"xpath","selector":"//div[contains(text(), 'NO SAVED BREEDING COMBINATIONS FOUND')]"}
   (Session info: chrome-headless-shell=127.0.6533.100)
+2024-08-15T00:30:51.680Z - test-failed: Waiting for at least one element to be located By(css selector, .svg-inline--fa.fa-arrow-up, .svg-inline--fa.fa-arrow-down)
+Wait timed out after 5027ms
