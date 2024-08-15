@@ -148,11 +148,14 @@ export async function resetPassword(email) {
   });
 
   if (error) {
+    // Ensure the function handles and returns the error properly
     throw new Error(error.message);
   }
 
-  return { message: "Password reset email sent successfully" };
+  // Always return success regardless of whether an email was sent
+  return { message: "If an account with this email exists, a password reset email has been sent." };
 }
+
 
 export async function updateUserPassword({ password, token }) {
   console.log("updateUserPassword called with token:", token);

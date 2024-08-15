@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { resetPassword } from "@/app/services/authService";
-import SuccessModal from "@/app/components/SuccessModal";
-import { toast } from "react-toastify";
+import FeedbackModal from "@/app/components/FeedbackModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 const ForgotPasswordSchema = Yup.object().shape({
@@ -16,19 +15,32 @@ const ForgotPasswordSchema = Yup.object().shape({
 const ForgotPasswordForm = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "", type: "info" });
 
   const handleConfirm = () => {
     setIsModalOpen(false);
-    router.push("/login");
+    if (modalContent.type === "success") {
+      router.push("/login");
+    }
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       await resetPassword(values.email);
-      setIsModalOpen(true);
+      setModalContent({
+        title: "Success",
+        message: "If an account with this email exists, a password reset email has been sent. Please check your inbox.",
+        type: "success"
+      });
+      resetForm();
     } catch (error) {
-      toast.error('Failed to send reset email: ' + error.message);
+      setModalContent({
+        title: "Error",
+        message: error.message || "Failed to send reset email. Please try again.",
+        type: "error"
+      });
     } finally {
+      setIsModalOpen(true);
       setSubmitting(false);
     }
   };
@@ -68,16 +80,18 @@ const ForgotPasswordForm = () => {
               aria-live="polite"
               aria-label="Send reset link"
             >
-              Send Reset Link
+              {isSubmitting ? "Sending..." : "Send Reset Link"}
             </button>
           </Form>
         )}
       </Formik>
-      <SuccessModal
+      <FeedbackModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirm}
-        message="Password reset email sent! Check your inbox."
+        title={modalContent.title}
+        message={modalContent.message}
+        type={modalContent.type}
       />
     </>
   );

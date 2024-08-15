@@ -55,7 +55,7 @@ const RootLayout = async ({ children }) => {
             />
           </SavedCombinationsProvider>
         </FavouritesProvider>
-        <div id="modal-root"></div>
+        <div id="modal-root" style={{ position: 'fixed', zIndex: 9999 }}></div>
       </body>
     </html>
   );
