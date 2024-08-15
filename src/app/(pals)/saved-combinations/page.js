@@ -1,7 +1,6 @@
 import React from 'react';
-import { getSession } from "@/app/services/authService";
 import BreedingCombosDisplay from './components/BreedingCombosDisplay';
-import { SavedCombinationsProvider } from '@/app/context/SavedCombinationsContext';
+import { getUser } from '@/app/utils/getUser';
 import styles from './page.module.css';
 
 export const metadata = {
@@ -10,18 +9,19 @@ export const metadata = {
 };
 
 export default async function SavedBreedingPage() {
-  const session = await getSession();
+  const user = await getUser();
 
-  if (!session) {
+
+  if (!user) {
     return <div>Please log in to view this page.</div>;
   }
 
   return (
-    <SavedCombinationsProvider initialSession={session}>
+
       <div className={styles.container}>
         <h2 className={styles.title}>Saved Breeding Combinations</h2>
         <BreedingCombosDisplay />
       </div>
-    </SavedCombinationsProvider>
+
   );
 }
