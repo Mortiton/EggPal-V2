@@ -33,26 +33,33 @@ const UpdatePasswordForm = ({ token }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     setError("");
-    setSubmitting(true);
-    setIsModalOpen(false); // Ensure the modal is closed before starting
     const { password, confirmPassword } = values;
-  
+    
     if (!token) {
-      setError("Reset token missing!");
+      setModalContent({
+        title: "Error",
+        message: "Reset token missing!",
+        type: "error",
+      });
+      setIsModalOpen(true);
       setSubmitting(false);
       return;
     }
-  
+    
     if (password !== confirmPassword) {
-      setError("Passwords must match");
+      setModalContent({
+        title: "Error",
+        message: "Passwords must match!",
+        type: "error",
+      });
+      setIsModalOpen(true);
       setSubmitting(false);
       return;
     }
-  
+    
     try {
-      // Use the updateUserPassword function with the session and access token handling
       const result = await updateUserPassword({ password, token });
-  
+    
       if (result.error) {
         setModalContent({
           title: "Error",
@@ -66,20 +73,19 @@ const UpdatePasswordForm = ({ token }) => {
           type: "success",
         });
       }
-      setIsModalOpen(true);
-  
+    
     } catch (err) {
       setModalContent({
         title: "Error",
         message: err.message || "An unexpected error occurred.",
         type: "error",
       });
-      setIsModalOpen(true);
     } finally {
+      setIsModalOpen(true);  
       setSubmitting(false);
     }
   };
-
+  
   const handleSuccessConfirm = () => {
     setIsModalOpen(false);
     router.push("/"); 

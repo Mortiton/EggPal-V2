@@ -28,9 +28,7 @@ const ForgotPasswordForm = () => {
     }
   };
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    setSubmitting(true);
-    setIsModalOpen(false);
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await resetPassword(values.email);
       setModalContent({
@@ -39,17 +37,15 @@ const ForgotPasswordForm = () => {
           "If an account with this email exists, a password reset email has been sent. Please check your inbox.",
         type: "success",
       });
-      resetForm();
     } catch (error) {
       setModalContent({
         title: "Error",
-        message:
-          error.message || "Failed to send reset email. Please try again.",
+        message: error.message || "Failed to send reset email. Please try again.",
         type: "error",
       });
     } finally {
-      setIsModalOpen(true);
       setSubmitting(false);
+      setIsModalOpen(true); 
     }
   };
 
