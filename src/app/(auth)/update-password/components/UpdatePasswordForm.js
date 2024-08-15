@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import SuccessModal from "@/app/components/SuccessModal";
+import { updateUserPassword } from '@/app/services/authService'
+import FeedbackModal from "@/app/components/FeedbackModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 const UpdatePasswordSchema = Yup.object().shape({
@@ -23,54 +24,65 @@ const UpdatePasswordSchema = Yup.object().shape({
 const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    setError("");
+    setSubmitting(true);
+    setIsModalOpen(false); // Ensure the modal is closed before starting
     const { password, confirmPassword } = values;
-
+  
     if (!token) {
       setError("Reset token missing!");
       setSubmitting(false);
       return;
     }
-
+  
     if (password !== confirmPassword) {
       setError("Passwords must match");
       setSubmitting(false);
       return;
     }
-
+  
     try {
-      const response = await fetch('/api/update-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ password, token }),
-      });
-
-      const result = await response.json();
-
+      // Use the updateUserPassword function with the session and access token handling
+      const result = await updateUserPassword({ password, token });
+  
       if (result.error) {
-        setError(result.error);
-        setSubmitting(false);
-        return;
+        setModalContent({
+          title: "Error",
+          message: result.error,
+          type: "error",
+        });
+      } else if (result.success) {
+        setModalContent({
+          title: "Success",
+          message: "Your password has been updated successfully.",
+          type: "success",
+        });
       }
-
-      // Password reset was successful, show the success modal
-      console.log("Setting success modal to open");
-      setIsSuccessModalOpen(true);
+      setIsModalOpen(true);
+  
     } catch (err) {
-      setError(err.message);
+      setModalContent({
+        title: "Error",
+        message: err.message || "An unexpected error occurred.",
+        type: "error",
+      });
+      setIsModalOpen(true);
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleSuccessConfirm = () => {
-    console.log("Modal confirmed, redirecting to login");
-    setIsSuccessModalOpen(false);
-    router.push("/login"); // Redirect to the login page
+    setIsModalOpen(false);
+    router.push("/"); 
   };
 
   return (
@@ -134,11 +146,13 @@ const UpdatePasswordForm = ({ token }) => {
           </Form>
         )}
       </Formik>
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onRequestClose={() => setIsSuccessModalOpen(false)}
+      <FeedbackModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
         onConfirm={handleSuccessConfirm}
-        message="Your password has been updated successfully."
+        title={modalContent.title}
+        message={modalContent.message}
+        type={modalContent.type}
       />
     </>
   );

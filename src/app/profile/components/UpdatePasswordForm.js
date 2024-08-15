@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { updatePassword } from "@/app/services/profileService";
-import SuccessModal from "@/app/components/SuccessModal";
+import FeedbackModal from "@/app/components/FeedbackModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 // Define the validation schema for updating the password
@@ -33,7 +32,12 @@ const UpdatePasswordSchema = Yup.object().shape({
  */
 export default function UpdatePasswordForm() {
   const [error, setError] = useState(null);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   /**
    * Function to handle updating the password.
@@ -46,9 +50,19 @@ export default function UpdatePasswordForm() {
     setError(null);
     try {
       await updatePassword(values.currentPassword, values.newPassword);
-      setIsSuccessModalOpen(true);
+      setModalContent({
+        title: "Success",
+        message: "Your password has been successfully updated.",
+        type: "success",
+      });
+      setIsModalOpen(true);
     } catch (err) {
-      setError(err.message);
+      setModalContent({
+        title: "Error",
+        message: err.message,
+        type: "error",
+      });
+      setIsModalOpen(true);
     }
   };
 
@@ -56,8 +70,8 @@ export default function UpdatePasswordForm() {
    * Function to handle confirming the success modal.
    * It sets the success modal state to close.
    */
-  const handleSuccessConfirm = () => {
-    setIsSuccessModalOpen(false);
+  const handleModalConfirm = () => {
+    setIsModalOpen(false);
   };
 
   // Render the form
@@ -77,7 +91,7 @@ export default function UpdatePasswordForm() {
       >
         {({ isSubmitting }) => (
           <Form className={styles.inputContainer}>
-          <label htmlFor="currentPassword" className={styles.label}>
+            <label htmlFor="currentPassword" className={styles.label}>
               Current Password:
             </label>
             <Field
@@ -141,11 +155,13 @@ export default function UpdatePasswordForm() {
           </Form>
         )}
       </Formik>
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onRequestClose={handleSuccessConfirm}
-        onConfirm={handleSuccessConfirm}
-        message="Your password has been successfully updated."
+      <FeedbackModal
+        isOpen={isModalOpen}
+        onRequestClose={handleModalConfirm}
+        onConfirm={handleModalConfirm}
+        title={modalContent.title}
+        message={modalContent.message}
+        type={modalContent.type}
       />
     </>
   );

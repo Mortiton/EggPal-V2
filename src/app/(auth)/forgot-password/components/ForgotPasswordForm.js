@@ -15,29 +15,37 @@ const ForgotPasswordSchema = Yup.object().shape({
 const ForgotPasswordForm = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({ title: "", message: "", type: "info" });
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   const handleConfirm = () => {
     setIsModalOpen(false);
     if (modalContent.type === "success") {
-      router.push("/login");
+      router.push("/");
     }
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setSubmitting(true);
+    setIsModalOpen(false);
     try {
       await resetPassword(values.email);
       setModalContent({
         title: "Success",
-        message: "If an account with this email exists, a password reset email has been sent. Please check your inbox.",
-        type: "success"
+        message:
+          "If an account with this email exists, a password reset email has been sent. Please check your inbox.",
+        type: "success",
       });
       resetForm();
     } catch (error) {
       setModalContent({
         title: "Error",
-        message: error.message || "Failed to send reset email. Please try again.",
-        type: "error"
+        message:
+          error.message || "Failed to send reset email. Please try again.",
+        type: "error",
       });
     } finally {
       setIsModalOpen(true);
@@ -97,6 +105,6 @@ const ForgotPasswordForm = () => {
   );
 };
 
-ForgotPasswordForm.displayName = 'ForgotPasswordForm';
+ForgotPasswordForm.displayName = "ForgotPasswordForm";
 
 export default ForgotPasswordForm;

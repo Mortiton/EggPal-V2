@@ -20,7 +20,7 @@ export const metadata = {
  * @returns {JSX.Element} A React component.
  */
 export default async function ProfilePage() {
- const user = getUser();
+
   // Render the profile page
   return (
     <div className={styles.container}>

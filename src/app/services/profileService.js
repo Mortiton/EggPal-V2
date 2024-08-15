@@ -15,7 +15,6 @@ export async function updateEmail(email) {
       return { error: error.message };
     }
 
-    revalidatePath('/profile');
     return { success: true };
   } catch (error) {
     return { error: error.message };
@@ -51,13 +50,13 @@ export async function deleteUser() {
   const user = await getUser();
 
   if (!user) {
-    throw new Error("User not authenticated");
+    return { error: "User not authenticated" };
   }
 
   const { error } = await supabaseAdmin.rpc('deleteUser');
 
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   const supabase = createClient();
@@ -65,4 +64,6 @@ export async function deleteUser() {
 
   revalidatePath("/");
   redirect("/");
+
+  return { success: true };
 }

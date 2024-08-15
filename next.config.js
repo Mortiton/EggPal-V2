@@ -58,7 +58,7 @@ module.exports = {
     ];
   },
 
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     if (!isServer) {
       config.module.rules.push({
         test: /\.test\.js$/,
@@ -70,6 +70,11 @@ module.exports = {
     config.resolve.alias['@components'] = path.join(__dirname, 'src/app/components');
     config.resolve.alias['@styles'] = path.join(__dirname, 'src/app/styles');
     config.resolve.alias['@'] = path.join(__dirname, 'src');
+
+    // Disable Webpack cache in development mode
+    if (dev) {
+      config.cache = false;
+    }
 
     return config;
   },

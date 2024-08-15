@@ -156,16 +156,62 @@ export async function resetPassword(email) {
   return { message: "If an account with this email exists, a password reset email has been sent." };
 }
 
-
 export async function updateUserPassword({ password, token }) {
-  console.log("updateUserPassword called with token:", token);
+    const supabase = createClient();
+  
+    try {
+      // Step 1: Verify OTP to exchange the token for a session
+      const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
+        token_hash: token,
+        type: 'recovery',
+      });
+  
+      if (verifyError) {
+        console.error("OTP verification error:", verifyError);
+        return { error: verifyError.message };
+      }
+  
+      if (!verifyData || !verifyData.session) {
+        console.error("OTP verification failed or no session data returned.");
+        return { error: "OTP verification failed, no session data returned." };
+      }
+  
+      // Extract the access_token from the session
+      const { access_token } = verifyData.session;
+  
+      // Step 2: Update the user's password using the access token directly
+      const { error: updateError } = await supabase.auth.updateUser(
+        { password }, // Update the password
+        { headers: { Authorization: `Bearer ${access_token}` } } // Use the access token
+      );
+  
+      if (updateError) {
+        console.error("Password update error:", updateError);
+        return { error: updateError.message };
+      }
+  
+      console.log("Password updated successfully");
+      return { success: true };
+  
+    } catch (error) {
+      console.error("Unexpected error during password update:", error);
+      return { error: error.message };
+    }
+  }
+
+
+
+//debugging function for why updateUserPassword was not working
+export async function verifyOtpAndLogSession({ token }) {
   const supabase = createClient();
 
   try {
-    console.log("Verifying OTP...");
+    console.log(`Verifying OTP with token: ${token}...`);
+
+    // Verify OTP
     const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
       token_hash: token,
-      type: 'recovery'
+      type: 'recovery',
     });
 
     if (verifyError) {
@@ -173,24 +219,18 @@ export async function updateUserPassword({ password, token }) {
       return { error: verifyError.message };
     }
 
-    console.log("OTP verified successfully:", verifyData);
-
-    console.log("Updating user password...");
-    const { data: updateData, error: updateError } = await supabase.auth.updateUser({ password });
-
-    if (updateError) {
-      console.error("Password update error:", updateError);
-      return { error: updateError.message };
+    if (!verifyData) {
+      console.error("OTP verification returned null. Possibly an invalid or expired token.");
+      return { error: "OTP verification failed, no user data returned." };
     }
 
-    console.log("Password updated successfully:", updateData);
+    // Log the session data or any user-related data
+    console.log("Session or user data after OTP verification:", verifyData);
 
-    revalidatePath('/');
-    
-    return { success: true };
+    return verifyData;
 
   } catch (error) {
-    console.error("Unexpected error in updateUserPassword:", error);
+    console.error("Unexpected error during OTP verification:", error);
     return { error: error.message };
   }
 }

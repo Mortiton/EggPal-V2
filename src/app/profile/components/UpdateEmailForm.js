@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { updateEmail } from "@/app/services/profileService";
-import SuccessModal from "@/app/components/SuccessModal";
+import FeedbackModal from "@/app/components/FeedbackModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 // Define the validation schema for updating the email
@@ -16,35 +15,49 @@ const UpdateEmailSchema = Yup.object().shape({
 /**
  * UpdateEmailForm component that renders a form for updating the user's email.
  * It displays an error message if there is an error updating the email.
- * It also displays a success modal after the email is successfully updated.
+ * It also displays a feedback modal after the email is successfully updated or if an error occurs.
  *
  * @component
- * @param {Object} user - The user whose email is being updated.
  * @returns {JSX.Element} A React component.
  */
 export default function UpdateEmailForm() {
-  const [error, setError] = useState(null);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    type: "info",
+  });
 
   const handleEmailUpdate = async (values) => {
-    setError(null);
+    setModalContent({ title: "", message: "", type: "info" }); // Reset modal content
     try {
       const result = await updateEmail(values.email);
       if (result.error) {
-        throw new Error(result.error);
+        setModalContent({
+          title: "Error",
+          message: result.error,
+          type: "error",
+        });
+      } else if (result.success) {
+        setModalContent({
+          title: "Success",
+          message: "Please confirm the change on your new email address.",
+          type: "success",
+        });
       }
-      setIsSuccessModalOpen(true);
+      setIsModalOpen(true);
     } catch (err) {
-      setError(err.message);
+      setModalContent({
+        title: "Error",
+        message: err.message || "An unexpected error occurred.",
+        type: "error",
+      });
+      setIsModalOpen(true);
     }
   };
 
-  /**
-   * Function to handle confirming the success modal.
-   * It sets the success modal state to close.
-   */
-  const handleSuccessConfirm = () => {
-    setIsSuccessModalOpen(false);
+  const handleModalConfirm = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -76,12 +89,6 @@ export default function UpdateEmailForm() {
               className={styles.validation}
             />
 
-            {error && (
-              <div className={styles.error} role="alert">
-                {error}
-              </div>
-            )}
-
             <button
               className={styles.button}
               type="submit"
@@ -93,14 +100,17 @@ export default function UpdateEmailForm() {
           </Form>
         )}
       </Formik>
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onRequestClose={handleSuccessConfirm}
-        onConfirm={handleSuccessConfirm}
-        message="Please confirm the email change on your new email address."
+      <FeedbackModal
+        isOpen={isModalOpen}
+        onRequestClose={handleModalConfirm}
+        onConfirm={handleModalConfirm}
+        title={modalContent.title}
+        message={modalContent.message}
+        type={modalContent.type}
       />
     </>
   );
 }
 
 UpdateEmailForm.displayName = "UpdateEmailForm";
+

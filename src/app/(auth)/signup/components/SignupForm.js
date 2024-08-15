@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import TermsOfServiceModal from "./TermsOfServiceModal";
-import SuccessModal from "@/app/components/SuccessModal";
+import FeedbackModal from "@/app/components/FeedbackModal";
 import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
 import { signup, checkUserExists } from "@/app/services/authService";
@@ -28,21 +28,31 @@ const SignupSchema = Yup.object().shape({
 export default function SignupForm() {
   const router = useRouter();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "", type: "info" });
   const [formValues, setFormValues] = useState(null);
 
   const handleCheckUserAndOpenModal = async (values) => {
     try {
       const userExists = await checkUserExists(values.email);
       if (userExists) {
-        setError("User already registered");
+        setModalContent({
+          title: "Error",
+          message: "User already registered.",
+          type: "error"
+        });
+        setIsModalOpen(true);
       } else {
         setFormValues(values);
         setIsTermsModalOpen(true);
       }
     } catch (err) {
-      setError("An error occurred while checking user existence");
+      setModalContent({
+        title: "Error",
+        message: "An error occurred while checking user existence.",
+        type: "error"
+      });
+      setIsModalOpen(true);
       toast.error("Signup process failed");
     }
   };
@@ -56,21 +66,29 @@ export default function SignupForm() {
       formData.append("password", formValues.password);
 
       await signup(formData);
-      setIsSuccessModalOpen(true);
+      setModalContent({
+        title: "Success",
+        message: "Please check your email to complete the signup process.",
+        type: "success"
+      });
+      setIsModalOpen(true);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unexpected error occurred");
-      }
+      setModalContent({
+        title: "Error",
+        message: err instanceof Error ? err.message : "An unexpected error occurred.",
+        type: "error"
+      });
+      setIsModalOpen(true);
       toast.error("Signup failed");
     }
   };
 
   const handleSuccessConfirm = () => {
-    setIsSuccessModalOpen(false);
-    router.push("/");
-    router.refresh(); // Refresh the page to update the session
+    setIsModalOpen(false);
+    if (modalContent.type === "success") {
+      router.push("/");
+      router.refresh(); // Refresh the page to update the session
+    }
   };
 
   return (
@@ -79,7 +97,6 @@ export default function SignupForm() {
         initialValues={{ email: "", password: "", confirmPassword: "" }}
         validationSchema={SignupSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          setError(null);
           await handleCheckUserAndOpenModal(values);
           setSubmitting(false);
         }}
@@ -146,8 +163,6 @@ export default function SignupForm() {
               role="alert"
             />
 
-            {error && <div className={styles.error}>{error}</div>}
-
             <button
               className={styles.button}
               type="submit"
@@ -168,11 +183,13 @@ export default function SignupForm() {
           handleSignup();
         }}
       />
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onRequestClose={() => setIsSuccessModalOpen(false)}
+      <FeedbackModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
         onConfirm={handleSuccessConfirm}
-        message="Please check your emails to complete the signup process."
+        title={modalContent.title}
+        message={modalContent.message}
+        type={modalContent.type}
       />
     </>
   );
