@@ -1,15 +1,17 @@
 "use client";
 
-
 import React, { useState } from "react";
 import { deleteUser } from "@/app/services/profileService";
 import styles from "@/app/components/styles/FormStyles.module.css";
 import { useRouter } from 'next/navigation';
+import FeedbackModal from "@/app/components/FeedbackModal";
 
 export default function DeleteUserForm() {
   const [error, setError] = useState(null);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
   const router = useRouter();
 
   const handleUserDelete = async () => {
@@ -24,8 +26,10 @@ export default function DeleteUserForm() {
         console.error("Error from deleteUser:", result.error);
         setError(result.error);
       } else if (result.success) {
-        console.log("User deleted successfully, redirecting");
-        router.push('/');
+        console.log("User deleted successfully");
+        setFeedbackMessage(result.message || "Your account has been successfully deleted.");
+        setIsFeedbackModalOpen(true);
+        console.log("Feedback modal should be open now");
       } else {
         console.error("Unexpected result from deleteUser:", result);
         setError("An unexpected error occurred");
@@ -37,6 +41,14 @@ export default function DeleteUserForm() {
       setIsLoading(false);
     }
   };
+
+  const handleFeedbackModalClose = () => {
+    console.log("Closing feedback modal");
+    setIsFeedbackModalOpen(false);
+    router.push('/');
+  };
+
+  console.log("Current state:", { isFeedbackModalOpen, feedbackMessage });
 
   return (
     <div className={styles.inputContainer}>
@@ -68,6 +80,14 @@ export default function DeleteUserForm() {
           </button>
         </>
       )}
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onRequestClose={handleFeedbackModalClose}
+        onConfirm={handleFeedbackModalClose}
+        title="Account Deleted"
+        message={feedbackMessage}
+        type="success"
+      />
     </div>
   );
 }

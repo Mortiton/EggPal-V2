@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -28,20 +28,24 @@ const SignupSchema = Yup.object().shape({
 export default function SignupForm() {
   const router = useRouter();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({ title: "", message: "", type: "info" });
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    type: "info",
+  });
   const [formValues, setFormValues] = useState(null);
 
-  const handleCheckUserAndOpenModal = async (values) => {
+  const handleCheckUserAndOpenModal = useCallback(async (values) => {
     try {
       const userExists = await checkUserExists(values.email);
       if (userExists) {
         setModalContent({
           title: "Error",
           message: "User already registered.",
-          type: "error"
+          type: "error",
         });
-        setIsModalOpen(true);
+        setIsFeedbackModalOpen(true);
       } else {
         setFormValues(values);
         setIsTermsModalOpen(true);
@@ -50,14 +54,14 @@ export default function SignupForm() {
       setModalContent({
         title: "Error",
         message: "An error occurred while checking user existence.",
-        type: "error"
+        type: "error",
       });
-      setIsModalOpen(true);
+      setIsFeedbackModalOpen(true);
       toast.error("Signup process failed");
     }
-  };
+  }, []);
 
-  const handleSignup = async () => {
+  const handleSignup = useCallback(async () => {
     if (!formValues) return;
 
     try {
@@ -69,27 +73,39 @@ export default function SignupForm() {
       setModalContent({
         title: "Success",
         message: "Please check your email to complete the signup process.",
-        type: "success"
+        type: "success",
       });
-      setIsModalOpen(true);
+      setIsFeedbackModalOpen(true);
     } catch (err) {
       setModalContent({
         title: "Error",
-        message: err instanceof Error ? err.message : "An unexpected error occurred.",
-        type: "error"
+        message:
+          err instanceof Error ? err.message : "An unexpected error occurred.",
+        type: "error",
       });
-      setIsModalOpen(true);
+      setIsFeedbackModalOpen(true);
       toast.error("Signup failed");
     }
-  };
+  }, [formValues]);
 
-  const handleSuccessConfirm = () => {
-    setIsModalOpen(false);
+  const handleTermsAccept = useCallback(() => {
+    setIsTermsModalOpen(false);
+    setTimeout(() => {
+      handleSignup();
+    }, 100);
+  }, [handleSignup]);
+
+  const handleFeedbackModalClose = useCallback(() => {
+    setIsFeedbackModalOpen(false);
     if (modalContent.type === "success") {
       router.push("/");
-      router.refresh(); // Refresh the page to update the session
+      router.refresh();
     }
-  };
+  }, [modalContent.type, router]);
+
+  const handleFeedbackModalConfirm = useCallback(() => {
+    handleFeedbackModalClose();
+  }, [handleFeedbackModalClose]);
 
   return (
     <>
@@ -177,16 +193,13 @@ export default function SignupForm() {
       </Formik>
       <TermsOfServiceModal
         isOpen={isTermsModalOpen}
-        onRequestClose={() => setIsTermsModalOpen(false)}
-        onAccept={() => {
-          setIsTermsModalOpen(false);
-          handleSignup();
-        }}
+        onRequestClose={useCallback(() => setIsTermsModalOpen(false), [])}
+        onAccept={handleTermsAccept}
       />
       <FeedbackModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        onConfirm={handleSuccessConfirm}
+        isOpen={isFeedbackModalOpen}
+        onRequestClose={handleFeedbackModalClose}
+        onConfirm={handleFeedbackModalConfirm}
         title={modalContent.title}
         message={modalContent.message}
         type={modalContent.type}

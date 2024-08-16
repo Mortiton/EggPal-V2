@@ -2,7 +2,7 @@
 import { createClient } from "../utils/supabase/server";
 import supabaseAdmin from '../utils/supabase/supabaseAdminClient';
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { cookies } from 'next/headers';
 import { getUser } from './authService';
 
 export async function updateEmail(email) {
@@ -59,11 +59,17 @@ export async function deleteUser() {
     return { error: error.message };
   }
 
+  // Clear the user session
   const supabase = createClient();
   await supabase.auth.signOut();
 
-  revalidatePath("/");
-  redirect("/");
+  // Clear the user headers
+  const cookieStore = cookies();
+  cookieStore.delete('x-user-id');
+  cookieStore.delete('x-user-email');
 
-  return { success: true };
+  // Force a revalidation of the root layout
+  revalidatePath('/', 'layout');
+
+  return { success: true, message: "Your account has been successfully deleted." };
 }
