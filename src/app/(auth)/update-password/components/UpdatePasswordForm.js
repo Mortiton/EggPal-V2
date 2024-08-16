@@ -65,9 +65,9 @@ const UpdatePasswordForm = ({ token }) => {
       } else {
         setStatus(error.message || "An unexpected error occurred.");
       }
+      setIsModalOpen(true);
     } finally {
       setSubmitting(false);
-      setIsModalOpen(true);
     }
   }, [token]);
 
