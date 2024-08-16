@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -20,38 +20,54 @@ const ForgotPasswordForm = () => {
     message: "",
     type: "info",
   });
+  const [formKey, setFormKey] = useState(0);
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     setIsModalOpen(false);
     if (modalContent.type === "success") {
       router.push("/");
     }
-  };
+  }, [modalContent.type, router]);
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      await resetPassword(values.email);
-      setModalContent({
-        title: "Success",
-        message:
-          "If an account with this email exists, a password reset email has been sent. Please check your inbox.",
-        type: "success",
-      });
-    } catch (error) {
-      setModalContent({
-        title: "Error",
-        message: error.message || "Failed to send reset email. Please try again.",
-        type: "error",
-      });
-    } finally {
-      setSubmitting(false);
-      setIsModalOpen(true); 
-    }
-  };
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  const handleSubmit = useCallback(
+    async (values, { setSubmitting, resetForm }) => {
+      try {
+        const result = await resetPassword(values.email);
+
+        setModalContent({
+          title: result.success ? "Success" : "Error",
+          message: result.message,
+          type: result.success ? "success" : "error",
+        });
+
+        setIsModalOpen(true);
+
+        if (result.success) {
+          resetForm();
+          setFormKey(prev => prev + 1);
+        }
+      } catch (error) {
+        setModalContent({
+          title: "Error",
+          message: "An unexpected error occurred. Please try again.",
+          type: "error",
+        });
+        setIsModalOpen(true);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    []
+  );
 
   return (
     <>
       <Formik
+        key={formKey}
         initialValues={{ email: "" }}
         validationSchema={ForgotPasswordSchema}
         onSubmit={handleSubmit}
@@ -91,7 +107,7 @@ const ForgotPasswordForm = () => {
       </Formik>
       <FeedbackModal
         isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        onRequestClose={handleCloseModal}
         onConfirm={handleConfirm}
         title={modalContent.title}
         message={modalContent.message}

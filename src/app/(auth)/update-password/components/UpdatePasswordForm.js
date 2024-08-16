@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -23,82 +23,74 @@ const UpdatePasswordSchema = Yup.object().shape({
 
 const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
-  const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({
     title: "",
     message: "",
     type: "info",
   });
+  const [formKey, setFormKey] = useState(0);
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    setError("");
+  const handleSubmit = useCallback(async (values, { setSubmitting, setFieldError, setStatus, resetForm }) => {
     const { password, confirmPassword } = values;
     
     if (!token) {
-      setModalContent({
-        title: "Error",
-        message: "Reset token missing!",
-        type: "error",
-      });
-      setIsModalOpen(true);
+      setStatus("Reset token missing!");
       setSubmitting(false);
       return;
     }
     
     if (password !== confirmPassword) {
-      setModalContent({
-        title: "Error",
-        message: "Passwords must match!",
-        type: "error",
-      });
-      setIsModalOpen(true);
+      setFieldError("confirmPassword", "Passwords must match!");
       setSubmitting(false);
       return;
     }
-    
+  
     try {
       const result = await updateUserPassword({ password, token });
-    
-      if (result.error) {
-        setModalContent({
-          title: "Error",
-          message: result.error,
-          type: "error",
-        });
-      } else if (result.success) {
-        setModalContent({
-          title: "Success",
-          message: "Your password has been updated successfully.",
-          type: "success",
-        });
-      }
-    
-    } catch (err) {
+      
       setModalContent({
-        title: "Error",
-        message: err.message || "An unexpected error occurred.",
-        type: "error",
+        title: result.success ? "Success" : "Error",
+        message: result.message,
+        type: result.success ? "success" : "error",
       });
-    } finally {
-      setIsModalOpen(true);  
-      setSubmitting(false);
-    }
-  };
   
-  const handleSuccessConfirm = () => {
+      if (result.success) {
+        resetForm();
+        setFormKey(prev => prev + 1);
+      }
+    } catch (error) {
+      if (error.message.includes("New password should be different from the old password")) {
+        setFieldError("password", "New password must be different from your current password.");
+      } else {
+        setStatus(error.message || "An unexpected error occurred.");
+      }
+    } finally {
+      setSubmitting(false);
+      setIsModalOpen(true);
+    }
+  }, [token]);
+
+  const handleConfirm = useCallback(() => {
     setIsModalOpen(false);
-    router.push("/"); 
-  };
+    if (modalContent.type === "success") {
+      router.push("/");
+    }
+  }, [modalContent.type, router]);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
   return (
     <>
       <Formik
+        key={formKey}
         initialValues={{ password: "", confirmPassword: "" }}
         validationSchema={UpdatePasswordSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, status }) => (
           <Form className={styles.inputContainer}>
             <label htmlFor="password" className={styles.label}>
               New Password:
@@ -138,7 +130,7 @@ const UpdatePasswordForm = ({ token }) => {
               role="alert"
             />
 
-            {error && <div className={styles.error}>{error}</div>}
+            {status && <div className={styles.error}>{status}</div>}
 
             <button
               type="submit"
@@ -154,8 +146,8 @@ const UpdatePasswordForm = ({ token }) => {
       </Formik>
       <FeedbackModal
         isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        onConfirm={handleSuccessConfirm}
+        onRequestClose={handleCloseModal}
+        onConfirm={handleConfirm}
         title={modalContent.title}
         message={modalContent.message}
         type={modalContent.type}

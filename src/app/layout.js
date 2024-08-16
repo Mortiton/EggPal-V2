@@ -34,11 +34,7 @@ const RootLayout = async ({ children }) => {
             </header>
             <div className="page-container">
               <main className="content-wrap">
-                {React.Children.map(children, (child) =>
-                  React.isValidElement(child)
-                    ? React.cloneElement(child, { user })
-                    : child
-                )}
+                {children}
                 <SpeedInsights />
               </main>
 
