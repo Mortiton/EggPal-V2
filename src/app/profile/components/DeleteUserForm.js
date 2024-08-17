@@ -1,20 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { deleteUser } from "@/app/services/profileService";
 import styles from "@/app/components/styles/FormStyles.module.css";
 import { useRouter } from 'next/navigation';
 import FeedbackModal from "@/app/components/FeedbackModal";
+import { createClient } from '@/app/utils/supabase/client'
 
 export default function DeleteUserForm() {
   const [error, setError] = useState(null);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [modalContent, setModalContent] = useState({
+    title: "",
+    message: "",
+    type: "info",
+  });
   const router = useRouter();
+  const supabase = createClient();
 
-  const handleUserDelete = async () => {
+  const handleUserDelete = useCallback(async () => {
     setError(null);
     setIsLoading(true);
     try {
@@ -25,31 +31,56 @@ export default function DeleteUserForm() {
       if (result.error) {
         console.error("Error from deleteUser:", result.error);
         setError(result.error);
+        setModalContent(prevContent => ({
+          title: "Error",
+          message: result.error,
+          type: "error",
+        }));
       } else if (result.success) {
         console.log("User deleted successfully");
-        setFeedbackMessage(result.message || "Your account has been successfully deleted.");
-        setIsFeedbackModalOpen(true);
-        console.log("Feedback modal should be open now");
+        
+        // Force client-side logout
+        await supabase.auth.signOut();
+        
+        // Clear any user-related data from local storage
+        localStorage.removeItem('supabase.auth.token');
+        
+        setModalContent(prevContent => ({
+          title: "Account Deleted",
+          message: result.message || "Your account has been successfully deleted.",
+          type: "success",
+        }));
       } else {
         console.error("Unexpected result from deleteUser:", result);
         setError("An unexpected error occurred");
+        setModalContent(prevContent => ({
+          title: "Error",
+          message: "An unexpected error occurred",
+          type: "error",
+        }));
       }
+      setIsFeedbackModalOpen(true);
     } catch (err) {
       console.error("Caught error in handleUserDelete:", err);
       setError(err.message || "An unexpected error occurred");
+      setModalContent(prevContent => ({
+        title: "Error",
+        message: err.message || "An unexpected error occurred",
+        type: "error",
+      }));
+      setIsFeedbackModalOpen(true);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [supabase]);
 
-  const handleFeedbackModalClose = () => {
-    console.log("Closing feedback modal");
+  const handleFeedbackModalClose = useCallback(() => {
     setIsFeedbackModalOpen(false);
-    router.push('/');
-  };
-
-  console.log("Current state:", { isFeedbackModalOpen, feedbackMessage });
-
+    if (modalContent.type === "success") {
+      // Force a full page reload to ensure all state is cleared and server re-fetches user data
+      window.location.href = '/';
+    }
+  }, [modalContent.type]);
   return (
     <div className={styles.inputContainer}>
       {error && <div className={styles.error} role="alert">{error}</div>}
@@ -80,14 +111,16 @@ export default function DeleteUserForm() {
           </button>
         </>
       )}
-      <FeedbackModal
-        isOpen={isFeedbackModalOpen}
-        onRequestClose={handleFeedbackModalClose}
-        onConfirm={handleFeedbackModalClose}
-        title="Account Deleted"
-        message={feedbackMessage}
-        type="success"
-      />
+      {isFeedbackModalOpen && (
+        <FeedbackModal
+          isOpen={isFeedbackModalOpen}
+          onRequestClose={handleFeedbackModalClose}
+          onConfirm={handleFeedbackModalConfirm}
+          title={modalContent.title}
+          message={modalContent.message}
+          type={modalContent.type}
+        />
+      )}
     </div>
   );
 }

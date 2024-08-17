@@ -14,7 +14,7 @@ const ForgotPasswordSchema = Yup.object().shape({
 
 const ForgotPasswordForm = () => {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({
     title: "",
     message: "",
@@ -22,16 +22,16 @@ const ForgotPasswordForm = () => {
   });
   const [formKey, setFormKey] = useState(0);
 
-  const handleConfirm = useCallback(() => {
-    setIsModalOpen(false);
+  const handleFeedbackModalClose = useCallback(() => {
+    setIsFeedbackModalOpen(false);
     if (modalContent.type === "success") {
       router.push("/");
     }
   }, [modalContent.type, router]);
 
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
+  const handleFeedbackModalConfirm = useCallback(() => {
+    handleFeedbackModalClose();
+  }, [handleFeedbackModalClose]);
 
   const handleSubmit = useCallback(
     async (values, { setSubmitting, resetForm }) => {
@@ -44,7 +44,7 @@ const ForgotPasswordForm = () => {
           type: result.success ? "success" : "error",
         });
 
-        setIsModalOpen(true);
+        setIsFeedbackModalOpen(true);
 
         if (result.success) {
           resetForm();
@@ -56,7 +56,7 @@ const ForgotPasswordForm = () => {
           message: "An unexpected error occurred. Please try again.",
           type: "error",
         });
-        setIsModalOpen(true);
+        setIsFeedbackModalOpen(true);
       } finally {
         setSubmitting(false);
       }
@@ -106,9 +106,9 @@ const ForgotPasswordForm = () => {
         )}
       </Formik>
       <FeedbackModal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        onConfirm={handleConfirm}
+        isOpen={isFeedbackModalOpen}
+        onRequestClose={handleFeedbackModalClose}
+        onConfirm={handleFeedbackModalConfirm}
         title={modalContent.title}
         message={modalContent.message}
         type={modalContent.type}

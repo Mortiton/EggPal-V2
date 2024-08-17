@@ -23,7 +23,7 @@ const UpdatePasswordSchema = Yup.object().shape({
 
 const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({
     title: "",
     message: "",
@@ -55,6 +55,8 @@ const UpdatePasswordForm = ({ token }) => {
         type: result.success ? "success" : "error",
       });
   
+      setIsFeedbackModalOpen(true);
+
       if (result.success) {
         resetForm();
         setFormKey(prev => prev + 1);
@@ -65,22 +67,22 @@ const UpdatePasswordForm = ({ token }) => {
       } else {
         setStatus(error.message || "An unexpected error occurred.");
       }
-      setIsModalOpen(true);
+      setIsFeedbackModalOpen(true);
     } finally {
       setSubmitting(false);
     }
   }, [token]);
 
-  const handleConfirm = useCallback(() => {
-    setIsModalOpen(false);
+  const handleFeedbackModalClose = useCallback(() => {
+    setIsFeedbackModalOpen(false);
     if (modalContent.type === "success") {
       router.push("/");
     }
   }, [modalContent.type, router]);
 
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
+  const handleFeedbackModalConfirm = useCallback(() => {
+    handleFeedbackModalClose();
+  }, [handleFeedbackModalClose]);
 
   return (
     <>
@@ -145,9 +147,9 @@ const UpdatePasswordForm = ({ token }) => {
         )}
       </Formik>
       <FeedbackModal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        onConfirm={handleConfirm}
+        isOpen={isFeedbackModalOpen}
+        onRequestClose={handleFeedbackModalClose}
+        onConfirm={handleFeedbackModalConfirm}
         title={modalContent.title}
         message={modalContent.message}
         type={modalContent.type}

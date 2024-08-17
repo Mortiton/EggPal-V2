@@ -47,29 +47,37 @@ export async function updatePassword(currentPassword, newPassword) {
 }
 
 export async function deleteUser() {
+  const supabase = createClient();
   const user = await getUser();
 
   if (!user) {
     return { error: "User not authenticated" };
   }
 
-  const { error } = await supabaseAdmin.rpc('deleteUser');
+  try {
+    // Delete the user
+    const { error } = await supabaseAdmin.rpc('deleteUser');
 
-  if (error) {
-    return { error: error.message };
+    if (error) {
+      return { error: error.message };
+    }
+
+    // Clear the user session
+    await supabase.auth.signOut({ scope: 'global' });
+
+    // Clear any user-related cookies
+    const cookieStore = cookies();
+    cookieStore.delete('supabase-auth-token');
+    cookieStore.delete('x-user-id');
+    cookieStore.delete('x-user-email');
+
+    // Force a revalidation of the root layout
+    revalidatePath('/', 'layout');
+
+    // Return success
+    return { success: true, message: "Your account has been successfully deleted." };
+  } catch (error) {
+    console.error("Error in deleteUser:", error);
+    return { error: error.message || "An unexpected error occurred while deleting the user." };
   }
-
-  // Clear the user session
-  const supabase = createClient();
-  await supabase.auth.signOut();
-
-  // Clear the user headers
-  const cookieStore = cookies();
-  cookieStore.delete('x-user-id');
-  cookieStore.delete('x-user-email');
-
-  // Force a revalidation of the root layout
-  revalidatePath('/', 'layout');
-
-  return { success: true, message: "Your account has been successfully deleted." };
 }

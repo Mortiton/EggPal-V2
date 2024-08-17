@@ -1,64 +1,75 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { updateEmail } from "@/app/services/profileService";
 import FeedbackModal from "@/app/components/FeedbackModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
-// Define the validation schema for updating the email
 const UpdateEmailSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
 });
 
-/**
- * UpdateEmailForm component that renders a form for updating the user's email.
- * It displays an error message if there is an error updating the email.
- * It also displays a feedback modal after the email is successfully updated or if an error occurs.
- *
- * @component
- * @returns {JSX.Element} A React component.
- */
 export default function UpdateEmailForm() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({
     title: "",
     message: "",
     type: "info",
   });
 
-  const handleEmailUpdate = async (values) => {
-    setModalContent({ title: "", message: "", type: "info" }); // Reset modal content
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    // Ensure modal is closed on mount
+    setIsFeedbackModalOpen(false);
+    
+    // Cleanup function
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  const handleEmailUpdate = useCallback(async (values) => {
+    setModalContent(prevContent => ({ title: "", message: "", type: "info" })); // Reset modal content
     try {
       const result = await updateEmail(values.email);
       if (result.error) {
-        setModalContent({
+        setModalContent(prevContent => ({
           title: "Error",
           message: result.error,
           type: "error",
-        });
+        }));
       } else if (result.success) {
-        setModalContent({
+        setModalContent(prevContent => ({
           title: "Success",
           message: "Please confirm the change on your new email address.",
           type: "success",
-        });
+        }));
       }
-      setIsModalOpen(true);
+      setIsFeedbackModalOpen(true);
     } catch (err) {
-      setModalContent({
+      setModalContent(prevContent => ({
         title: "Error",
         message: err.message || "An unexpected error occurred.",
         type: "error",
-      });
-      setIsModalOpen(true);
+      }));
+      setIsFeedbackModalOpen(true);
     }
-  };
+  }, []);
 
-  const handleModalConfirm = () => {
-    setIsModalOpen(false);
-  };
+  const handleFeedbackModalClose = useCallback(() => {
+    setIsFeedbackModalOpen(false);
+  }, []);
+
+  const handleFeedbackModalConfirm = useCallback(() => {
+    handleFeedbackModalClose();
+  }, [handleFeedbackModalClose]);
+
+  useEffect(() => {
+    console.log("Current state:", { isFeedbackModalOpen, modalContent });
+  }, [isFeedbackModalOpen, modalContent]);
 
   return (
     <>
@@ -100,17 +111,18 @@ export default function UpdateEmailForm() {
           </Form>
         )}
       </Formik>
-      <FeedbackModal
-        isOpen={isModalOpen}
-        onRequestClose={handleModalConfirm}
-        onConfirm={handleModalConfirm}
-        title={modalContent.title}
-        message={modalContent.message}
-        type={modalContent.type}
-      />
+      {isFeedbackModalOpen && (
+        <FeedbackModal
+          isOpen={isFeedbackModalOpen}
+          onRequestClose={handleFeedbackModalClose}
+          onConfirm={handleFeedbackModalConfirm}
+          title={modalContent.title}
+          message={modalContent.message}
+          type={modalContent.type}
+        />
+      )}
     </>
   );
 }
 
 UpdateEmailForm.displayName = "UpdateEmailForm";
-
