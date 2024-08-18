@@ -1,14 +1,18 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import Modal from 'react-modal';
 import styles from './styles/FeedbackModal.module.css';
 
-// Ensure this is called once in your app, preferably in a root component
-if (typeof window !== 'undefined') {
-  Modal.setAppElement('#modal-root');
-}
-
 const FeedbackModal = ({ isOpen, onConfirm, title, message, type = 'info' }) => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      Modal.setAppElement('#modal-root');
+    }
+  }, []);
+
   console.log("FeedbackModal props:", { isOpen, title, message, type });
+
   const getTypeClass = () => {
     switch (type) {
       case 'success':
@@ -38,6 +42,7 @@ const FeedbackModal = ({ isOpen, onConfirm, title, message, type = 'info' }) => 
       }}
       closeTimeoutMS={300}
       portalClassName={styles.modalPortal}
+      parentSelector={() => document.getElementById('modal-root')}
     >
       <h2>{title}</h2>
       <p>{message}</p>

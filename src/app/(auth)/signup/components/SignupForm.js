@@ -1,16 +1,13 @@
 "use client";
-
-import React, { useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import TermsOfServiceModal from "./TermsOfServiceModal";
 import FeedbackModal from "@/app/components/FeedbackModal";
-import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
-import { signup, checkUserExists } from "@/app/services/authService";
+import { signup } from "@/app/services/authService";
+import { useFeedbackModal } from "@/app/context/FeedbackModalContext";
 
-// Define form validation schema using Yup
 const SignupSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string()
@@ -26,115 +23,52 @@ const SignupSchema = Yup.object().shape({
 });
 
 export default function SignupForm() {
-  const router = useRouter();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({
-    title: "",
-    message: "",
-    type: "info",
-  });
   const [formValues, setFormValues] = useState(null);
+  const { modalState, openFeedbackModal, handleModalClose } = useFeedbackModal();
 
-  useEffect(() => {
-    console.log("isFeedbackModalOpen:", isFeedbackModalOpen);
-    console.log("modalContent:", modalContent);
-  }, [isFeedbackModalOpen, modalContent]);
-
-  const handleCheckUserAndOpenModal = useCallback(async (values) => {
-    try {
-      const userExists = await checkUserExists(values.email);
-      if (userExists) {
-        setModalContent((prevContent) => ({
-          title: "Error",
-          message: "User already registered.",
-          type: "error",
-        }));
-        setIsFeedbackModalOpen(true);
-      } else {
-        setFormValues(values);
-        setIsTermsModalOpen(true);
-      }
-    } catch (err) {
-      setModalContent((prevContent) => ({
-        title: "Error",
-        message: "An error occurred while checking user existence.",
-        type: "error",
-      }));
-      setIsFeedbackModalOpen(true);
-      toast.error("Signup process failed");
-    }
+  const handleSubmit = useCallback((values, { setSubmitting }) => {
+    console.log("Form submitted:", values);
+    setFormValues(values);
+    setIsTermsModalOpen(true);
+    setSubmitting(false);
   }, []);
-  
-  const handleSignup = useCallback(async () => {
-    if (!formValues) return;
-  
+
+  const handleTermsAccept = useCallback(async () => {
+    console.log("Terms accepted, proceeding with signup");
+    setIsTermsModalOpen(false);
+
+    if (!formValues) {
+      console.error("Form values not found");
+      openFeedbackModal("Error", "An error occurred. Please try again.", "error");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("email", formValues.email);
       formData.append("password", formValues.password);
-  
-      await signup(formData);
-      
-      console.log("Signup successful, updating modal content");
-      setModalContent(prevContent => {
-        console.log("Previous modal content:", prevContent);
-        const newContent = {
-          title: "Success",
-          message: "Please check your email to complete the signup process.",
-          type: "success",
-        };
-        console.log("New modal content:", newContent);
-        return newContent;
-      });
-      
-      console.log("Setting feedback modal to open");
-      setIsFeedbackModalOpen(prevState => {
-        console.log("Previous isFeedbackModalOpen:", prevState);
-        return true;
-      });
-      
-    } catch (err) {
-      console.error("Signup error:", err);
-      setModalContent(prevContent => ({
-        title: "Error",
-        message: err instanceof Error ? err.message : "An unexpected error occurred.",
-        type: "error",
-      }));
-      setIsFeedbackModalOpen(true);
-      toast.error("Signup failed");
+
+      const result = await signup(formData);
+      console.log("Signup result:", result);
+
+      if (result.success) {
+        openFeedbackModal("Success", "Please check your email to complete the signup process.", "success");
+      } else {
+        openFeedbackModal("Error", result.message || "Signup failed. Please try again.", "error");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      openFeedbackModal("Error", "An unexpected error occurred. Please try again.", "error");
     }
-  }, [formValues]);
-
-  const handleTermsAccept = useCallback(() => {
-    setIsTermsModalOpen(false);
-    setTimeout(() => {
-      handleSignup();
-    }, 100);
-  }, [handleSignup]);
-
-  const handleFeedbackModalClose = useCallback(() => {
-    setIsFeedbackModalOpen(false);
-    if (modalContent.type === "success") {
-      router.push("/");
-      router.refresh();
-    }
-  }, [modalContent.type, router]);
-
-  const handleFeedbackModalConfirm = useCallback(() => {
-    handleFeedbackModalClose();
-  }, [handleFeedbackModalClose]);
+  }, [formValues, openFeedbackModal]);
 
   return (
     <>
-    
       <Formik
         initialValues={{ email: "", password: "", confirmPassword: "" }}
         validationSchema={SignupSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          await handleCheckUserAndOpenModal(values);
-          setSubmitting(false);
-        }}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form className={styles.inputContainer}>
@@ -210,21 +144,21 @@ export default function SignupForm() {
           </Form>
         )}
       </Formik>
+
       <TermsOfServiceModal
         isOpen={isTermsModalOpen}
-        onRequestClose={useCallback(() => setIsTermsModalOpen(false), [])}
+        onRequestClose={() => setIsTermsModalOpen(false)}
         onAccept={handleTermsAccept}
       />
+
       <FeedbackModal
-        isOpen={isFeedbackModalOpen}
-        onRequestClose={handleFeedbackModalClose}
-        onConfirm={handleFeedbackModalConfirm}
-        title={modalContent.title}
-        message={modalContent.message}
-        type={modalContent.type}
+        isOpen={modalState.isOpen}
+        onRequestClose={handleModalClose}
+        onConfirm={handleModalClose}
+        title={modalState.title}
+        message={modalState.message}
+        type={modalState.type}
       />
     </>
   );
 }
-
-SignupForm.displayName = "SignupForm";

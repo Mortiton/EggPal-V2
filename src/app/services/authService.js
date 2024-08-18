@@ -69,12 +69,7 @@ export async function checkUserExists(email) {
   return data.length > 0;
 }
 
-/**
- * Sign up a new user.
- *
- * @param {FormData} formData - The form data containing the user's email and password.
- * @throws {Error} If an error occurs while signing up the user.
- */
+
 export async function signup(formData) {
   const supabase = createClient();
 
@@ -83,19 +78,24 @@ export async function signup(formData) {
     password: formData.get("password"),
   };
 
-  const userExists = await checkUserExists(data.email);
+  try {
+    const userExists = await checkUserExists(data.email);
 
-  if (userExists) {
-    throw new Error("User already registered");
+    if (userExists) {
+      return { success: false, message: "User already registered" };
+    }
+
+    const { error } = await supabase.auth.signUp(data);
+
+    if (error) {
+      return { success: false, message: error.message };
+    }
+
+    return { success: true, message: "Please check your email to complete the signup process." };
+  } catch (error) {
+    console.error("Signup error:", error);
+    return { success: false, message: "An unexpected error occurred" };
   }
-  const { error } = await supabase.auth.signUp(data);
-
-  if (error) {
-    redirect("/error");
-  }
-
-  // Revalidate the cache for the root path
-  revalidatePath("/", "layout");
 }
 
 /**

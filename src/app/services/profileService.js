@@ -71,8 +71,6 @@ export async function deleteUser() {
     cookieStore.delete('x-user-id');
     cookieStore.delete('x-user-email');
 
-    // Force a revalidation of the root layout
-    revalidatePath('/', 'layout');
 
     // Return success
     return { success: true, message: "Your account has been successfully deleted." };

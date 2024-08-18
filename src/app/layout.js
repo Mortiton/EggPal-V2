@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import { FavouritesProvider } from "./context/FavouritesContext";
 import { SavedCombinationsProvider } from "./context/SavedCombinationsContext";
+import { FeedbackModalProvider } from "./context/FeedbackModalContext";
 import { getUser } from "./utils/getUser";
 
 export const metadata = {
@@ -27,31 +28,36 @@ const RootLayout = async ({ children }) => {
   return (
     <html lang="en">
       <body className={mainFont.className}>
-        <FavouritesProvider initialUser={user}>
-          <SavedCombinationsProvider initialUser={user}>
-            <header>
-              <NavBar user={user} />
-            </header>
-            <div className="page-container">
-              <main className="content-wrap">
-                {children}
-                <SpeedInsights />
-              </main>
+        <FeedbackModalProvider>
+          <FavouritesProvider initialUser={user}>
+            <SavedCombinationsProvider initialUser={user}>
+              <header>
+                <NavBar user={user} />
+              </header>
+              <div className="page-container">
+                <main className="content-wrap">
+                  {children}
+                  <div
+                    id="modal-root"
+                    style={{ position: "fixed", zIndex: 9999 }}
+                  ></div>
+                  <SpeedInsights />
+                </main>
 
-              <footer>
-                <Footer />
-              </footer>
-            </div>
-            <ToastContainer
-              theme="dark"
-              style={{ top: "100px" }}
-              autoClose={1000}
-              hideProgressBar={true}
-              position="top-left"
-            />
-          </SavedCombinationsProvider>
-        </FavouritesProvider>
-        <div id="modal-root" style={{ position: 'fixed', zIndex: 9999 }}></div>
+                <footer>
+                  <Footer />
+                </footer>
+              </div>
+              <ToastContainer
+                theme="dark"
+                style={{ top: "100px" }}
+                autoClose={1000}
+                hideProgressBar={true}
+                position="top-left"
+              />
+            </SavedCombinationsProvider>
+          </FavouritesProvider>
+        </FeedbackModalProvider>
       </body>
     </html>
   );

@@ -1,126 +1,77 @@
-"use client";
+'use client';
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { deleteUser } from "@/app/services/profileService";
 import styles from "@/app/components/styles/FormStyles.module.css";
-import { useRouter } from 'next/navigation';
 import FeedbackModal from "@/app/components/FeedbackModal";
 import { createClient } from '@/app/utils/supabase/client'
+import { useFeedbackModal } from "@/app/context/FeedbackModalContext";
 
 export default function DeleteUserForm() {
-  const [error, setError] = useState(null);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({
-    title: "",
-    message: "",
-    type: "info",
-  });
-  const router = useRouter();
-  const supabase = createClient();
+  const { modalState, openFeedbackModal, handleModalClose } = useFeedbackModal();
 
   const handleUserDelete = useCallback(async () => {
-    setError(null);
     setIsLoading(true);
     try {
-      console.log("Calling deleteUser");
       const result = await deleteUser();
-      console.log("deleteUser result:", result);
-      
+  
       if (result.error) {
-        console.error("Error from deleteUser:", result.error);
-        setError(result.error);
-        setModalContent(prevContent => ({
-          title: "Error",
-          message: result.error,
-          type: "error",
-        }));
+        openFeedbackModal("Error", result.error, "error");
       } else if (result.success) {
-        console.log("User deleted successfully");
-        
-        // Force client-side logout
-        await supabase.auth.signOut();
-        
-        // Clear any user-related data from local storage
-        localStorage.removeItem('supabase.auth.token');
-        
-        setModalContent(prevContent => ({
-          title: "Account Deleted",
-          message: result.message || "Your account has been successfully deleted.",
-          type: "success",
-        }));
+        openFeedbackModal("Account Deleted", result.message || "Your account has been successfully deleted.", "success");
       } else {
-        console.error("Unexpected result from deleteUser:", result);
-        setError("An unexpected error occurred");
-        setModalContent(prevContent => ({
-          title: "Error",
-          message: "An unexpected error occurred",
-          type: "error",
-        }));
+        openFeedbackModal("Error", "An unexpected error occurred", "error");
       }
-      setIsFeedbackModalOpen(true);
     } catch (err) {
-      console.error("Caught error in handleUserDelete:", err);
-      setError(err.message || "An unexpected error occurred");
-      setModalContent(prevContent => ({
-        title: "Error",
-        message: err.message || "An unexpected error occurred",
-        type: "error",
-      }));
-      setIsFeedbackModalOpen(true);
+      openFeedbackModal("Error", err.message || "An unexpected error occurred", "error");
     } finally {
       setIsLoading(false);
     }
-  }, [supabase]);
+  }, [openFeedbackModal]);
 
-  const handleFeedbackModalClose = useCallback(() => {
-    setIsFeedbackModalOpen(false);
-    if (modalContent.type === "success") {
-      // Force a full page reload to ensure all state is cleared and server re-fetches user data
-      window.location.href = '/';
-    }
-  }, [modalContent.type]);
   return (
-    <div className={styles.inputContainer}>
-      {error && <div className={styles.error} role="alert">{error}</div>}
-      {!isConfirmVisible ? (
-        <button
-          className={styles.button}
-          onClick={() => setIsConfirmVisible(true)}
-          style={{ backgroundColor: "red", color: "white" }}
-        >
-          Delete Account
-        </button>
-      ) : (
-        <>
+    <>
+      <div className={styles.inputContainer}>
+        {!isConfirmVisible ? (
           <button
             className={styles.button}
-            onClick={handleUserDelete}
-            disabled={isLoading}
+            onClick={() => setIsConfirmVisible(true)}
             style={{ backgroundColor: "red", color: "white" }}
           >
-            {isLoading ? "Processing..." : "Are you sure? Confirm Delete"}
+            Delete Account
           </button>
-          <button
-            className={styles.cancelButton}
-            onClick={() => setIsConfirmVisible(false)}
-            disabled={isLoading}
-          >
-            Cancel
-          </button>
-        </>
-      )}
-      {isFeedbackModalOpen && (
+        ) : (
+          <>
+            <button
+              className={styles.button}
+              onClick={handleUserDelete}
+              disabled={isLoading}
+              style={{ backgroundColor: "red", color: "white" }}
+            >
+              {isLoading ? "Processing..." : "Are you sure? Confirm Delete"}
+            </button>
+            <button
+              className={styles.cancelButton}
+              onClick={() => setIsConfirmVisible(false)}
+              disabled={isLoading}
+            >
+              Cancel
+            </button>
+          </>
+        )}
+      </div>
+      {modalState.isOpen && (
         <FeedbackModal
-          isOpen={isFeedbackModalOpen}
-          onRequestClose={handleFeedbackModalClose}
-          onConfirm={handleFeedbackModalConfirm}
-          title={modalContent.title}
-          message={modalContent.message}
-          type={modalContent.type}
+          isOpen={modalState.isOpen}
+          onRequestClose={handleModalClose}
+          onConfirm={handleModalClose}
+          title={modalState.title}
+          message={modalState.message}
+          type={modalState.type}
         />
       )}
-    </div>
+    </>
   );
 }
