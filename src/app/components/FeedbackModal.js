@@ -8,6 +8,7 @@ if (typeof window !== 'undefined') {
 }
 
 const FeedbackModal = ({ isOpen, onConfirm, title, message, type = 'info' }) => {
+  console.log("FeedbackModal props:", { isOpen, title, message, type });
   const getTypeClass = () => {
     switch (type) {
       case 'success':

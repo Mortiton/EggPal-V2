@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -36,53 +36,71 @@ export default function SignupForm() {
   });
   const [formValues, setFormValues] = useState(null);
 
+  useEffect(() => {
+    console.log("isFeedbackModalOpen:", isFeedbackModalOpen);
+    console.log("modalContent:", modalContent);
+  }, [isFeedbackModalOpen, modalContent]);
+
   const handleCheckUserAndOpenModal = useCallback(async (values) => {
     try {
       const userExists = await checkUserExists(values.email);
       if (userExists) {
-        setModalContent({
+        setModalContent((prevContent) => ({
           title: "Error",
           message: "User already registered.",
           type: "error",
-        });
+        }));
         setIsFeedbackModalOpen(true);
       } else {
         setFormValues(values);
         setIsTermsModalOpen(true);
       }
     } catch (err) {
-      setModalContent({
+      setModalContent((prevContent) => ({
         title: "Error",
         message: "An error occurred while checking user existence.",
         type: "error",
-      });
+      }));
       setIsFeedbackModalOpen(true);
       toast.error("Signup process failed");
     }
   }, []);
-
+  
   const handleSignup = useCallback(async () => {
     if (!formValues) return;
-
+  
     try {
       const formData = new FormData();
       formData.append("email", formValues.email);
       formData.append("password", formValues.password);
-
+  
       await signup(formData);
-      setModalContent({
-        title: "Success",
-        message: "Please check your email to complete the signup process.",
-        type: "success",
+      
+      console.log("Signup successful, updating modal content");
+      setModalContent(prevContent => {
+        console.log("Previous modal content:", prevContent);
+        const newContent = {
+          title: "Success",
+          message: "Please check your email to complete the signup process.",
+          type: "success",
+        };
+        console.log("New modal content:", newContent);
+        return newContent;
       });
-      setIsFeedbackModalOpen(true);
+      
+      console.log("Setting feedback modal to open");
+      setIsFeedbackModalOpen(prevState => {
+        console.log("Previous isFeedbackModalOpen:", prevState);
+        return true;
+      });
+      
     } catch (err) {
-      setModalContent({
+      console.error("Signup error:", err);
+      setModalContent(prevContent => ({
         title: "Error",
-        message:
-          err instanceof Error ? err.message : "An unexpected error occurred.",
+        message: err instanceof Error ? err.message : "An unexpected error occurred.",
         type: "error",
-      });
+      }));
       setIsFeedbackModalOpen(true);
       toast.error("Signup failed");
     }
@@ -109,6 +127,7 @@ export default function SignupForm() {
 
   return (
     <>
+    
       <Formik
         initialValues={{ email: "", password: "", confirmPassword: "" }}
         validationSchema={SignupSchema}
