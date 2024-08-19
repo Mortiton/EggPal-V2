@@ -2,11 +2,10 @@
 import React, { useState, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useRouter } from 'next/navigation';
 import TermsOfServiceModal from "./TermsOfServiceModal";
-import FeedbackModal from "@/app/components/FeedbackModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 import { signup } from "@/app/services/authService";
-import { useFeedbackModal } from "@/app/context/FeedbackModalContext";
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -25,7 +24,8 @@ const SignupSchema = Yup.object().shape({
 export default function SignupForm() {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [formValues, setFormValues] = useState(null);
-  const { modalState, openFeedbackModal, handleModalClose } = useFeedbackModal();
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = useCallback((values, { setSubmitting }) => {
     console.log("Form submitted:", values);
@@ -40,7 +40,7 @@ export default function SignupForm() {
 
     if (!formValues) {
       console.error("Form values not found");
-      openFeedbackModal("Error", "An error occurred. Please try again.", "error");
+      setError("An error occurred. Please try again.");
       return;
     }
 
@@ -53,15 +53,15 @@ export default function SignupForm() {
       console.log("Signup result:", result);
 
       if (result.success) {
-        openFeedbackModal("Success", "Please check your email to complete the signup process.", "success");
+        router.push('/success?title=Signup Email Sent&description=Please check your emails to complete signup.');
       } else {
-        openFeedbackModal("Error", result.message || "Signup failed. Please try again.", "error");
+        setError(result.message || "Signup failed. Please try again.");
       }
     } catch (error) {
       console.error("Signup error:", error);
-      openFeedbackModal("Error", "An unexpected error occurred. Please try again.", "error");
+      setError("An unexpected error occurred. Please try again.");
     }
-  }, [formValues, openFeedbackModal]);
+  }, [formValues, router]);
 
   return (
     <>
@@ -132,6 +132,12 @@ export default function SignupForm() {
               role="alert"
             />
 
+            {error && (
+              <div className={styles.error} role="alert">
+                {error}
+              </div>
+            )}
+
             <button
               className={styles.button}
               type="submit"
@@ -149,15 +155,6 @@ export default function SignupForm() {
         isOpen={isTermsModalOpen}
         onRequestClose={() => setIsTermsModalOpen(false)}
         onAccept={handleTermsAccept}
-      />
-
-      <FeedbackModal
-        isOpen={modalState.isOpen}
-        onRequestClose={handleModalClose}
-        onConfirm={handleModalClose}
-        title={modalState.title}
-        message={modalState.message}
-        type={modalState.type}
       />
     </>
   );
