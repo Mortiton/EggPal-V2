@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import { FavouritesProvider } from "./context/FavouritesContext";
 import { SavedCombinationsProvider } from "./context/SavedCombinationsContext";
-import { FeedbackModalProvider } from "./context/FeedbackModalContext";
 import { getUser } from "./utils/getUser";
 
 export const metadata = {
@@ -28,7 +27,6 @@ const RootLayout = async ({ children }) => {
   return (
     <html lang="en">
       <body className={mainFont.className}>
-        <FeedbackModalProvider>
           <FavouritesProvider initialUser={user}>
             <SavedCombinationsProvider initialUser={user}>
               <header>
@@ -57,7 +55,6 @@ const RootLayout = async ({ children }) => {
               />
             </SavedCombinationsProvider>
           </FavouritesProvider>
-        </FeedbackModalProvider>
       </body>
     </html>
   );

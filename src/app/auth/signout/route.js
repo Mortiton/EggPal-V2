@@ -47,25 +47,25 @@ export async function POST(req) {
     
     if (getUserError) {
       console.error('Error getting user:', getUserError)
-      return NextResponse.json({ error: 'Failed to get user' }, { status: 500 })
+      return NextResponse.redirect(new URL('/error', req.url), {
+        status: 302,
+      })
     }
 
     console.log('User check completed. User:', user ? 'Logged in' : 'Not logged in')
 
-    // If a user is logged in, sign out the user
-    if (user) {
-      console.log('Attempting to sign out user')
-      const { error: signOutError } = await supabase.auth.signOut()
-      
-      if (signOutError) {
-        console.error('Error signing out:', signOutError)
-        return NextResponse.json({ error: 'Failed to sign out' }, { status: 500 })
-      }
-      
-      console.log('User successfully signed out')
-    } else {
-      console.log('No user to sign out')
+    // Always attempt to sign out, regardless of user state
+    console.log('Attempting to sign out user')
+    const { error: signOutError } = await supabase.auth.signOut()
+    
+    if (signOutError) {
+      console.error('Error signing out:', signOutError)
+      return NextResponse.redirect(new URL('/error', req.url), {
+        status: 302,
+      })
     }
+    
+    console.log('Sign out attempt completed')
 
     // Revalidate the cache for the root path
     console.log('Revalidating cache')
@@ -78,6 +78,8 @@ export async function POST(req) {
     })
   } catch (error) {
     console.error('Unexpected error in logout route:', error)
-    return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 })
+    return NextResponse.redirect(new URL('/error', req.url), {
+      status: 302,
+    })
   }
 }

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { updateUserPassword } from '@/app/services/authService'
-import FeedbackModal from "@/app/components/FeedbackModal";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 const UpdatePasswordSchema = Yup.object().shape({
@@ -23,19 +22,13 @@ const UpdatePasswordSchema = Yup.object().shape({
 
 const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({
-    title: "",
-    message: "",
-    type: "info",
-  });
-  const [formKey, setFormKey] = useState(0);
+  const [error, setError] = useState("");
 
-  const handleSubmit = useCallback(async (values, { setSubmitting, setFieldError, setStatus, resetForm }) => {
+  const handleSubmit = useCallback(async (values, { setSubmitting, setFieldError }) => {
     const { password, confirmPassword } = values;
     
     if (!token) {
-      setStatus("Reset token missing!");
+      setError("Reset token missing!");
       setSubmitting(false);
       return;
     }
@@ -49,112 +42,82 @@ const UpdatePasswordForm = ({ token }) => {
     try {
       const result = await updateUserPassword({ password, token });
       
-      setModalContent({
-        title: result.success ? "Success" : "Error",
-        message: result.message,
-        type: result.success ? "success" : "error",
-      });
-  
-      setIsFeedbackModalOpen(true);
-
       if (result.success) {
-        resetForm();
-        setFormKey(prev => prev + 1);
+        router.push(`/success?title=${encodeURIComponent("Password Updated")}&description=${encodeURIComponent(result.message)}`);
+      } else {
+        if (result.message.includes("New password should be different from the old password")) {
+          setFieldError("password", "New password must be different from your current password.");
+        } else {
+          setError(result.message || "Failed to update password. Please try again.");
+        }
       }
     } catch (error) {
-      if (error.message.includes("New password should be different from the old password")) {
-        setFieldError("password", "New password must be different from your current password.");
-      } else {
-        setStatus(error.message || "An unexpected error occurred.");
-      }
-      setIsFeedbackModalOpen(true);
+      setError(error.message || "An unexpected error occurred.");
     } finally {
       setSubmitting(false);
     }
-  }, [token]);
-
-  const handleFeedbackModalClose = useCallback(() => {
-    setIsFeedbackModalOpen(false);
-    if (modalContent.type === "success") {
-      router.push("/");
-    }
-  }, [modalContent.type, router]);
-
-  const handleFeedbackModalConfirm = useCallback(() => {
-    handleFeedbackModalClose();
-  }, [handleFeedbackModalClose]);
+  }, [token, router]);
 
   return (
-    <>
-      <Formik
-        key={formKey}
-        initialValues={{ password: "", confirmPassword: "" }}
-        validationSchema={UpdatePasswordSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting, status }) => (
-          <Form className={styles.inputContainer}>
-            <label htmlFor="password" className={styles.label}>
-              New Password:
-            </label>
-            <Field
-              id="password"
-              name="password"
-              type="password"
-              className={styles.input}
-              aria-required="true"
-              aria-describedby="passwordError"
-            />
-            <ErrorMessage
-              name="password"
-              component="div"
-              className={styles.validation}
-              id="passwordError"
-              role="alert"
-            />
+    <Formik
+      initialValues={{ password: "", confirmPassword: "" }}
+      validationSchema={UpdatePasswordSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form className={styles.inputContainer}>
+          <label htmlFor="password" className={styles.label}>
+            New Password:
+          </label>
+          <Field
+            id="password"
+            name="password"
+            type="password"
+            className={styles.input}
+            aria-required="true"
+            aria-describedby="passwordError"
+          />
+          <ErrorMessage
+            name="password"
+            component="div"
+            className={styles.validation}
+            id="passwordError"
+            role="alert"
+          />
 
-            <label htmlFor="confirmPassword" className={styles.label}>
-              Confirm New Password:
-            </label>
-            <Field
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              className={styles.input}
-              aria-required="true"
-              aria-describedby="confirmPasswordError"
-            />
-            <ErrorMessage
-              name="confirmPassword"
-              component="div"
-              className={styles.validation}
-              id="confirmPasswordError"
-              role="alert"
-            />
+          <label htmlFor="confirmPassword" className={styles.label}>
+            Confirm New Password:
+          </label>
+          <Field
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            className={styles.input}
+            aria-required="true"
+            aria-describedby="confirmPasswordError"
+          />
+          <ErrorMessage
+            name="confirmPassword"
+            component="div"
+            className={styles.validation}
+            id="confirmPasswordError"
+            role="alert"
+          />
 
-            {status && <div className={styles.error}>{status}</div>}
+          {error && <div className={styles.error} role="alert">{error}</div>}
 
-            <button
-              type="submit"
-              className={styles.button}
-              disabled={isSubmitting}
-              aria-busy={isSubmitting}
-              aria-live="polite"
-            >
-              Update Password
-            </button>
-          </Form>
-        )}
-      </Formik>
-      <FeedbackModal
-        isOpen={isFeedbackModalOpen}
-        onRequestClose={handleFeedbackModalClose}
-        onConfirm={handleFeedbackModalConfirm}
-        title={modalContent.title}
-        message={modalContent.message}
-        type={modalContent.type}
-      />
-    </>
+          <button
+            type="submit"
+            className={styles.button}
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+            aria-live="polite"
+          >
+            Update Password
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

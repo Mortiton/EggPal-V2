@@ -1,77 +1,73 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { deleteUser } from "@/app/services/profileService";
 import styles from "@/app/components/styles/FormStyles.module.css";
-import FeedbackModal from "@/app/components/FeedbackModal";
-import { createClient } from '@/app/utils/supabase/client'
-import { useFeedbackModal } from "@/app/context/FeedbackModalContext";
 
 export default function DeleteUserForm() {
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { modalState, openFeedbackModal, handleModalClose } = useFeedbackModal();
+  const [error, setError] = useState("");
 
   const handleUserDelete = useCallback(async () => {
     setIsLoading(true);
+    setError("");
     try {
       const result = await deleteUser();
   
       if (result.error) {
-        openFeedbackModal("Error", result.error, "error");
+        setError(result.error);
       } else if (result.success) {
-        openFeedbackModal("Account Deleted", result.message || "Your account has been successfully deleted.", "success");
+        // Call the logout route with the correct path
+        const logoutResponse = await fetch('/auth/signout', { method: 'POST' });
+        
+        if (logoutResponse.ok) {
+          // Force a hard refresh of the page
+          window.location.href = '/success?title=' + encodeURIComponent("Account Deleted") + '&description=' + encodeURIComponent(result.message || "Your account has been successfully deleted.");
+        } else {
+          setError("Account deleted but logout failed. Please manually log out.");
+        }
       } else {
-        openFeedbackModal("Error", "An unexpected error occurred", "error");
+        setError("An unexpected error occurred");
       }
     } catch (err) {
-      openFeedbackModal("Error", err.message || "An unexpected error occurred", "error");
+      setError(err.message || "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
-  }, [openFeedbackModal]);
+  }, []);
 
   return (
-    <>
-      <div className={styles.inputContainer}>
-        {!isConfirmVisible ? (
+    <div className={styles.inputContainer}>
+      {error && <div className={styles.error} role="alert">{error}</div>}
+      
+      {!isConfirmVisible ? (
+        <button
+          className={styles.button}
+          onClick={() => setIsConfirmVisible(true)}
+          style={{ backgroundColor: "red", color: "white" }}
+        >
+          Delete Account
+        </button>
+      ) : (
+        <>
           <button
             className={styles.button}
-            onClick={() => setIsConfirmVisible(true)}
+            onClick={handleUserDelete}
+            disabled={isLoading}
             style={{ backgroundColor: "red", color: "white" }}
           >
-            Delete Account
+            {isLoading ? "Processing..." : "Are you sure? Confirm Delete"}
           </button>
-        ) : (
-          <>
-            <button
-              className={styles.button}
-              onClick={handleUserDelete}
-              disabled={isLoading}
-              style={{ backgroundColor: "red", color: "white" }}
-            >
-              {isLoading ? "Processing..." : "Are you sure? Confirm Delete"}
-            </button>
-            <button
-              className={styles.cancelButton}
-              onClick={() => setIsConfirmVisible(false)}
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-          </>
-        )}
-      </div>
-      {modalState.isOpen && (
-        <FeedbackModal
-          isOpen={modalState.isOpen}
-          onRequestClose={handleModalClose}
-          onConfirm={handleModalClose}
-          title={modalState.title}
-          message={modalState.message}
-          type={modalState.type}
-        />
+          <button
+            className={styles.cancelButton}
+            onClick={() => setIsConfirmVisible(false)}
+            disabled={isLoading}
+          >
+            Cancel
+          </button>
+        </>
       )}
-    </>
+    </div>
   );
 }

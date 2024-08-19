@@ -53,7 +53,7 @@ export default function SignupForm() {
       console.log("Signup result:", result);
 
       if (result.success) {
-        router.push('/success?title=Signup Email Sent&description=Please check your emails to complete signup.');
+        router.push(`/success?title=${encodeURIComponent("Signup Email Sent")}&description=${encodeURIComponent("Please check your emails to complete signup.")}`);
       } else {
         setError(result.message || "Signup failed. Please try again.");
       }
