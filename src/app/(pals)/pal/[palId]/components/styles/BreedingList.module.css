@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  
 }
 
 .searchContainer {
@@ -12,10 +11,8 @@
 
 .breedingList {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 10px;
   width: 100%;
 }
@@ -25,11 +22,54 @@
   color: #555;
 }
 
+@media (max-width: 480px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  .searchContainer {
+    margin-bottom: 15px;
+  }
+
+  .breedingList {
+    gap: 15px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  .breedingList {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 @media (min-width: 768px) {
   .breedingList {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
-    width: 100%;
+    justify-content: center;
+    gap: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .searchContainer {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .breedingList {
+    gap: 30px;
   }
 }
