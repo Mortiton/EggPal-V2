@@ -49,7 +49,7 @@ describe("PalDetailsCard Component", () => {
         pal={mockPal}
         isFavourited={false}
         onToggleFavourite={() => {}}
-        session={null}
+        user={null}
       />
     );
 
@@ -60,13 +60,13 @@ describe("PalDetailsCard Component", () => {
   });
 
   // Test favourite icon behaviour when user is not signed in
-  it("displays a toast message when attempting to favourite without a session", () => {
+  it("displays a toast message when attempting to favourite without a user", () => {
     render(
       <PalDetailsCard
         pal={mockPal}
         isFavourited={false}
         onToggleFavourite={() => {}}
-        session={null}
+        user={null}
       />
     );
 
@@ -79,14 +79,14 @@ describe("PalDetailsCard Component", () => {
   });
 
   // Test favourite icon behaviour when user is signed in
-  it("calls onToggleFavourite when favourite icon is clicked with a valid session", () => {
+  it("calls onToggleFavourite when favourite icon is clicked with a valid user", () => {
     const mockToggleFavourite = jest.fn();
     render(
       <PalDetailsCard
         pal={mockPal}
         isFavourited={false}
         onToggleFavourite={mockToggleFavourite}
-        session={{ user: {} }}
+        user={{ id: '1', name: 'Test User' }}
       />
     );
 
@@ -103,7 +103,7 @@ describe("PalDetailsCard Component", () => {
         pal={mockPal}
         isFavourited={false}
         onToggleFavourite={() => {}}
-        session={null}
+        user={null}
       />
     );
 
@@ -117,7 +117,7 @@ describe("PalDetailsCard Component", () => {
         pal={mockPal}
         isFavourited={true}
         onToggleFavourite={() => {}}
-        session={null}
+        user={null}
       />
     );
 
@@ -134,7 +134,7 @@ describe("PalDetailsCard Component", () => {
         pal={mockPal}
         isFavourited={false}
         onToggleFavourite={() => {}}
-        session={null}
+        user={null}
       />
     );
 

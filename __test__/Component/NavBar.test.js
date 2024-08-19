@@ -1,88 +1,62 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import NavBar from "@/app/components/NavBar";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import NavBar from '@/app/components/NavBar';
 
 // Mock the next/link component
-jest.mock("next/link", () => {
+jest.mock('next/link', () => {
   return ({ children, href }) => {
     return <a href={href}>{children}</a>;
   };
 });
 
 // Mock the BurgerMenu component
-jest.mock("@/app/components/BurgerMenu", () => {
+jest.mock('@/app/components/BurgerMenu', () => {
   return function MockBurgerMenu({ isAuthenticated }) {
-    return <div data-testid="burger-menu">BurgerMenu</div>;
+    return <div data-testid="burger-menu">MockBurgerMenu</div>;
   };
 });
 
-// Mock the getSession function
-jest.mock("@/app/services/authService", () => ({
-  getSession: jest.fn(),
-}));
-
-// Mock the redirect function
-jest.mock("next/navigation", () => ({
-  redirect: jest.fn(),
-}));
-
-// Mock the CSS module
-jest.mock("@/app/components/styles/NavBar.module.css", () => ({
-  navbar: "mockNavbar",
-  title: "mockTitle",
-  navLinks: "mockNavLinks",
-  link: "mockLink",
-  logoutBtn: "mockLogoutBtn",
-}));
-
-describe("NavBar Component", () => {
-  // Helper function to render the NavBar with a specific authentication state
-  const renderNavBar = async (isAuthenticated) => {
-    const { getSession } = require("@/app/services/authService");
-    getSession.mockResolvedValue(isAuthenticated ? { user: {} } : null);
-    const NavBarComponent = await NavBar();
-    render(NavBarComponent);
-  };
-
-  it("renders the navbar with the correct title", async () => {
-    await renderNavBar(false);
-    
-    // Check if the title is present and links to the home page
-    const titleLink = screen.getByRole("link", { name: "EggPal" });
-    expect(titleLink).toHaveTextContent("EggPal");
-    expect(titleLink).toHaveAttribute("href", "/");
+describe('NavBar', () => {
+  it('renders the logo link', () => {
+    render(<NavBar />);
+    const logoLink = screen.getByRole('link', { name: /EggPal/i });
+    expect(logoLink).toBeInTheDocument();
+    expect(logoLink).toHaveAttribute('href', '/');
   });
 
-  it("renders login and signup links when user is not authenticated", async () => {
-    await renderNavBar(false);
-    
-    // Check for login and signup links
-    expect(screen.getByRole("link", { name: "Login" })).toHaveAttribute("href", "/login");
-    expect(screen.getByRole("link", { name: "Signup" })).toHaveAttribute("href", "/signup");
+  it('renders login and signup links when user is not authenticated', () => {
+    render(<NavBar user={null} />);
+    expect(screen.getByRole('link', { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /signup/i })).toBeInTheDocument();
   });
 
-  it("renders authenticated user links when user is logged in", async () => {
-    await renderNavBar(true);
+  it('renders authenticated user links when user is authenticated', () => {
+    render(<NavBar user={{ id: '1', name: 'Test User' }} />);
+    expect(screen.getByRole('link', { name: /favourite pals/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /saved combinations/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /profile/i })).toBeInTheDocument();
     
-    // Check for authenticated user links
-    expect(screen.getByRole("link", { name: "Favourite Pals" })).toHaveAttribute("href", "/favourite-pals");
-    expect(screen.getByRole("link", { name: "Saved Combinations" })).toHaveAttribute("href", "/saved-combinations");
-    expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
+    // Check for the logout button
+    const logoutButton = screen.getByRole('menuitem', { name: /logout/i });
+    expect(logoutButton).toBeInTheDocument();
+    expect(logoutButton).toHaveAttribute('type', 'submit');
     
-    // Check for logout button
-    expect(screen.getByRole("menuitem", { name: "logout" })).toBeInTheDocument();
+    // Check if the logout button is within a form
+    const form = logoutButton.closest('form');
+    expect(form).toBeInTheDocument();
+    expect(form).toHaveAttribute('action', '/auth/signout');
+    expect(form).toHaveAttribute('method', 'post');
   });
 
-  it("renders the BurgerMenu component", async () => {
-    await renderNavBar(false);
-    
-    // Check if BurgerMenu is rendered
-    expect(screen.getByTestId("burger-menu")).toBeInTheDocument();
+  it('does not render login and signup links when user is authenticated', () => {
+    render(<NavBar user={{ id: '1', name: 'Test User' }} />);
+    expect(screen.queryByRole('link', { name: /login/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /signup/i })).not.toBeInTheDocument();
   });
 
-  it("has correct display name", () => {
-    // Ensure the component has the correct display name
-    expect(NavBar.displayName).toBe("NavBar");
+  it('renders the BurgerMenu component', () => {
+    render(<NavBar />);
+    expect(screen.getByTestId('burger-menu')).toBeInTheDocument();
   });
 });

@@ -41,7 +41,7 @@ const ForgotPasswordForm = () => {
       onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
-        <Form className={styles.inputContainer}>
+        <Form className={styles.inputContainer} role="form">
           <label htmlFor="email" className={styles.label}>
             Email:
           </label>

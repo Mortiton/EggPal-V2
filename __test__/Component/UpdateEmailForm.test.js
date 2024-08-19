@@ -1,95 +1,143 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import UpdateEmailForm from '@/app/profile/components/UpdateEmailForm';
-import { updateEmail } from '@/app/profile/actions';
+import { updateEmail } from '@/app/services/profileService';
+import { toast } from 'react-toastify';
 
-// Mock the updateEmail function
-jest.mock('@/app/profile/actions', () => ({
+// Mock the profileService
+jest.mock('@/app/services/profileService', () => ({
   updateEmail: jest.fn(),
 }));
-describe('UpdateEmailForm component', () => {
-    const user = { email: 'test@example.com' };
-  
-    beforeEach(() => {
-      updateEmail.mockClear();
-      // Add a #modal-root element to the document body
-      const modalRoot = document.createElement('div');
-      modalRoot.setAttribute('id', 'modal-root');
-      document.body.appendChild(modalRoot);
+
+// Mock react-toastify
+jest.mock('react-toastify', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
+describe('UpdateEmailForm', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders the form fields correctly', () => {
+    render(<UpdateEmailForm />);
+    
+    const emailInput = screen.getByRole('textbox', { name: /email input field/i });
+    expect(emailInput).toBeInTheDocument();
+    expect(emailInput).toHaveAttribute('type', 'email');
+
+    expect(screen.getByText(/email:/i)).toBeInTheDocument();
+
+    const submitButton = screen.getByRole('button', { name: /update email/i });
+    expect(submitButton).toBeInTheDocument();
+    expect(submitButton).toHaveTextContent('Update Email');
+  });
+
+  it('displays validation error for invalid email', async () => {
+    render(<UpdateEmailForm />);
+    
+    await act(async () => {
+      const emailInput = screen.getByRole('textbox', { name: /email input field/i });
+      fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+      fireEvent.blur(emailInput);
     });
-  
-    afterEach(() => {
-      // Clean up the #modal-root element after each test
-      const modalRoot = document.getElementById('modal-root');
-      if (modalRoot) {
-        document.body.removeChild(modalRoot);
-      }
-    });
-  
-    test('renders the form with initial values', () => {
-      render(<UpdateEmailForm user={user} />);
-  
-      expect(screen.getByLabelText(/Email:/i)).toHaveValue(user.email);
-    });
-  
-    test('validates the email field and shows error messages', async () => {
-      render(<UpdateEmailForm user={user} />);
-  
-      fireEvent.change(screen.getByLabelText(/Email:/i), {
-        target: { value: 'invalid-email' },
-      });
-      fireEvent.blur(screen.getByLabelText(/Email:/i));
-  
-      await waitFor(() => {
-        expect(screen.getByText(/Invalid email/i)).toBeInTheDocument();
-      });
-  
-      fireEvent.change(screen.getByLabelText(/Email:/i), {
-        target: { value: '' },
-      });
-      fireEvent.blur(screen.getByLabelText(/Email:/i));
-  
-      await waitFor(() => {
-        expect(screen.getByText(/Required/i)).toBeInTheDocument();
-      });
-    });
-  
-    test('submits the form and shows success modal', async () => {
-      updateEmail.mockResolvedValueOnce({});
-  
-      render(<UpdateEmailForm user={user} />);
-  
-      fireEvent.change(screen.getByLabelText(/Email:/i), {
-        target: { value: 'new-email@example.com' },
-      });
-      fireEvent.click(screen.getByRole('button', { name: /Update Email/i }));
-  
-      await waitFor(() => {
-        expect(updateEmail).toHaveBeenCalledWith('new-email@example.com');
-        expect(screen.getByText(/Please confirm the email change on your new email address./i)).toBeInTheDocument();
-      });
-  
-      fireEvent.click(screen.getByRole('button', { name: /OK/i }));
-  
-      await waitFor(() => {
-        expect(screen.queryByText(/Please confirm the email change on your new email address./i)).not.toBeInTheDocument();
-      });
-    });
-  
-    test('shows error message when update fails', async () => {
-      const errorMessage = 'Update failed';
-      updateEmail.mockRejectedValueOnce(new Error(errorMessage));
-  
-      render(<UpdateEmailForm user={user} />);
-  
-      fireEvent.change(screen.getByLabelText(/Email:/i), {
-        target: { value: 'new-email@example.com' },
-      });
-      fireEvent.click(screen.getByRole('button', { name: /Update Email/i }));
-  
-      await waitFor(() => {
-        expect(updateEmail).toHaveBeenCalledWith('new-email@example.com');
-        expect(screen.getByRole('alert')).toHaveTextContent(errorMessage);
-      });
+
+    await waitFor(() => {
+      expect(screen.getByText('Invalid email')).toBeInTheDocument();
     });
   });
+
+  it('displays required error when submitting empty form', async () => {
+    render(<UpdateEmailForm />);
+    
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /update email/i }));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Required')).toBeInTheDocument();
+    });
+  });
+
+  it('calls updateEmail service and shows success toast on successful submission', async () => {
+    updateEmail.mockResolvedValue({ success: true });
+    
+    render(<UpdateEmailForm />);
+    
+    await act(async () => {
+      const emailInput = screen.getByRole('textbox', { name: /email input field/i });
+      fireEvent.change(emailInput, { target: { value: 'new@example.com' } });
+      fireEvent.click(screen.getByRole('button', { name: /update email/i }));
+    });
+
+    await waitFor(() => {
+      expect(updateEmail).toHaveBeenCalledWith('new@example.com');
+      expect(toast.success).toHaveBeenCalledWith(
+        "Please confirm the change on your new email address.",
+        expect.any(Object)
+      );
+    });
+  });
+
+  it('shows error toast on failed submission', async () => {
+    const errorMessage = 'Failed to update email';
+    updateEmail.mockResolvedValue({ error: errorMessage });
+    
+    render(<UpdateEmailForm />);
+    
+    await act(async () => {
+      const emailInput = screen.getByRole('textbox', { name: /email input field/i });
+      fireEvent.change(emailInput, { target: { value: 'new@example.com' } });
+      fireEvent.click(screen.getByRole('button', { name: /update email/i }));
+    });
+
+    await waitFor(() => {
+      expect(updateEmail).toHaveBeenCalledWith('new@example.com');
+      expect(toast.error).toHaveBeenCalledWith(
+        errorMessage,
+        expect.any(Object)
+      );
+    });
+  });
+
+  it('shows error toast on unexpected error', async () => {
+    updateEmail.mockRejectedValue(new Error('Unexpected error'));
+    
+    render(<UpdateEmailForm />);
+    
+    await act(async () => {
+      const emailInput = screen.getByRole('textbox', { name: /email input field/i });
+      fireEvent.change(emailInput, { target: { value: 'new@example.com' } });
+      fireEvent.click(screen.getByRole('button', { name: /update email/i }));
+    });
+
+    await waitFor(() => {
+      expect(updateEmail).toHaveBeenCalledWith('new@example.com');
+      expect(toast.error).toHaveBeenCalledWith(
+        'Unexpected error',
+        expect.any(Object)
+      );
+    });
+  });
+
+  it('resets form after successful submission', async () => {
+    updateEmail.mockResolvedValue({ success: true });
+    
+    render(<UpdateEmailForm />);
+    
+    await act(async () => {
+      const emailInput = screen.getByRole('textbox', { name: /email input field/i });
+      fireEvent.change(emailInput, { target: { value: 'new@example.com' } });
+      fireEvent.click(screen.getByRole('button', { name: /update email/i }));
+    });
+
+    await waitFor(() => {
+      const emailInput = screen.getByRole('textbox', { name: /email input field/i });
+      expect(emailInput).toHaveValue('');
+    });
+  });
+});

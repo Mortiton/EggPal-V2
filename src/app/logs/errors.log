@@ -361,3 +361,13 @@ Wait timed out after 10022ms
   (Session info: chrome-headless-shell=127.0.6533.100)
 2024-08-15T00:30:51.680Z - test-failed: Waiting for at least one element to be located By(css selector, .svg-inline--fa.fa-arrow-up, .svg-inline--fa.fa-arrow-down)
 Wait timed out after 5027ms
+2024-08-19T19:03:44.682Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=127.0.6533.120)
+2024-08-19T19:03:44.913Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=127.0.6533.120)
+2024-08-19T19:03:45.012Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=127.0.6533.120)
+2024-08-19T19:03:45.332Z - login: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=127.0.6533.120)
+2024-08-19T19:03:59.028Z - test-failed: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome-headless-shell=127.0.6533.120)

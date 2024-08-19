@@ -1,172 +1,140 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import UpdatePasswordForm from "@/app/profile/components/UpdatePasswordForm";
-import { updatePassword } from "@/app/profile/actions";
+import UpdatePasswordForm from "@/app/(auth)/update-password/components/UpdatePasswordForm";
+import "@testing-library/jest-dom";
+import { resetPassword } from "@/app/(auth)/update-password/actions";
+import { useRouter } from "next/navigation";
 
-jest.mock("@/app/profile/actions", () => ({
-  updatePassword: jest.fn(),
+// Mock the resetPassword action and useRouter hook
+jest.mock("@/app/(auth)/update-password/actions", () => ({
+  resetPassword: jest.fn(),
 }));
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
+jest.mock("@/app/components/SuccessModal", () =>
+  jest.fn(({ isOpen, onConfirm, message }) =>
+    isOpen ? <div role="dialog">{message}</div> : null
+  )
+);
 
-describe("UpdatePasswordForm component", () => {
+describe("UpdatePasswordForm Component", () => {
+  const mockPush = jest.fn();
+  useRouter.mockReturnValue({ push: mockPush });
+
   beforeEach(() => {
-    // Set up a div with id "modal-root" before each test
-    const modalRoot = document.createElement("div");
-    modalRoot.setAttribute("id", "modal-root");
-    document.body.appendChild(modalRoot);
+    jest.clearAllMocks();
   });
 
-  afterEach(() => {
-    // Clean up the div with id "modal-root" after each test
-    const modalRoot = document.getElementById("modal-root");
-    if (modalRoot) {
-      document.body.removeChild(modalRoot);
-    }
+  // Test case to render the component
+  it("renders the UpdatePasswordForm component correctly", () => {
+    render(<UpdatePasswordForm accessToken="dummyToken" />);
+
+    // Check if the password and confirmPassword fields, and the submit button are displayed
+    expect(screen.getByLabelText("New Password:")).toBeInTheDocument();
+    expect(screen.getByLabelText("Confirm New Password:")).toBeInTheDocument();
+    expect(screen.getByText("Update Password")).toBeInTheDocument();
   });
 
-  /**
-   * Test to verify that the UpdatePasswordForm component renders correctly.
-   */
-  test("renders the form fields and submit button", () => {
-    render(<UpdatePasswordForm />);
+  // Test case for form validation
+  it("validates the form fields correctly", async () => {
+    render(<UpdatePasswordForm accessToken="dummyToken" />);
 
-    expect(
-      screen.getByLabelText("Current password input field")
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("New password input field")
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("Confirm new password input field")
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Update password button" })
-    ).toBeInTheDocument();
-  });
+    // Click the submit button without entering any values
+    fireEvent.click(screen.getByText("Update Password"));
 
-  /**
-   * Test to verify that validation errors are displayed for empty fields.
-   */
-  test("displays validation errors for empty fields", async () => {
-    render(<UpdatePasswordForm />);
+    // Check if the validation messages are displayed
+    expect(await screen.findAllByText("Required")).toHaveLength(2);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Update password button" })
-    );
-
-    await waitFor(() => {
-      expect(screen.getAllByText("Required")).toHaveLength(3);
-    });
-  });
-
-  /**
-   * Test to verify that validation errors are displayed for invalid password.
-   */
-  test("displays validation errors for invalid password", async () => {
-    render(<UpdatePasswordForm />);
-
-    fireEvent.change(screen.getByLabelText("New password input field"), {
+    // Enter a short password and submit
+    fireEvent.change(screen.getByLabelText("New Password:"), {
       target: { value: "short" },
     });
-    fireEvent.click(
-      screen.getByRole("button", { name: "Update password button" })
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.getByText("Password is too short - should be 8 chars minimum.")
-      ).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Confirm New Password:"), {
+      target: { value: "short" },
     });
+    fireEvent.click(screen.getByText("Update Password"));
+
+    // Check if the validation message for short password is displayed
+    expect(
+      await screen.findByText(
+        "Password is too short - should be 8 chars minimum."
+      )
+    ).toBeInTheDocument();
+
+    // Enter a valid password but different confirm password and submit
+    fireEvent.change(screen.getByLabelText("New Password:"), {
+      target: { value: "Valid1@Password" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirm New Password:"), {
+      target: { value: "DifferentPassword1@" },
+    });
+    fireEvent.click(screen.getByText("Update Password"));
+
+    // Check if the validation message for password mismatch is displayed
+    expect(await screen.findByText("Passwords must match")).toBeInTheDocument();
   });
 
-  /**
-   * Test to verify that passwords must match validation works.
-   */
-  test("displays validation error when passwords do not match", async () => {
-    render(<UpdatePasswordForm />);
+  // Test case for successful form submission
+  it("submits the form successfully", async () => {
+    resetPassword.mockResolvedValueOnce();
+    render(<UpdatePasswordForm accessToken="dummyToken" />);
 
-    fireEvent.change(screen.getByLabelText("New password input field"), {
-      target: { value: "ValidPassword123!" },
+    // Enter valid password and confirm password and submit
+    fireEvent.change(screen.getByLabelText("New Password:"), {
+      target: { value: "Valid1@Password" },
     });
-    fireEvent.change(
-      screen.getByLabelText("Confirm new password input field"),
-      {
-        target: { value: "DifferentPassword123!" },
-      }
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Update password button" })
-    );
+    fireEvent.change(screen.getByLabelText("Confirm New Password:"), {
+      target: { value: "Valid1@Password" },
+    });
+    fireEvent.click(screen.getByText("Update Password"));
 
+    // Check if the resetPassword action is called with the correct values
     await waitFor(() => {
-      expect(screen.getByText("Passwords must match")).toBeInTheDocument();
+      expect(resetPassword).toHaveBeenCalledWith({
+        password: "Valid1@Password",
+        accessToken: "dummyToken",
+      });
     });
+
+    // Check if the success modal is displayed
+    expect(await screen.findByRole("dialog")).toHaveTextContent(
+      "Your password has been updated successfully."
+    );
   });
 
-  /**
-   * Test to verify that the password is successfully updated.
-   */
-  test("calls updatePassword with correct values and shows success modal", async () => {
-    updatePassword.mockResolvedValueOnce();
-    render(<UpdatePasswordForm />);
+  // Test case for failed form submission
+  it("handles form submission failure", async () => {
+    const errorMessage = "Failed to update password";
+    resetPassword.mockRejectedValueOnce(new Error(errorMessage));
+    render(<UpdatePasswordForm accessToken="dummyToken" />);
 
-    fireEvent.change(screen.getByLabelText("Current password input field"), {
-      target: { value: "CurrentPassword123!" },
+    // Enter valid password and confirm password and submit
+    fireEvent.change(screen.getByLabelText("New Password:"), {
+      target: { value: "Valid1@Password" },
     });
-    fireEvent.change(screen.getByLabelText("New password input field"), {
-      target: { value: "NewPassword123!" },
+    fireEvent.change(screen.getByLabelText("Confirm New Password:"), {
+      target: { value: "Valid1@Password" },
     });
-    fireEvent.change(
-      screen.getByLabelText("Confirm new password input field"),
-      {
-        target: { value: "NewPassword123!" },
-      }
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Update password button" })
-    );
+    fireEvent.click(screen.getByText("Update Password"));
 
+    // Check if the resetPassword action is called with the correct values
     await waitFor(() => {
-      expect(updatePassword).toHaveBeenCalledWith(
-        "CurrentPassword123!",
-        "NewPassword123!"
-      );
-      expect(
-        screen.getByText("Your password has been successfully updated.")
-      ).toBeInTheDocument();
+      expect(resetPassword).toHaveBeenCalledWith({
+        password: "Valid1@Password",
+        accessToken: "dummyToken",
+      });
     });
+
+    // Check if the error message is displayed
+    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
 
-  /**
-   * Test to verify that an error message is displayed when updating the password fails.
-   */
-  test("displays an error message when updating the password fails", async () => {
-    updatePassword.mockRejectedValueOnce(new Error("Update failed"));
-    render(<UpdatePasswordForm />);
+  // Test case for missing access token
+  it("displays error message when access token is missing", async () => {
+    render(<UpdatePasswordForm accessToken="" />);
 
-    fireEvent.change(screen.getByLabelText("Current password input field"), {
-      target: { value: "CurrentPassword123!" },
-    });
-    fireEvent.change(screen.getByLabelText("New password input field"), {
-      target: { value: "NewPassword123!" },
-    });
-    fireEvent.change(
-      screen.getByLabelText("Confirm new password input field"),
-      {
-        target: { value: "NewPassword123!" },
-      }
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: "Update password button" })
-    );
-
-    await waitFor(() => {
-      expect(updatePassword).toHaveBeenCalledWith(
-        "CurrentPassword123!",
-        "NewPassword123!"
-      );
-      expect(screen.getByText("Update failed")).toBeInTheDocument();
-    });
+    // Check if the error message for missing token is displayed
+    expect(await screen.findByText("Reset token missing!")).toBeInTheDocument();
   });
 });
