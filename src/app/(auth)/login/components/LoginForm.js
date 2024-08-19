@@ -50,7 +50,6 @@ export default function LoginForm() {
       router.refresh(); 
     } catch (err) {
       setError(err.message);
-      toast.error('Login failed');
     } finally {
       setSubmitting(false);
     }
