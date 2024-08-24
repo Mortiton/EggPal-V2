@@ -1,3 +1,4 @@
+import React from "react";
 import LoginForm from "./components/LoginForm";
 import styles from "../../components/styles/FormPage.module.css";
 import Link from "next/link";

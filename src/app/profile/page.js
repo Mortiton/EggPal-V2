@@ -1,3 +1,4 @@
+import React from 'react';
 import UpdateEmailForm from './components/UpdateEmailForm';
 import UpdatePasswordForm from './components/UpdatePasswordForm';
 import DeleteUserForm from './components/DeleteUserForm';

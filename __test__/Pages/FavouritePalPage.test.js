@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import FavouritePalsPage from '@/app/(pals)/favourite-pals/page';w
+import FavouritePalsPage from '@/app/(pals)/favourite-pals/page';
 
 // Mock the FavouritePalsDisplay component
 jest.mock('@/app/(pals)/favourite-pals/components/FavouritePalsDisplay', () => {
