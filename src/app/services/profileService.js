@@ -2,15 +2,22 @@
 import { createClient } from "../utils/supabase/server";
 import supabaseAdmin from '../utils/supabase/supabaseAdminClient';
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { cookies } from 'next/headers';
 import { getUser } from './authService';
 
 export async function updateEmail(email) {
   const supabase = createClient();
-  const { error } = await supabase.auth.updateUser({ email });
 
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const { error } = await supabase.auth.updateUser({ email });
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { error: error.message };
   }
 }
 
@@ -40,21 +47,35 @@ export async function updatePassword(currentPassword, newPassword) {
 }
 
 export async function deleteUser() {
+  const supabase = createClient();
   const user = await getUser();
 
   if (!user) {
-    throw new Error("User not authenticated");
+    return { error: "User not authenticated" };
   }
 
-  const { error } = await supabaseAdmin.rpc('delete_user');
+  try {
+    // Delete the user
+    const { error } = await supabaseAdmin.rpc('deleteUser');
 
-  if (error) {
-    throw new Error(error.message);
+    if (error) {
+      return { error: error.message };
+    }
+
+    // Clear the user session
+    await supabase.auth.signOut({ scope: 'global' });
+
+    // Clear any user-related cookies
+    const cookieStore = cookies();
+    cookieStore.delete('supabase-auth-token');
+    cookieStore.delete('x-user-id');
+    cookieStore.delete('x-user-email');
+
+
+    // Return success
+    return { success: true, message: "Your account has been successfully deleted." };
+  } catch (error) {
+    console.error("Error in deleteUser:", error);
+    return { error: error.message || "An unexpected error occurred while deleting the user." };
   }
-
-  const supabase = createClient();
-  await supabase.auth.signOut();
-
-  revalidatePath("/");
-  redirect("/");
 }

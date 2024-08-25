@@ -1,11 +1,10 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { updatePassword } from "@/app/services/profileService";
-import SuccessModal from "@/app/components/SuccessModal";
+import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
 // Define the validation schema for updating the password
@@ -25,128 +24,112 @@ const UpdatePasswordSchema = Yup.object().shape({
 
 /**
  * UpdatePasswordForm component that renders a form for updating the user's password.
- * It displays an error message if there is an error updating the password.
- * It also displays a success modal after the password is successfully updated.
+ * It displays a toast notification for success or error after attempting to update the password.
  *
  * @component
  * @returns {JSX.Element} A React component.
  */
 export default function UpdatePasswordForm() {
-  const [error, setError] = useState(null);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-
   /**
    * Function to handle updating the password.
-   * It sets the error state if there is an error updating the password.
-   * It sets the success modal state to open if the password is updated successfully.
+   * It displays a toast notification for success or error.
    *
    * @param {Object} values - The form values.
    */
   const handlePasswordUpdate = async (values) => {
-    setError(null);
     try {
       await updatePassword(values.currentPassword, values.newPassword);
-      setIsSuccessModalOpen(true);
+      toast.success("Your password has been successfully updated.", {
+        autoClose: false,
+        closeOnClick: true,
+      });
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message || "An error occurred while updating the password.", {
+        autoClose: false,
+        closeOnClick: true,
+      });
     }
-  };
-
-  /**
-   * Function to handle confirming the success modal.
-   * It sets the success modal state to close.
-   */
-  const handleSuccessConfirm = () => {
-    setIsSuccessModalOpen(false);
   };
 
   // Render the form
   return (
-    <>
-      <Formik
-        initialValues={{
-          currentPassword: "",
-          newPassword: "",
-          confirmNewPassword: "",
-        }}
-        validationSchema={UpdatePasswordSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          await handlePasswordUpdate(values);
-          setSubmitting(false);
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form className={styles.inputContainer} >
-            <label htmlFor="current-password" className={styles.label}>
-              Current Password:
-            </label>
-            <Field
-              id="current-password"
-              name="current_password"
-              type="password"
-              className={styles.input}
-              aria-label="Current password input field"
-            />
-            <ErrorMessage
-              name="currentPassword"
-              component="div"
-              className={styles.validation}
-            />
+    <Formik
+      initialValues={{
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      }}
+      validationSchema={UpdatePasswordSchema}
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        await handlePasswordUpdate(values);
+        setSubmitting(false);
+        resetForm();
+      }}
+    >
+      {({ isSubmitting }) => (
+        <Form className={styles.inputContainer}>
+          <label htmlFor="currentPassword" className={styles.label}>
+            Current Password:
+          </label>
+          <Field
+            id="currentPassword"
+            name="currentPassword"
+            type="password"
+            className={styles.input}
+            aria-label="Current password input field"
+            autoComplete="current-password"
+          />
+          <ErrorMessage
+            name="currentPassword"
+            component="div"
+            className={styles.validation}
+          />
 
-            <label htmlFor="new-password" className={styles.label}>
-              New Password:
-            </label>
-            <Field
-              id="new-password"
-              name="new_password"
-              type="password"
-              className={styles.input}
-              aria-label="New password input field"
-              autocomplete="new-password"
-            />
-            <ErrorMessage
-              name="newPassword"
-              component="div"
-              className={styles.validation}
-            />
+          <label htmlFor="newPassword" className={styles.label}>
+            New Password:
+          </label>
+          <Field
+            id="newPassword"
+            name="newPassword"
+            type="password"
+            className={styles.input}
+            aria-label="New password input field"
+            autoComplete="new-password"
+          />
+          <ErrorMessage
+            name="newPassword"
+            component="div"
+            className={styles.validation}
+          />
 
-            <label htmlFor="confirm-new-password" className={styles.label}>
-              Confirm New Password:
-            </label>
-            <Field
-              id="confirm-new-password"
-              name="confirm_new_password"
-              type="password"
-              className={styles.input}
-              aria-label="Confirm new password input field"
-              autocomplete="new-password"
-            />
-            <ErrorMessage
-              name="confirmNewPassword"
-              component="div"
-              className={styles.validation}
-            />
+          <label htmlFor="confirmNewPassword" className={styles.label}>
+            Confirm New Password:
+          </label>
+          <Field
+            id="confirmNewPassword"
+            name="confirmNewPassword"
+            type="password"
+            className={styles.input}
+            aria-label="Confirm new password input field"
+            autoComplete="new-password"
+          />
+          <ErrorMessage
+            name="confirmNewPassword"
+            component="div"
+            className={styles.validation}
+          />
 
-            {error && <div className={styles.error}>{error}</div>}
-
-            <button
-              className={styles.button}
-              type="submit"
-              disabled={isSubmitting}
-              aria-label="Update password button"
-            >
-              Update Password
-            </button>
-          </Form>
-        )}
-      </Formik>
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onRequestClose={handleSuccessConfirm}
-        onConfirm={handleSuccessConfirm}
-        message="Your password has been successfully updated."
-      />
-    </>
+          <button
+            className={styles.button}
+            type="submit"
+            disabled={isSubmitting}
+            aria-label="Update password button"
+          >
+            Update Password
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 }
 

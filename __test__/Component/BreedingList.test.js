@@ -1,81 +1,89 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import BreedingList from "@/app/(pals)/pal/[palId]/components/BreedingList";
-import BreedingCard from "@/app/(pals)/pal/[palId]/components/BreedingCard";
-import SearchBar from "@/app/components/SearchBar";
-import '@testing-library/jest-dom/';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import BreedingList from '@/app/(pals)/pal/[palId]/components/BreedingList';
+import SearchBar from '@/app/components/SearchBar';
+
+// Mock the SearchBar component
+jest.mock('@/app/components/SearchBar', () => {
+  return jest.fn(({ onSearch }) => (
+    <input
+      data-testid="search-bar"
+      onChange={(e) => onSearch(e.target.value)}
+    />
+  ));
+});
 
 // Mock the BreedingCard component
-jest.mock("@/app/(pals)/pal/[palName]/components/BreedingCard", () => jest.fn(() => <div>BreedingCard Mock</div>));
-// Mock the SearchBar component
-jest.mock("@/app/components/SearchBar", () => jest.fn(({ onSearch }) => (
-  <input
-    type="text"
-    aria-label="Search breeding combinations"
-    onChange={(e) => onSearch(e.target.value)}
-  />
-)));
+jest.mock('@/app/(pals)/pal/[palId]/components/BreedingCard', () => {
+  return jest.fn(() => <div data-testid="breeding-card" />);
+});
 
-describe("BreedingList Component", () => {
-  const breedingCombos = [
-    { id: "1", parent1_name: "Parent1", parent1_image: "/images/parent1.png", parent2_name: "Parent2", parent2_image: "/images/parent2.png" },
-    { id: "2", parent1_name: "Alpha", parent1_image: "/images/alpha.png", parent2_name: "Beta", parent2_image: "/images/beta.png" },
+describe('BreedingList', () => {
+  // Sample breeding combinations for testing
+  const mockBreedingCombos = [
+    { id: 1, parent1_name: 'Charmander', parent2_name: 'Squirtle' },
+    { id: 2, parent1_name: 'Bulbasaur', parent2_name: 'Pikachu' },
+    { id: 3, parent1_name: 'Eevee', parent2_name: 'Jigglypuff' },
   ];
-  const user = { id: "user123" };
-  const savedBreedingCombos = [{ breeding_combo_id: "1" }];
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+  // Test case: Renders the component with breeding combinations
+  it('renders the component with breeding combinations', () => {
+    render(<BreedingList breedingCombos={mockBreedingCombos} />);
+    
+    // Verify that the search bar is rendered
+    expect(screen.getByTestId('search-bar')).toBeInTheDocument();
+    
+    // Verify that all breeding cards are rendered
+    const breedingCards = screen.getAllByTestId('breeding-card');
+    expect(breedingCards).toHaveLength(mockBreedingCombos.length);
   });
 
-  // Test case to render the component
-  it("renders the BreedingList component correctly", () => {
-    render(
-      <BreedingList
-        breedingCombos={breedingCombos}
-        user={user}
-        savedBreedingCombos={savedBreedingCombos}
-      />
-    );
-
-    // Check if the search bar is displayed
-    expect(screen.getByLabelText("Search breeding combinations")).toBeInTheDocument();
-
-    // Check if the breeding cards are displayed
-    expect(screen.getAllByText("BreedingCard Mock").length).toBe(2);
+  // Test case: Filters breeding combinations based on search term
+  it('filters breeding combinations based on search term', () => {
+    render(<BreedingList breedingCombos={mockBreedingCombos} />);
+    
+    // Simulate user typing in the search bar
+    const searchBar = screen.getByTestId('search-bar');
+    fireEvent.change(searchBar, { target: { value: 'char' } });
+    
+    // Verify that only one breeding card is rendered (Charmander)
+    const breedingCards = screen.getAllByTestId('breeding-card');
+    expect(breedingCards).toHaveLength(1);
   });
 
-  // Test case for filtering breeding combinations based on search term
-  it("filters breeding combinations based on search term", () => {
-    render(
-      <BreedingList
-        breedingCombos={breedingCombos}
-        user={user}
-        savedBreedingCombos={savedBreedingCombos}
-      />
-    );
-
-    // Simulate typing in the search bar
-    fireEvent.change(screen.getByLabelText("Search breeding combinations"), { target: { value: "Parent1" } });
-
-    // Check if the filtered breeding card is displayed
-    expect(screen.getAllByText("BreedingCard Mock").length).toBe(1);
+  // Test case: Displays a message when no combinations are available
+  it('displays a message when no combinations are available', () => {
+    render(<BreedingList breedingCombos={[]} />);
+    
+    // Verify that the "no combinations" message is displayed
+    expect(screen.getByText('No breeding combinations available.')).toBeInTheDocument();
   });
 
-  // Test case for displaying message when no breeding combinations match the search term
-  it("displays message when no breeding combinations match the search term", () => {
-    render(
-      <BreedingList
-        breedingCombos={breedingCombos}
-        user={user}
-        savedBreedingCombos={savedBreedingCombos}
-      />
-    );
+  // Test case: Handles case-insensitive search
+  it('handles case-insensitive search', () => {
+    render(<BreedingList breedingCombos={mockBreedingCombos} />);
+    
+    // Simulate user typing in the search bar with mixed case
+    const searchBar = screen.getByTestId('search-bar');
+    fireEvent.change(searchBar, { target: { value: 'eEvEe' } });
+    
+    // Verify that one breeding card is rendered (Eevee)
+    const breedingCards = screen.getAllByTestId('breeding-card');
+    expect(breedingCards).toHaveLength(1);
+  });
 
-    // Simulate typing in the search bar
-    fireEvent.change(screen.getByLabelText("Search breeding combinations"), { target: { value: "NonExistent" } });
-
-    // Check if the no breeding combinations message is displayed
-    expect(screen.getByText("No breeding combinations available.")).toBeInTheDocument();
+  // Test case: Updates search results in real-time
+  it('updates search results in real-time', () => {
+    render(<BreedingList breedingCombos={mockBreedingCombos} />);
+    
+    const searchBar = screen.getByTestId('search-bar');
+    
+    // Simulate user typing 'e'
+    fireEvent.change(searchBar, { target: { value: 'e' } });
+    expect(screen.getAllByTestId('breeding-card')).toHaveLength(2); // Eevee and Squirtle
+    
+    // Simulate user typing 'ee'
+    fireEvent.change(searchBar, { target: { value: 'ee' } });
+    expect(screen.getAllByTestId('breeding-card')).toHaveLength(1); // Only Eevee
   });
 });

@@ -1,16 +1,12 @@
 "use client";
-
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useRouter } from 'next/navigation';
 import TermsOfServiceModal from "./TermsOfServiceModal";
-import SuccessModal from "@/app/components/SuccessModal";
-import { createClient } from "@/app/utils/supabase/client";
-import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
+import { signup } from "@/app/services/authService";
 
-// Define form validation schema using Yup
 const SignupSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string()
@@ -26,61 +22,53 @@ const SignupSchema = Yup.object().shape({
 });
 
 export default function SignupForm() {
-  const router = useRouter();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [formData, setFormData] = useState(null);
-  const [error, setError] = useState(null);
-  const supabase = createClient();
+  const [formValues, setFormValues] = useState(null);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  const handleSignup = async () => {
-    if (formData) {
-      try {
-        const { error } = await supabase.auth.signUp({
-          email: formData.email,
-          password: formData.password,
-        });
+  const handleSubmit = useCallback((values, { setSubmitting }) => {
+    console.log("Form submitted:", values);
+    setFormValues(values);
+    setIsTermsModalOpen(true);
+    setSubmitting(false);
+  }, []);
 
-        if (error) throw error;
+  const handleTermsAccept = useCallback(async () => {
+    console.log("Terms accepted, proceeding with signup");
+    setIsTermsModalOpen(false);
 
-        setIsSuccessModalOpen(true);
-      } catch (err) {
-        setError(err.message);
-        toast.error("Signup failed");
-      }
+    if (!formValues) {
+      console.error("Form values not found");
+      setError("An error occurred. Please try again.");
+      return;
     }
-  };
 
-  const handleSuccessConfirm = () => {
-    setIsSuccessModalOpen(false);
-    router.push("/");
-    router.refresh(); // Refresh the page to update the session
-  };
+    try {
+      const formData = new FormData();
+      formData.append("email", formValues.email);
+      formData.append("password", formValues.password);
+
+      const result = await signup(formData);
+      console.log("Signup result:", result);
+
+      if (result.success) {
+        router.push(`/success?title=${encodeURIComponent("Signup Email Sent")}&description=${encodeURIComponent("Please check your emails to complete signup.")}`);
+      } else {
+        setError(result.message || "Signup failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      setError("An unexpected error occurred. Please try again.");
+    }
+  }, [formValues, router]);
 
   return (
     <>
       <Formik
         initialValues={{ email: "", password: "", confirmPassword: "" }}
         validationSchema={SignupSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          setError(null);
-          setFormData(values);
-          try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-              email: values.email,
-              password: values.password,
-            });
-            if (data?.user) {
-              setError("User already registered");
-              setSubmitting(false);
-              return;
-            }
-            setIsTermsModalOpen(true);
-          } catch (err) {
-            setError(err.message);
-          }
-          setSubmitting(false);
-        }}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form className={styles.inputContainer}>
@@ -94,6 +82,7 @@ export default function SignupForm() {
               className={styles.input}
               aria-required="true"
               aria-describedby="emailError"
+              autoComplete="email"
             />
             <ErrorMessage
               name="email"
@@ -113,6 +102,7 @@ export default function SignupForm() {
               className={styles.input}
               aria-required="true"
               aria-describedby="passwordError"
+              autoComplete="new-password"
             />
             <ErrorMessage
               name="password"
@@ -132,6 +122,7 @@ export default function SignupForm() {
               className={styles.input}
               aria-required="true"
               aria-describedby="confirmPasswordError"
+              autoComplete="new-password"
             />
             <ErrorMessage
               name="confirmPassword"
@@ -141,7 +132,11 @@ export default function SignupForm() {
               role="alert"
             />
 
-            {error && <div className={styles.error}>{error}</div>}
+            {error && (
+              <div className={styles.error} role="alert">
+                {error}
+              </div>
+            )}
 
             <button
               className={styles.button}
@@ -155,22 +150,12 @@ export default function SignupForm() {
           </Form>
         )}
       </Formik>
+
       <TermsOfServiceModal
         isOpen={isTermsModalOpen}
         onRequestClose={() => setIsTermsModalOpen(false)}
-        onAccept={() => {
-          setIsTermsModalOpen(false);
-          handleSignup();
-        }}
-      />
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onRequestClose={() => setIsSuccessModalOpen(false)}
-        onConfirm={handleSuccessConfirm}
-        message="Please check your emails to complete the signup process."
+        onAccept={handleTermsAccept}
       />
     </>
   );
 }
-
-SignupForm.displayName = "SignupForm";

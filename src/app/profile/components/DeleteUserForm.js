@@ -1,39 +1,45 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { deleteUser } from "@/app/services/profileService";
 import styles from "@/app/components/styles/FormStyles.module.css";
+import { toast } from 'react-toastify';
 
-/**
- * DeleteUserForm component that renders a form for deleting a user.
- * It displays an error message if there is an error deleting the user.
- * It also displays a confirmation button before deleting the user.
- *
- * @component
- * @returns {JSX.Element} A React component.
- */
 export default function DeleteUserForm() {
-  const [error, setError] = useState(null);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  /**
-   * Function to handle deleting the user.
-   * It sets the error state if there is an error deleting the user.
-   */
-  const handleUserDelete = async () => {
-    setError(null);
+  const handleUserDelete = useCallback(async () => {
+    setIsLoading(true);
     try {
-      await deleteUser();
+      const result = await deleteUser();
+  
+      if (result.error) {
+        toast.error(result.error);
+      } else if (result.success) {
+        // Call the logout route with the correct path
+        const logoutResponse = await fetch('/auth/signout', { method: 'POST' });
+        
+        let redirectUrl = '/success?title=' + encodeURIComponent("Account Deleted");
+        if (logoutResponse.ok) {
+          redirectUrl += '&description=' + encodeURIComponent(result.message || "Your account has been successfully deleted.");
+        } else {
+          redirectUrl += '&description=' + encodeURIComponent("Account deleted but logout failed. Please manually log out.");
+        }
+        window.location.assign(redirectUrl);
+      } else {
+        throw new Error("An unexpected error occurred");
+      }
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message || "An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+      setIsConfirmVisible(false);
     }
-  };
+  }, []);
 
-  // Render the form
   return (
     <div className={styles.inputContainer}>
-      {error && <div className={styles.error} role="alert">{error}</div>}
       {!isConfirmVisible ? (
         <button
           className={styles.button}
@@ -47,13 +53,15 @@ export default function DeleteUserForm() {
           <button
             className={styles.button}
             onClick={handleUserDelete}
+            disabled={isLoading}
             style={{ backgroundColor: "red", color: "white" }}
           >
-            Are you sure? Confirm Delete
+            {isLoading ? "Processing..." : "Are you sure? Confirm Delete"}
           </button>
           <button
             className={styles.cancelButton}
             onClick={() => setIsConfirmVisible(false)}
+            disabled={isLoading}
           >
             Cancel
           </button>
@@ -62,5 +70,3 @@ export default function DeleteUserForm() {
     </div>
   );
 }
-
-DeleteUserForm.displayName = 'DeleteUserForm'

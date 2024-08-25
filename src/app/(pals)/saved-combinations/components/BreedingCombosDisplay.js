@@ -13,11 +13,13 @@ export default function BreedingCombosDisplay() {
 
   useEffect(() => {
     const grouped = savedCombinations.reduce((acc, combo) => {
-      const childName = combo.child.name;
-      if (!acc[childName]) {
-        acc[childName] = [];
+      if (combo && combo.child && combo.child.name) {
+        const childName = combo.child.name;
+        if (!acc[childName]) {
+          acc[childName] = [];
+        }
+        acc[childName].push(combo);
       }
-      acc[childName].push(combo);
       return acc;
     }, {});
     setGroupedCombos(grouped);
@@ -28,7 +30,11 @@ export default function BreedingCombosDisplay() {
   };
 
   if (isLoading) {
-    return <div>Loading your saved breeding combinations...</div>;
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+      </div>
+    );
   }
 
   const hasSavedCombos = Object.keys(groupedCombos).length > 0;

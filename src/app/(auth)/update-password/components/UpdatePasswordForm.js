@@ -1,12 +1,11 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { updateUserPassword } from '@/app/services/authService';
-import SuccessModal from '@/app/components/SuccessModal';
-import styles from '@/app/components/styles/FormStyles.module.css';
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { updateUserPassword } from '@/app/services/authService'
+import styles from "@/app/components/styles/FormStyles.module.css";
 
 const UpdatePasswordSchema = Yup.object().shape({
   password: Yup.string()
@@ -23,107 +22,105 @@ const UpdatePasswordSchema = Yup.object().shape({
 
 const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
-  const [error, setError] = useState('');
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = useCallback(async (values, { setSubmitting, setFieldError }) => {
     const { password, confirmPassword } = values;
-
+    
     if (!token) {
-      setError('Reset token missing!');
+      setError("Reset token missing!");
       setSubmitting(false);
       return;
     }
-
+    
     if (password !== confirmPassword) {
-      setError('Passwords must match');
+      setFieldError("confirmPassword", "Passwords must match!");
       setSubmitting(false);
       return;
     }
-
+  
     try {
-      await updateUserPassword({ password, token });
-      setIsSuccessModalOpen(true);
-    } catch (err) {
-      setError(err.message);
+      const result = await updateUserPassword({ password, token });
+      
+      if (result.success) {
+        router.push(`/success?title=${encodeURIComponent("Password Updated")}&description=${encodeURIComponent(result.message)}`);
+      } else {
+        if (result.message.includes("New password should be different from the old password")) {
+          setFieldError("password", "New password must be different from your current password.");
+        } else {
+          setError(result.message || "Failed to update password. Please try again.");
+        }
+      }
+    } catch (error) {
+      setError(error.message || "An unexpected error occurred.");
+    } finally {
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
-  };
-
-
-  const handleSuccessConfirm = () => {
-    setIsSuccessModalOpen(false);
-    router.push('/');
-  };
+  }, [token, router]);
 
   return (
-    <>
-      <Formik
-        initialValues={{ password: '', confirmPassword: '' }}
-        validationSchema={UpdatePasswordSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => (
-          <Form className={styles.inputContainer}>
-            <label htmlFor="password" className={styles.label}>New Password:</label>
-            <Field
-              id="password"
-              name="password"
-              type="password"
-              className={styles.input}
-              aria-required="true"
-              aria-describedby="passwordError"
-            />
-            <ErrorMessage
-              name="password"
-              component="div"
-              className={styles.validation}
-              id="passwordError"
-              role="alert"
-            />
+    <Formik
+      initialValues={{ password: "", confirmPassword: "" }}
+      validationSchema={UpdatePasswordSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form className={styles.inputContainer}>
+          <label htmlFor="password" className={styles.label}>
+            New Password:
+          </label>
+          <Field
+            id="password"
+            name="password"
+            type="password"
+            className={styles.input}
+            aria-required="true"
+            aria-describedby="passwordError"
+          />
+          <ErrorMessage
+            name="password"
+            component="div"
+            className={styles.validation}
+            id="passwordError"
+            role="alert"
+          />
 
-            <label htmlFor="confirmPassword" className={styles.label}>Confirm New Password:</label>
-            <Field
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              className={styles.input}
-              aria-required="true"
-              aria-describedby="confirmPasswordError"
-            />
-            <ErrorMessage
-              name="confirmPassword"
-              component="div"
-              className={styles.validation}
-              id="confirmPasswordError"
-              role="alert"
-            />
+          <label htmlFor="confirmPassword" className={styles.label}>
+            Confirm New Password:
+          </label>
+          <Field
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            className={styles.input}
+            aria-required="true"
+            aria-describedby="confirmPasswordError"
+          />
+          <ErrorMessage
+            name="confirmPassword"
+            component="div"
+            className={styles.validation}
+            id="confirmPasswordError"
+            role="alert"
+          />
 
-            {error && <div className={styles.error}>{error}</div>}
+          {error && <div className={styles.error} role="alert">{error}</div>}
 
-            <button
-              type="submit"
-              className={styles.button}
-              disabled={isSubmitting}
-              aria-busy={isSubmitting}
-              aria-live="polite"
-            >
-              Update Password
-            </button>
-          </Form>
-        )}
-      </Formik>
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        onRequestClose={() => setIsSuccessModalOpen(false)}
-        onConfirm={handleSuccessConfirm}
-        message="Your password has been updated successfully."
-      />
-    </>
+          <button
+            type="submit"
+            className={styles.button}
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+            aria-live="polite"
+          >
+            Update Password
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
-UpdatePasswordForm.displayName = 'UpdatePasswordForm'
+UpdatePasswordForm.displayName = "UpdatePasswordForm";
 
 export default UpdatePasswordForm;

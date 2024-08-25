@@ -1,92 +1,92 @@
 .card {
-  position: relative; 
-    max-width: 300px; 
-    flex-basis: 300px;
-    padding: 10px;
-    height: 120px;
-    border-radius: 5px;
-    margin: 10px;
-    overflow: hidden;
-    background-color: #303030;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
+  position: relative;
+  width: 300px;
+  max-width: calc(25%- 20px);
+  flex: 0 0 calc(25%- 20px);
+  padding: 10px;
+  height: 120px;
+  border-radius: 5px;
+  margin: 10px;
+  overflow: hidden;
+  background-color: #303030;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  background-color: #515050;
+}
+
+.parent {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  align-items: center;
+}
+
+.parentImage {
+  border-radius: 50%;
+  margin-bottom: 5px;
+}
+
+.parentName {
+  font-weight: bold;
+  overflow-wrap: break-word;
+  font-size: 16px;
+  text-align: center;
+}
+
+.plusIcon {
+  margin: 0 10px;
+  height: 20px;
+}
+
+.removeIcon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #b27fe5;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+
+/* Media queries */
+@media (max-width: 768px) {
+  .card {
+    max-width: 400px;
   }
 
-  
-  .card:hover {
-    transform: scale(1.05);
-    background-color: #515050;
-  }
-  
-  
-  .parent {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    align-items: center;
-  }
-  
-  .parentImage {
-    border-radius: 50%;
-    margin-bottom: 5px;
-  }
-  
-  .parentName {
-    font-weight: bold;
-    overflow-wrap: break-word;
-    font-size: 14px;
-    text-align: center;
-  }
-  
+
   .plusIcon {
-    margin: 0 10px;
-    height: 20px;
+    margin: 0 5px;
   }
-  
-  .removeIcon {
-    position:absolute;
-    top: 0;
-    right: 0px;
-    height: 20px;
-    font-size: 20px;
-    cursor: pointer;
-    color: #b27fe5;
-    background: none;
-    border: none;
-    outline: none;
+}
+
+@media (max-width: 480px) {
+  .card {
+    max-width: 200px;
+    flex-direction: column;
+    height: auto;
   }
-  @media (max-width: 768px) {
-    .card {
-      max-width: 400px; 
-    }
-  
-    .parentName {
-      font-size: 12px;
-    }
-  
-    .plusIcon {
-      margin: 0 5px; 
-    }
+
+  .parent {
+    padding: 10px;
   }
-  
-  @media (max-width: 480px) {
-    .card {
-      max-width: 100%; 
-      flex-direction: column; 
-      height: auto; 
-    }
-  
-    .parent {
-      padding: 10px; 
-    }
-  
-    .plusIcon {
-      margin: 10px 0; 
-    }
-  
-    .parentName {
-      font-size: 10px; 
-    }
+
+  .plusIcon {
+    margin: 10px 0;
   }
+
+  .parentName {
+    font-size: 14px;
+  }
+}

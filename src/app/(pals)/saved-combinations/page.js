@@ -1,27 +1,17 @@
 import React from 'react';
-import { getSession } from "@/app/services/authService";
 import BreedingCombosDisplay from './components/BreedingCombosDisplay';
-import { SavedCombinationsProvider } from '@/app/context/SavedCombinationsContext';
 import styles from './page.module.css';
 
 export const metadata = {
-  title: 'Saved breeding combinations',
+  title: 'Saved Breeding Combinations',
   description: 'View your saved breeding combinations',
 };
 
-export default async function SavedBreedingPage() {
-  const session = await getSession();
-
-  if (!session) {
-    return <div>Please log in to view this page.</div>;
-  }
-
+export default function SavedBreedingPage() {
   return (
-    <SavedCombinationsProvider initialSession={session}>
-      <div className={styles.container}>
-        <h2 className={styles.title}>Saved Breeding Combinations</h2>
-        <BreedingCombosDisplay />
-      </div>
-    </SavedCombinationsProvider>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Saved Breeding Combinations</h2>
+      <BreedingCombosDisplay />
+    </div>
   );
 }

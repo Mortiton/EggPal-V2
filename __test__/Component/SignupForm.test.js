@@ -1,180 +1,121 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import SignupForm from "@/app/(auth)/signup/components/SignupForm";
-import "@testing-library/jest-dom";
-import { signup, checkUserExists } from "@/app/(auth)/signup/actions";
-import { useRouter } from "next/navigation";
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import SignupForm from '@/app/(auth)/signup/components/SignupForm';
+import { signup } from '@/app/services/authService';
+import { useRouter } from 'next/navigation';
 
-// Mock the signup and checkUserExists actions, and useRouter hook
-jest.mock("@/app/(auth)/signup/actions", () => ({
-  signup: jest.fn(),
-  checkUserExists: jest.fn(),
-}));
-jest.mock("next/navigation", () => ({
+// Mock the next/navigation module
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
-jest.mock("@/app/components/SuccessModal", () =>
-  jest.fn(({ isOpen, onConfirm, message }) =>
-    isOpen ? <div role="dialog">{message}</div> : null
-  )
-);
-jest.mock("@/app/(auth)/signup/components/TermsOfServiceModal", () =>
-  jest.fn(({ isOpen, onAccept, onRequestClose }) =>
-    isOpen ? (
-      <div role="dialog">
-        <button onClick={onAccept}>Accept</button>
-        <button onClick={onRequestClose}>Close</button>
-      </div>
-    ) : null
-  )
-);
 
-describe("SignupForm Component", () => {
+// Mock the authService
+jest.mock('@/app/services/authService', () => ({
+  signup: jest.fn(),
+}));
+
+// Mock the TermsOfServiceModal component
+jest.mock('@/app/(auth)/signup/components/TermsOfServiceModal', () => {
+  return function MockTermsOfServiceModal({ isOpen, onRequestClose, onAccept }) {
+    return isOpen ? (
+      <div data-testid="terms-modal">
+        <button onClick={onRequestClose}>Close</button>
+        <button onClick={onAccept}>Accept</button>
+      </div>
+    ) : null;
+  };
+});
+
+describe('SignupForm Component', () => {
   const mockPush = jest.fn();
-  useRouter.mockReturnValue({ push: mockPush });
 
   beforeEach(() => {
+    useRouter.mockReturnValue({ push: mockPush });
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  // Test case to render the component
-  it("renders the SignupForm component correctly", () => {
+  it('renders the form fields correctly', () => {
     render(<SignupForm />);
-
-    // Check if the email, password, and confirmPassword fields, and the submit button are displayed
-    expect(screen.getByLabelText("Email:")).toBeInTheDocument();
-    expect(screen.getByLabelText("Password:")).toBeInTheDocument();
-    expect(screen.getByLabelText("Confirm Password:")).toBeInTheDocument();
-    expect(screen.getByText("Sign Up")).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^password/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument();
   });
 
-  // Test case for form validation
-  it("validates the form fields correctly", async () => {
+  it('displays validation errors for invalid inputs', async () => {
     render(<SignupForm />);
+    
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
 
-    // Click the submit button without entering any values
-    fireEvent.click(screen.getByText("Sign Up"));
-
-    // Check if the validation messages are displayed
-    expect(await screen.findAllByText("Required")).toHaveLength(3);
-
-    // Enter an invalid email and submit
-    fireEvent.change(screen.getByLabelText("Email:"), {
-      target: { value: "invalid-email" },
+    await waitFor(() => {
+      const requiredErrors = screen.getAllByText(/required/i);
+      expect(requiredErrors).toHaveLength(3); // Expect 3 "Required" error messages
+      expect(screen.getByText(/required/i, { selector: '#emailError' })).toBeInTheDocument();
+      expect(screen.getByText(/required/i, { selector: '#passwordError' })).toBeInTheDocument();
+      expect(screen.getByText(/required/i, { selector: '#confirmPasswordError' })).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByText("Sign Up"));
-
-    // Check if the validation message for invalid email is displayed
-    expect(await screen.findByText("Invalid email")).toBeInTheDocument();
-
-    // Enter valid email but no password and submit
-    fireEvent.change(screen.getByLabelText("Email:"), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.click(screen.getByText("Sign Up"));
-
-    // Check if the validation message for required password is displayed
-    expect(await screen.findAllByText("Required")).toHaveLength(2);
   });
 
-  // Test case for successful form submission
-  it("submits the form successfully", async () => {
-    checkUserExists.mockResolvedValueOnce(false);
-    signup.mockResolvedValueOnce();
+  it('opens the terms modal when form is submitted with valid data', async () => {
     render(<SignupForm />);
 
-    // Enter valid email and password and submit
-    fireEvent.change(screen.getByLabelText("Email:"), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText("Password:"), {
-      target: { value: "Password1@" },
-    });
-    fireEvent.change(screen.getByLabelText("Confirm Password:"), {
-      target: { value: "Password1@" },
-    });
-    fireEvent.click(screen.getByText("Sign Up"));
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(/^password/i), { target: { value: 'Password123!' } });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'Password123!' } });
 
-    // Check if the checkUserExists action is called with the correct email
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
     await waitFor(() => {
-      expect(checkUserExists).toHaveBeenCalledWith("test@example.com");
+      expect(screen.getByTestId('terms-modal')).toBeInTheDocument();
     });
-
-    // Accept terms of service
-    fireEvent.click(screen.getByText("Accept"));
-
-    // Check if the signup action is called with the correct values
-    await waitFor(() => {
-      expect(signup).toHaveBeenCalled();
-    });
-
-    // Check if the success modal is displayed
-    expect(await screen.findByRole("dialog")).toHaveTextContent(
-      "Please check your emails to complete the signup process."
-    );
   });
 
-  // Test case for failed form submission
-  it("handles form submission failure", async () => {
-    checkUserExists.mockResolvedValueOnce(false);
-    const errorMessage = "Signup failed";
-    signup.mockRejectedValueOnce(new Error(errorMessage));
+  it('calls signup service and redirects on successful signup', async () => {
+    signup.mockResolvedValue({ success: true });
+
     render(<SignupForm />);
 
-    // Enter valid email and password and submit
-    fireEvent.change(screen.getByLabelText("Email:"), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText("Password:"), {
-      target: { value: "Password1@" },
-    });
-    fireEvent.change(screen.getByLabelText("Confirm Password:"), {
-      target: { value: "Password1@" },
-    });
-    fireEvent.click(screen.getByText("Sign Up"));
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(/^password/i), { target: { value: 'Password123!' } });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'Password123!' } });
 
-    // Check if the checkUserExists action is called with the correct email
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
     await waitFor(() => {
-      expect(checkUserExists).toHaveBeenCalledWith("test@example.com");
+      expect(screen.getByTestId('terms-modal')).toBeInTheDocument();
     });
 
-    // Accept terms of service
-    fireEvent.click(screen.getByText("Accept"));
+    fireEvent.click(screen.getByRole('button', { name: /accept/i }));
 
-    // Check if the signup action is called and fails
     await waitFor(() => {
-      expect(signup).toHaveBeenCalled();
+      expect(signup).toHaveBeenCalledWith(expect.any(FormData));
+      expect(mockPush).toHaveBeenCalledWith(expect.stringContaining('/success'));
     });
-
-    // Check if the error message is displayed
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
   });
 
-  // Test case for existing user
-  it("handles existing user error", async () => {
-    checkUserExists.mockResolvedValueOnce(true);
+  it('displays an error message on signup failure', async () => {
+    signup.mockResolvedValue({ success: false, message: 'Signup failed' });
+
     render(<SignupForm />);
 
-    // Enter valid email and password and submit
-    fireEvent.change(screen.getByLabelText("Email:"), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText("Password:"), {
-      target: { value: "Password1@" },
-    });
-    fireEvent.change(screen.getByLabelText("Confirm Password:"), {
-      target: { value: "Password1@" },
-    });
-    fireEvent.click(screen.getByText("Sign Up"));
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByLabelText(/^password/i), { target: { value: 'Password123!' } });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'Password123!' } });
 
-    // Check if the checkUserExists action is called with the correct email
+    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+
     await waitFor(() => {
-      expect(checkUserExists).toHaveBeenCalledWith("test@example.com");
+      expect(screen.getByTestId('terms-modal')).toBeInTheDocument();
     });
 
-    // Check if the error message for existing user is displayed
-    expect(
-      await screen.findByText("User already registered")
-    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /accept/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/signup failed/i)).toBeInTheDocument();
+    });
   });
 });

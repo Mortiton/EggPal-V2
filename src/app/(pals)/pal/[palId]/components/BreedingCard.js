@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./styles/BreedingCard.module.css";
@@ -10,16 +10,16 @@ import { faHeart as fasHeart, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
 
-export default function BreedingCard({ parent1, parent2, breedingComboId }) {
-  const { savedCombinations, addCombination, removeCombination, session } =
-    useSavedCombinations();
+export default function BreedingCard({ parent1, parent2, breedingComboId, user }) {
+  const { savedCombinations, addCombination, removeCombination } = useSavedCombinations();
 
-  const isSaved = savedCombinations.some(
-    (combo) => combo.breedingComboId === breedingComboId
+  const isSaved = useMemo(() => 
+    savedCombinations.some((combo) => combo.breedingComboId === breedingComboId),
+    [savedCombinations, breedingComboId]
   );
 
-  const toggleSaved = async () => {
-    if (!session?.user) {
+  const toggleSaved = useCallback(async () => {
+    if (!user) { // Check if user is authenticated and display toast if not
       toast.info("Please log in to save breeding combinations.");
       return;
     }
@@ -32,9 +32,9 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
       }
     } catch (error) {
       console.error("Error toggling saved status:", error.message);
-      toast.error("Failed to update saved status");
     }
-  };
+  }, [user, isSaved, breedingComboId, addCombination, removeCombination]);
+
 
   return (
     <div className={styles.card}>
@@ -50,7 +50,7 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
             className={styles.parentImage}
             height={80}
             width={80}
-            unoptimized
+            loading="lazy"
           />
         </Link>
         <span className={styles.parentName}>{parent1.name}</span>
@@ -72,7 +72,7 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
             className={styles.parentImage}
             height={80}
             width={80}
-            unoptimized
+            loading="lazy"
           />
         </Link>
         <span className={styles.parentName}>{parent2.name}</span>
@@ -89,3 +89,4 @@ export default function BreedingCard({ parent1, parent2, breedingComboId }) {
 }
 
 BreedingCard.displayName = "BreedingCard";
+

@@ -1,132 +1,148 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import PalDetailsCard from "@/app/(pals)/pal/[palId]/components/PalDetailsCards";
-import '@testing-library/jest-dom';
-import { toast } from 'react-toastify';
-import { addFavoritePal, removeFavoritePal } from '@/app/(pals)/pal/[palId]/actions';
-import WorkIcon from "@/app/components/WorkIcon"; // Adjust the import path accordingly
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import PalDetailsCard from "@/app/(pals)/pal/[palId]/components/PalDetailsCard";
+import { toast } from "react-toastify";
 
-// Mock the toast and action functions
-jest.mock('react-toastify', () => ({
+// Mock the next/image component
+jest.mock("next/image", () => ({ src, alt }) => <img src={src} alt={alt} />);
+
+// Mock react-toastify
+jest.mock("react-toastify", () => ({
   toast: {
     info: jest.fn(),
   },
 }));
 
-//Mock the action functions
-jest.mock("@/app/(pals)/pal/[palName]/actions", () => ({
-  addFavoritePal: jest.fn(),
-  removeFavoritePal: jest.fn(),
+// Mock FontAwesomeIcon component
+jest.mock("@fortawesome/react-fontawesome", () => ({
+  FontAwesomeIcon: ({ icon, onClick, className, ...props }) => (
+    <span
+      onClick={onClick}
+      className={`mock-icon ${className}`}
+      data-prefix={icon[0]}
+      data-icon={icon[1]}
+      {...props}
+    />
+  ),
 }));
 
-// Mock the WorkIcon component
-jest.mock("@/app/components/WorkIcon", () => jest.fn(({ iconName }) => <div>{iconName}</div>));
+// Sample pal data for testing
+const mockPal = {
+  name: "Test Pal",
+  image_url: "/test-image.jpg",
+  description: "A test pal description",
+  skills: [
+    {
+      skill_name: "test_skill",
+      skill_level: 5,
+      skill_icon_url: "/test-icon.jpg",
+    },
+  ],
+};
 
 describe("PalDetailsCard Component", () => {
-    const pal = {
-      id: "pal123",
-      name: "Pal Name",
-      description: "This is a test pal.",
-      kindling: 1,
-      watering: 0,
-      planting: 3,
-      generating_electricity: 2,
-      handiwork: 0,
-      gathering: 1,
-      lumbering: 4,
-      mining: 5,
-      medicine_production: 0,
-      cooling: 0,
-      transporting: 2,
-      farming: 3,
-    };
-    const user = { id: "user123" };
-    const userFavorites = ["pal123"];
-  
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-  
-    // Test case to render the component
-    it("renders the PalDetailsCard component correctly", () => {
-      render(
-        <PalDetailsCard
-          pal={pal}
-          user={user}
-          userFavorites={userFavorites}
-        />
-      );
-  
-      // Check if the pal's name, description, and image are displayed
-      expect(screen.getByText("Pal Name")).toBeInTheDocument();
-      expect(screen.getByText("This is a test pal.")).toBeInTheDocument();
-      expect(screen.getByAltText("Pal Name")).toBeInTheDocument();
-  
-      // Check if the favourite icon is filled
-      expect(screen.getByLabelText("Toggle Favourite")).toHaveAttribute("data-favourite", "filled");
-  
-      // Check if base skills are displayed
-      const skills = ["kindling", "planting", "generating electricity", "gathering", "lumbering", "mining", "transporting", "farming"];
-      skills.forEach(skill => {
-        expect(screen.getByText((content, element) => element.textContent.replace(/_/g, " ") === skill)).toBeInTheDocument();
-      });
-    });
-  
-    // Test case for handling favourite toggle when the user is not logged in
-    it("shows toast message if user is not logged in when toggling favourite", async () => {
-      render(
-        <PalDetailsCard
-          pal={pal}
-          user={null} // User not logged in
-          userFavorites={[]}
-        />
-      );
-  
-      // Click the favourite icon
-      fireEvent.click(screen.getByLabelText("Toggle Favourite"));
-  
-      // Expect the toast message to be shown
-      expect(toast.info).toHaveBeenCalledWith('Please log in to favorite pals.');
-    });
-  
-    // Test case for toggling favourite state when the user is logged in
-    it("toggles favourite state when user is logged in", async () => {
-      render(
-        <PalDetailsCard
-          pal={pal}
-          user={user}
-          userFavorites={[]}
-        />
-      );
-  
-      // Click the favourite icon
-      await act(async () => {
-        fireEvent.click(screen.getByLabelText("Toggle Favourite"));
-      });
-  
-      // Expect the addFavoritePal to be called
-      expect(addFavoritePal).toHaveBeenCalledWith(user.id, pal.id);
-  
-      // Click the favourite icon again to unfavourite
-      await act(async () => {
-        fireEvent.click(screen.getByLabelText("Toggle Favourite"));
-      });
-  
-      // Expect the removeFavoritePal to be called
-      expect(removeFavoritePal).toHaveBeenCalledWith(user.id, pal.id);
-    });
-  
-    // Test case for displaying the correct state of the favourite icon
-    it("displays the correct state of the favourite icon based on userFavorites", () => {
-      render(
-        <PalDetailsCard
-          pal={pal}
-          user={user}
-          userFavorites={["pal456"]}
-        />
-      );
-  
-      // Expect the favourite icon to be empty
-      expect(screen.getByLabelText("Toggle Favourite")).toHaveAttribute("data-favourite", "empty");
-    });
+  // Test to ensure the component renders correctly
+  it("renders the PalDetailsCard component with correct pal information", () => {
+    render(
+      <PalDetailsCard
+        pal={mockPal}
+        isFavourited={false}
+        onToggleFavourite={() => {}}
+        user={null}
+      />
+    );
+
+    expect(screen.getByText("Test Pal")).toBeInTheDocument();
+    expect(screen.getByText("A test pal description")).toBeInTheDocument();
+    expect(screen.getByText("test skill:")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
   });
+
+  // Test favourite icon behaviour when user is not signed in
+  it("displays a toast message when attempting to favourite without a user", () => {
+    render(
+      <PalDetailsCard
+        pal={mockPal}
+        isFavourited={false}
+        onToggleFavourite={() => {}}
+        user={null}
+      />
+    );
+
+    const favouriteIcon = screen.getByLabelText("Toggle Favourite");
+    fireEvent.click(favouriteIcon);
+
+    expect(toast.info).toHaveBeenCalledWith(
+      "Please sign in to favourite pals."
+    );
+  });
+
+  // Test favourite icon behaviour when user is signed in
+  it("calls onToggleFavourite when favourite icon is clicked with a valid user", () => {
+    const mockToggleFavourite = jest.fn();
+    render(
+      <PalDetailsCard
+        pal={mockPal}
+        isFavourited={false}
+        onToggleFavourite={mockToggleFavourite}
+        user={{ id: '1', name: 'Test User' }}
+      />
+    );
+
+    const favouriteIcon = screen.getByLabelText("Toggle Favourite");
+    fireEvent.click(favouriteIcon);
+
+    expect(mockToggleFavourite).toHaveBeenCalled();
+  });
+
+  // Test that the favourite icon changes based on the isFavourited prop
+  it("displays the correct favourite icon based on isFavourited prop", () => {
+    const { rerender } = render(
+      <PalDetailsCard
+        pal={mockPal}
+        isFavourited={false}
+        onToggleFavourite={() => {}}
+        user={null}
+      />
+    );
+
+    expect(screen.getByLabelText("Toggle Favourite")).toHaveAttribute(
+      "data-favourite",
+      "empty"
+    );
+
+    rerender(
+      <PalDetailsCard
+        pal={mockPal}
+        isFavourited={true}
+        onToggleFavourite={() => {}}
+        user={null}
+      />
+    );
+
+    expect(screen.getByLabelText("Toggle Favourite")).toHaveAttribute(
+      "data-favourite",
+      "filled"
+    );
+  });
+
+  // Test accessibility features
+  it("has proper accessibility attributes", () => {
+    render(
+      <PalDetailsCard
+        pal={mockPal}
+        isFavourited={false}
+        onToggleFavourite={() => {}}
+        user={null}
+      />
+    );
+
+    expect(
+      screen.getByRole("list", { name: "List of base skills" })
+    ).toBeInTheDocument();
+    const favouriteIcon = screen.getByLabelText("Toggle Favourite");
+    expect(favouriteIcon).toHaveAttribute("role", "button");
+    expect(favouriteIcon).toHaveAttribute("tabIndex", "0");
+  });
+});

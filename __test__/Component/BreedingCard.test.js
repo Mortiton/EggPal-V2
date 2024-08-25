@@ -1,128 +1,208 @@
-import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import BreedingCard from "@/app/(pals)/pal/[palId]/components/BreedingCard"; 
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import BreedingCard from '../../src/app/(pals)/pal/[palId]/components/BreedingCard';
+import { SavedCombinationsProvider } from '@/app/context/SavedCombinationsContext';
 import { toast } from 'react-toastify';
-import { addSavedBreedingCombo, removeSavedBreedingCombo } from "@/app/(pals)/pal/[palId]/actions";
 
-// Mock the toast and action functions
+// Mock Next.js Image component
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props) => <img {...props} />,
+}));
+
+// Mock Next.js Link component
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ children, href }) => <a href={href}>{children}</a>,
+}));
+
+// Mock react-toastify
 jest.mock('react-toastify', () => ({
   toast: {
     info: jest.fn(),
+    error: jest.fn(),
+    success: jest.fn(),
   },
 }));
-jest.mock("@/app/(pals)/pal/[palName]/actions", () => ({
-  addSavedBreedingCombo: jest.fn(),
-  removeSavedBreedingCombo: jest.fn(),
+
+// Mock SavedCombinationsContext
+jest.mock('@/app/context/SavedCombinationsContext', () => ({
+  useSavedCombinations: jest.fn(),
+  SavedCombinationsProvider: ({ children }) => <div>{children}</div>,
 }));
 
-describe("BreedingCard Component", () => {
-    const parent1 = { name: "Parent1", image: "/images/parent1.png" };
-    const parent2 = { name: "Parent2", image: "/images/parent2.png" };
-    const userId = "user123";
-    const breedingComboId = "combo123";
-    const savedBreedingCombos = [{ breeding_combo_id: "combo123" }];
-    const user = { id: "user123" };
-  
-    beforeEach(() => {
-      jest.clearAllMocks();
+describe('BreedingCard', () => {
+  const mockParent1 = { id: '1', name: 'Parent 1', image: '/parent1.png' };
+  const mockParent2 = { id: '2', name: 'Parent 2', image: '/parent2.png' };
+  const mockBreedingComboId = 'combo123';
+  const mockAddCombination = jest.fn();
+  const mockRemoveCombination = jest.fn();
+  const mockUser = { id: 'user123' };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders the breeding card with correct parent information', () => {
+    const { useSavedCombinations } = require('@/app/context/SavedCombinationsContext');
+    useSavedCombinations.mockReturnValue({
+      savedCombinations: [],
+      addCombination: mockAddCombination,
+      removeCombination: mockRemoveCombination,
     });
-  
-    // Test case to render the component
-    it("renders the BreedingCard component correctly", () => {
-      render(
-        <BreedingCard
-          parent1={parent1}
-          parent2={parent2}
-          userId={userId}
-          breedingComboId={breedingComboId}
-          savedBreedingCombos={savedBreedingCombos}
-          user={user}
-        />
-      );
-  
-      // Check if both parents are displayed with correct images and names
-      expect(screen.getByAltText("Parent1")).toBeInTheDocument();
-      expect(screen.getByAltText("Parent2")).toBeInTheDocument();
-      expect(screen.getByText("Parent1")).toBeInTheDocument();
-      expect(screen.getByText("Parent2")).toBeInTheDocument();
-  
-      // Check if the favourite icon is filled
-      expect(screen.getByLabelText("favourite")).toHaveAttribute("data-favorite", "filled");
+
+    render(
+      <BreedingCard
+        parent1={mockParent1}
+        parent2={mockParent2}
+        breedingComboId={mockBreedingComboId}
+        user={mockUser}
+      />
+    );
+
+    expect(screen.getByText('Parent 1')).toBeInTheDocument();
+    expect(screen.getByText('Parent 2')).toBeInTheDocument();
+    expect(screen.getByAltText('Parent 1')).toHaveAttribute('src', '/parent1.png');
+    expect(screen.getByAltText('Parent 2')).toHaveAttribute('src', '/parent2.png');
+  });
+
+  it('displays empty heart icon when combination is not saved', () => {
+    const { useSavedCombinations } = require('@/app/context/SavedCombinationsContext');
+    useSavedCombinations.mockReturnValue({
+      savedCombinations: [],
+      addCombination: mockAddCombination,
+      removeCombination: mockRemoveCombination,
     });
-  
-    // Test case to handle favourite toggle when the user is not logged in
-    it("shows toast message if user is not logged in when toggling favourite", async () => {
-      render(
-        <BreedingCard
-          parent1={parent1}
-          parent2={parent2}
-          userId={userId}
-          breedingComboId={breedingComboId}
-          savedBreedingCombos={savedBreedingCombos}
-          user={null} // User not logged in
-        />
-      );
-  
-      // Click the favourite icon
-      fireEvent.click(screen.getByLabelText("favourite"));
-  
-      // Expect the toast message to be shown
-      expect(toast.info).toHaveBeenCalledWith('Please log in to save breeding combinations.');
+
+    render(
+      <BreedingCard
+        parent1={mockParent1}
+        parent2={mockParent2}
+        breedingComboId={mockBreedingComboId}
+        user={mockUser}
+      />
+    );
+
+    const heartIcon = screen.getByLabelText('Save combination');
+    expect(heartIcon).toHaveAttribute('data-favorite', 'empty');
+  });
+
+  it('displays filled heart icon when combination is saved', () => {
+    const { useSavedCombinations } = require('@/app/context/SavedCombinationsContext');
+    useSavedCombinations.mockReturnValue({
+      savedCombinations: [{ breedingComboId: mockBreedingComboId }],
+      addCombination: mockAddCombination,
+      removeCombination: mockRemoveCombination,
     });
-  
-    // Test case to handle favourite toggle when the user is logged in
-    it("toggles favourite state when user is logged in", async () => {
-      render(
-        <BreedingCard
-          parent1={parent1}
-          parent2={parent2}
-          userId={userId}
-          breedingComboId={breedingComboId}
-          savedBreedingCombos={[]}
-          user={user}
-        />
-      );
-  
-      // Click the favourite icon
-      await act(async () => {
-        fireEvent.click(screen.getByLabelText("favourite"));
-      });
-  
-      // Expect the addSavedBreedingCombo to be called
-      expect(addSavedBreedingCombo).toHaveBeenCalledWith(userId, breedingComboId);
-  
-      // Click the favourite icon again to unfavourite
-      await act(async () => {
-        fireEvent.click(screen.getByLabelText("favourite"));
-      });
-  
-      // Expect the removeSavedBreedingCombo to be called
-      expect(removeSavedBreedingCombo).toHaveBeenCalledWith(userId, breedingComboId);
+
+    render(
+      <BreedingCard
+        parent1={mockParent1}
+        parent2={mockParent2}
+        breedingComboId={mockBreedingComboId}
+        user={mockUser}
+      />
+    );
+
+    const heartIcon = screen.getByLabelText('Remove from saved');
+    expect(heartIcon).toHaveAttribute('data-favorite', 'filled');
+  });
+
+  it('calls addCombination when clicking the heart icon to save', async () => {
+    const { useSavedCombinations } = require('@/app/context/SavedCombinationsContext');
+    useSavedCombinations.mockReturnValue({
+      savedCombinations: [],
+      addCombination: mockAddCombination,
+      removeCombination: mockRemoveCombination,
     });
-  
-    // Test case to check if default images are used when parent images are not provided
-    it("uses default images when parent images are not provided", () => {
-      const defaultParent = { name: "DefaultParent" };
-  
-      render(
-        <BreedingCard
-          parent1={defaultParent}
-          parent2={defaultParent}
-          userId={userId}
-          breedingComboId={breedingComboId}
-          savedBreedingCombos={savedBreedingCombos}
-          user={user}
-        />
-      );
-  
-      // Check if the default image is used
-      const images = screen.getAllByRole("img");
-      images.forEach(img => {
-        expect(img).toHaveAttribute("src", "/images/default.png");
-      });
-  
-      // Check if the alt text is correct
-      expect(screen.getAllByAltText("DefaultParent").length).toBe(2);
+
+    render(
+      <BreedingCard
+        parent1={mockParent1}
+        parent2={mockParent2}
+        breedingComboId={mockBreedingComboId}
+        user={mockUser}
+      />
+    );
+
+    const heartIcon = screen.getByLabelText('Save combination');
+    fireEvent.click(heartIcon);
+
+    await waitFor(() => {
+      expect(mockAddCombination).toHaveBeenCalledWith(mockBreedingComboId);
     });
   });
+
+  it('calls removeCombination when clicking the heart icon to unsave', async () => {
+    const { useSavedCombinations } = require('@/app/context/SavedCombinationsContext');
+    useSavedCombinations.mockReturnValue({
+      savedCombinations: [{ breedingComboId: mockBreedingComboId }],
+      addCombination: mockAddCombination,
+      removeCombination: mockRemoveCombination,
+    });
+
+    render(
+      <BreedingCard
+        parent1={mockParent1}
+        parent2={mockParent2}
+        breedingComboId={mockBreedingComboId}
+        user={mockUser}
+      />
+    );
+
+    const heartIcon = screen.getByLabelText('Remove from saved');
+    fireEvent.click(heartIcon);
+
+    await waitFor(() => {
+      expect(mockRemoveCombination).toHaveBeenCalledWith(mockBreedingComboId);
+    });
+  });
+
+  it('shows a toast message when trying to save without being logged in', () => {
+    const { useSavedCombinations } = require('@/app/context/SavedCombinationsContext');
+    useSavedCombinations.mockReturnValue({
+      savedCombinations: [],
+      addCombination: mockAddCombination,
+      removeCombination: mockRemoveCombination,
+    });
+
+    render(
+      <BreedingCard
+        parent1={mockParent1}
+        parent2={mockParent2}
+        breedingComboId={mockBreedingComboId}
+        user={null}
+      />
+    );
+
+    const heartIcon = screen.getByLabelText('Save combination');
+    fireEvent.click(heartIcon);
+
+    expect(toast.info).toHaveBeenCalledWith('Please log in to save breeding combinations.');
+  });
+
+  it('renders correct links for parent pals', () => {
+    const { useSavedCombinations } = require('@/app/context/SavedCombinationsContext');
+    useSavedCombinations.mockReturnValue({
+      savedCombinations: [],
+      addCombination: mockAddCombination,
+      removeCombination: mockRemoveCombination,
+    });
+
+    render(
+      <BreedingCard
+        parent1={mockParent1}
+        parent2={mockParent2}
+        breedingComboId={mockBreedingComboId}
+        user={mockUser}
+      />
+    );
+
+    const parent1Link = screen.getByRole('link', { name: 'Parent 1' });
+    const parent2Link = screen.getByRole('link', { name: 'Parent 2' });
+
+    expect(parent1Link).toHaveAttribute('href', '/pal/1');
+    expect(parent2Link).toHaveAttribute('href', '/pal/2');
+  });
+});

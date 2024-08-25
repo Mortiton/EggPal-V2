@@ -1,30 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import styles from "./styles/PalList.module.css";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp as upArrow } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUp as upArrow, faArrowDown as downArrow } from "@fortawesome/free-solid-svg-icons";
 import PalCard from "./PalCard";
 import SearchBar from "./SearchBar";
 import TypeDropdown from "./TypeDropDown";
 import WorkDropDown from "./WorkDropDown";
+import styles from "./styles/PalList.module.css";
 
-/**
- * PalList component that renders a list of pals.
- * It provides search and filter functionality.
- *
- * @component
- * @param {Object[]} pals - The list of pals to display.
- * @param {Object[]} workTypes - The list of work types to filter by.
- * @param {Object[]} types - The list of types to filter by.
- * @returns {JSX.Element} A React component.
- */
 const PalList = ({ pals, workTypes, types }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState(null);
   const [selectedWork, setSelectedWork] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [sortOrder, setSortOrder] = useState(null); 
 
   useEffect(() => {
     const container = document.querySelector('.page-container');
@@ -60,13 +51,23 @@ const PalList = ({ pals, workTypes, types }) => {
     }
   };
 
-  const filteredPals = pals.filter((pal) => {
-    const matchesSearch = pal.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = !selectedType || pal.type1 === selectedType || pal.type2 === selectedType;
-    const matchesWork = !selectedWork || pal.skills.some(skill => skill.skill_name === selectedWork);
+  const handleSortClick = (newOrder) => {
+    setSortOrder(currentOrder => currentOrder === newOrder ? null : newOrder);
+  };
 
-    return matchesSearch && matchesType && matchesWork;
-  });
+  const filteredAndSortedPals = pals
+    .filter((pal) => {
+      const matchesSearch = pal.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesType = !selectedType || pal.type1 === selectedType || pal.type2 === selectedType;
+      const matchesWork = !selectedWork || pal.skills.some(skill => skill.skill_name === selectedWork);
+      return matchesSearch && matchesType && matchesWork;
+    })
+    .sort((a, b) => {
+      if (!selectedWork || !sortOrder) return 0;
+      const skillA = a.skills.find(skill => skill.skill_name === selectedWork)?.skill_level || 0;
+      const skillB = b.skills.find(skill => skill.skill_name === selectedWork)?.skill_level || 0;
+      return sortOrder === 'asc' ? skillA - skillB : skillB - skillA;
+    });
 
   return (
     <div className={styles.container}>
@@ -81,7 +82,10 @@ const PalList = ({ pals, workTypes, types }) => {
           />
           <WorkDropDown
             work={workTypes}
-            onSelectWork={(workName) => setSelectedWork(workName)}
+            onSelectWork={(workName) => {
+              setSelectedWork(workName);
+              setSortOrder(null);
+            }}
             aria-label="Work filter dropdown"          
           />
         </div>
@@ -91,6 +95,7 @@ const PalList = ({ pals, workTypes, types }) => {
             onClick={() => {
               setSelectedType(null);
               setSelectedWork(null);
+              setSortOrder(null);
             }}
             className={styles.clearFilterSpan}
             role="button"
@@ -100,6 +105,7 @@ const PalList = ({ pals, workTypes, types }) => {
               if (e.key === "Enter" || e.key === " ") {
                 setSelectedType(null);
                 setSelectedWork(null);
+                setSortOrder(null);
               }
             }}
           >
@@ -110,34 +116,57 @@ const PalList = ({ pals, workTypes, types }) => {
 
       <div className={styles.selectedFiltersContainer}>
         {selectedType && (
-          <div className={styles.selectedFilter}>
-            Type: {selectedType}
-            <button
-              className={styles.clearIndividualFilter}
-              onClick={() => setSelectedType(null)}
-              aria-label={`Clear ${selectedType} filter`}
-            >
-              X
-            </button>
+          <div className={styles.selectedFilterWrapper}>
+            <div className={styles.selectedFilter}>
+              Type: {selectedType}
+              <button
+                className={styles.clearIndividualFilter}
+                onClick={() => setSelectedType(null)}
+                aria-label={`Clear ${selectedType} filter`}
+              >
+                X
+              </button>
+            </div>
           </div>
         )}
         {selectedWork && (
-          <div className={styles.selectedFilter}>
-            Work: {selectedWork.replace("_", " ")}
-            <button
-              className={styles.clearIndividualFilter}
-              onClick={() => setSelectedWork(null)}
-              aria-label={`Clear ${selectedWork.replace("_", " ")} filter`}
-            >
-              X
-            </button>
+          <div className={styles.selectedFilterWrapper}>
+            <div className={styles.selectedFilter}>
+              Work: {selectedWork.replace("_", " ")}
+              <button
+                className={styles.clearIndividualFilter}
+                onClick={() => {
+                  setSelectedWork(null);
+                  setSortOrder(null);
+                }}
+                aria-label={`Clear ${selectedWork.replace("_", " ")} filter`}
+              >
+                X
+              </button>
+            </div>
+            <div className={styles.sortButtonGroup}>
+              <button
+                className={`${styles.sortButton} ${sortOrder === 'asc' ? styles.active : ''}`}
+                onClick={() => handleSortClick('asc')}
+                aria-label={`Sort ${selectedWork.replace("_", " ")} skill level ascending`}
+              >
+                <FontAwesomeIcon icon={upArrow} />
+              </button>
+              <button
+                className={`${styles.sortButton} ${sortOrder === 'desc' ? styles.active : ''}`}
+                onClick={() => handleSortClick('desc')}
+                aria-label={`Sort ${selectedWork.replace("_", " ")} skill level descending`}
+              >
+                <FontAwesomeIcon icon={downArrow} />
+              </button>
+            </div>
           </div>
         )}
       </div>
 
       <div className={styles.cardContainer}>
-        {filteredPals.length > 0 ? (
-          filteredPals.map((pal) => (
+        {filteredAndSortedPals.length > 0 ? (
+          filteredAndSortedPals.map((pal) => (
             <Link
               className={styles.cardLink}
               key={pal.id}
@@ -156,7 +185,6 @@ const PalList = ({ pals, workTypes, types }) => {
         <button
           onClick={scrollToTop}
           className={styles.scrollToTopButton}
-          style={{ position: "fixed", bottom: "20px", right: "20px" }}
           aria-label="Scroll to top"
         >
           <FontAwesomeIcon icon={upArrow} />
@@ -165,7 +193,5 @@ const PalList = ({ pals, workTypes, types }) => {
     </div>
   );
 };
-
-PalList.displayName = 'PalList';
 
 export default React.memo(PalList);

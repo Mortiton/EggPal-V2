@@ -1,78 +1,118 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom'; 
-import PalCard from '@/app/components/PalCard'; 
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import PalCard from "@/app/components/PalCard";
 
-//Mock a test pal
-const mockPal = {
-  id: 1,
-  name: 'Test Pal',
-  type1: 'fire',
-  type2: 'water',
-  strength: 5,
-  speed: 3,
-  intelligence: 4
-};
-//Mock the Next Image
-jest.mock('next/image', () => ({ src, alt }) => <img src={src} alt={alt} />);
+// Mock the next/image component
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: (props) => {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img {...props} alt={props.alt} />;
+  },
+}));
 
-//Mock the work icon
-jest.mock('@/app/components/WorkIcon', () => ({ iconName, value }) => (
-    <div data-testid={iconName}>
-      {iconName}: {value}
-    </div>
-  ));
+// Mock the WorkIcon component
+jest.mock("@/app/components/WorkIcon", () => {
+  return function MockWorkIcon({ iconUrl, value }) {
+    return <div data-testid="work-icon" data-icon-url={iconUrl} data-value={value}>WorkIcon</div>;
+  };
+});
 
-describe('PalCard component', () => {
-  test('renders pal details correctly', () => {
+// Mock the getBlurDataURL function
+jest.mock("@/app/lib/imageUtils", () => ({
+  getBlurDataURL: jest.fn(() => "data:image/png;base64,mockBlurDataURL"),
+}));
+
+// Mock the CSS module
+jest.mock("./styles/PalCard.module.css", () => ({
+  container: "mockContainer",
+  card: "mockCard",
+  typeIcons: "mockTypeIcons",
+  typeIcon: "mockTypeIcon",
+  cardImageWrapper: "mockCardImageWrapper",
+  cardImage: "mockCardImage",
+  cardTitle: "mockCardTitle",
+  workIcons: "mockWorkIcons",
+}));
+
+describe("PalCard Component", () => {
+  const mockPal = {
+    id: 1,
+    name: "MockPal",
+    type1: "Fire",
+    type2: "Water",
+    type1_icon_url: "/fire-icon.png",
+    type2_icon_url: "/water-icon.png",
+    image_url: "/mockpal.png",
+    skills: [
+      { skill_name: "Kindling", skill_icon_url: "/kindling-icon.png", skill_level: 3, work_order: 2 },
+      { skill_name: "Mining", skill_icon_url: "/mining-icon.png", skill_level: 2, work_order: 1 },
+    ],
+  };
+
+  it("renders the pal card with correct information", () => {
     render(<PalCard pal={mockPal} />);
 
-    // Check if the pal's name is displayed
-    expect(screen.getByText('Test Pal')).toBeInTheDocument();
+    // Check if the pal's name is rendered
+    expect(screen.getByText("MockPal")).toBeInTheDocument();
 
-    // Check if the pal's images are displayed
-    expect(screen.getByAltText('Type: fire')).toBeInTheDocument();
-    expect(screen.getByAltText('Type: water')).toBeInTheDocument();
-    expect(screen.getByAltText('Image of Test Pal')).toBeInTheDocument();
+    // Check if type icons are rendered
+    const typeIcons = screen.getAllByRole("img", { name: /Type:/i });
+    expect(typeIcons).toHaveLength(2);
+    expect(typeIcons[0]).toHaveAttribute("src", "/fire-icon.png");
+    expect(typeIcons[1]).toHaveAttribute("src", "/water-icon.png");
 
-    // Check if the work attributes are displayed
-    expect(screen.getByTestId('strength')).toHaveTextContent('strength: 5');
-    expect(screen.getByTestId('speed')).toHaveTextContent('speed: 3');
-    expect(screen.getByTestId('intelligence')).toHaveTextContent('intelligence: 4');
+    // Check if the pal's image is rendered
+    const palImage = screen.getByRole("img", { name: "Image of MockPal" });
+    expect(palImage).toHaveAttribute("src", "/mockpal.png");
+
+    // Check if work icons are rendered and sorted correctly
+    const workIcons = screen.getAllByTestId("work-icon");
+    expect(workIcons).toHaveLength(2);
+    expect(workIcons[0]).toHaveAttribute("data-icon-url", "/mining-icon.png");
+    expect(workIcons[1]).toHaveAttribute("data-icon-url", "/kindling-icon.png");
   });
 
-  test('renders only one type if type2 is not provided', () => {
-    const singleTypePal = {
+  it("renders correctly without optional fields", () => {
+    const minimalPal = {
       id: 2,
-      name: 'Single Type Pal',
-      type1: 'earth',
-      strength: 7,
-      speed: 2,
-      intelligence: 6
+      name: "MinimalPal",
+      type1: "Earth",
+      type1_icon_url: "/earth-icon.png",
+      image_url: "/minimalpal.png",
+      skills: [],
     };
 
-    render(<PalCard pal={singleTypePal} />);
+    render(<PalCard pal={minimalPal} />);
 
-    // Check if the single type image is displayed
-    expect(screen.getByAltText('Type: earth')).toBeInTheDocument();
+    // Check if the pal's name is rendered
+    expect(screen.getByText("MinimalPal")).toBeInTheDocument();
 
-    // Ensure the second type image is not displayed
-    expect(screen.queryByAltText('Type: water')).not.toBeInTheDocument();
+    // Check if only one type icon is rendered
+    const typeIcons = screen.getAllByRole("img", { name: /Type:/i });
+    expect(typeIcons).toHaveLength(1);
+    expect(typeIcons[0]).toHaveAttribute("src", "/earth-icon.png");
+
+    // Check if the pal's image is rendered
+    const palImage = screen.getByRole("img", { name: "Image of MinimalPal" });
+    expect(palImage).toHaveAttribute("src", "/minimalpal.png");
+
+    // Check that no work icons are rendered
+    const workIcons = screen.queryAllByTestId("work-icon");
+    expect(workIcons).toHaveLength(0);
   });
 
-  test('renders no work attributes if they are zero or not present', () => {
-    const noWorkPal = {
-      id: 3,
-      name: 'No Work Pal',
-      type1: 'air',
-      type2: 'fire'
-    };
+  it("has correct aria labels", () => {
+    render(<PalCard pal={mockPal} />);
 
-    render(<PalCard pal={noWorkPal} />);
+    // Check aria labels
+    expect(screen.getByLabelText("Types of MockPal")).toBeInTheDocument();
+    expect(screen.getByLabelText("MockPal")).toBeInTheDocument();
+    expect(screen.getByLabelText("Work attributes of MockPal")).toBeInTheDocument();
+  });
 
-    // Check if the work attributes are not rendered
-    expect(screen.queryByTestId('strength')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('speed')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('intelligence')).not.toBeInTheDocument();
+  it("has correct display name", () => {
+    expect(PalCard.displayName).toBe("PalCard");
   });
 });

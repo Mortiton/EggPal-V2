@@ -3,36 +3,66 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import WorkIcon from '@/app/components/WorkIcon';
 
-describe('WorkIcon component', () => {
-  test('renders the icon with value greater than 0', () => {
-    render(<WorkIcon iconName="kindling" value={5} />);
-    const iconElement = screen.getByRole('img', { name: /kindling: 5/i });
-    expect(iconElement).toBeInTheDocument();
-    const iconImage = screen.getByAltText(/kindling icon/i);
+// Mock the next/image component
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: jest.fn().mockImplementation(({ src, alt, width, height, className, priority }) => (
+    <img 
+      src={src} 
+      alt={alt} 
+      width={width} 
+      height={height} 
+      className={className}
+      data-priority={priority ? 'true' : 'false'}
+    />
+  ))
+}));
+describe('WorkIcon', () => {
+  const mockIconUrl = '/mock-icon.png';
+
+  it('renders the icon and value when value is positive', () => {
+    render(<WorkIcon iconUrl={mockIconUrl} value={5} />);
+    
+    const iconContainer = screen.getByRole('img', { name: 'Icon: 5' });
+    expect(iconContainer).toBeInTheDocument();
+
+    const iconImage = screen.getByAltText('Icon');
     expect(iconImage).toBeInTheDocument();
-    const iconValue = screen.getByText('5');
-    expect(iconValue).toBeInTheDocument();
+    expect(iconImage).toHaveAttribute('src', mockIconUrl);
+    expect(iconImage).toHaveAttribute('width', '25');
+    expect(iconImage).toHaveAttribute('height', '25');
+
+    const valueText = screen.getByText('5');
+    expect(valueText).toBeInTheDocument();
   });
 
-  test('does not render the icon with value of 0', () => {
-    const { container } = render(<WorkIcon iconName="kindling" value={0} />);
-    expect(container.firstChild).toBeNull();
+  it('does not render anything when value is 0', () => {
+    const { container } = render(<WorkIcon iconUrl={mockIconUrl} value={0} />);
+    expect(container).toBeEmptyDOMElement();
   });
 
-  test('does not render the icon with negative value', () => {
-    const { container } = render(<WorkIcon iconName="kindling" value={-1} />);
-    expect(container.firstChild).toBeNull();
+  it('does not render anything when value is negative', () => {
+    const { container } = render(<WorkIcon iconUrl={mockIconUrl} value={-1} />);
+    expect(container).toBeEmptyDOMElement();
   });
 
-  test('renders the correct icon path', () => {
-    render(<WorkIcon iconName="watering" value={3} />);
-    const iconImage = screen.getByAltText(/watering icon/i);
-    expect(iconImage).toHaveAttribute('src', expect.stringContaining('/_next/image?url=%2Fimages%2Fwork%2Fwatering.png'));
+  it('applies correct CSS classes', () => {
+    render(<WorkIcon iconUrl={mockIconUrl} value={5} />);
+    
+    const iconContainer = screen.getByRole('img', { name: 'Icon: 5' });
+    expect(iconContainer).toHaveClass('iconContainer');
+
+    const iconImage = screen.getByAltText('Icon');
+    expect(iconImage).toHaveClass('iconImage');
+
+    const valueText = screen.getByText('5');
+    expect(valueText).toHaveClass('iconValue');
   });
 
-  test('applies the correct aria-label', () => {
-    render(<WorkIcon iconName="planting" value={2} />);
-    const iconElement = screen.getByRole('img', { name: /planting: 2/i });
-    expect(iconElement).toHaveAttribute('aria-label', 'planting: 2');
+  it('sets priority prop on Image component', () => {
+    render(<WorkIcon iconUrl={mockIconUrl} value={5} />);
+    
+    const iconImage = screen.getByAltText('Icon');
+    expect(iconImage).toHaveAttribute('data-priority', 'true');
   });
 });

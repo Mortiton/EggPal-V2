@@ -1,9 +1,11 @@
+import React from "react";
 import LoginForm from "./components/LoginForm";
 import styles from "../../components/styles/FormPage.module.css";
+import Link from "next/link";
 
 export const metadata = {
-  title: 'Login',
-  description: 'Enter your credentials to log into your account',
+  title: "Login",
+  description: "Enter your credentials to log into your account",
 };
 
 /**
@@ -25,8 +27,14 @@ export default function LoginPage() {
       </p>
 
       <LoginForm />
+      <p className={styles.description}>
+        Don&apos;t have an account?{" "}
+        <Link className={styles.link} href="./signup">
+          Sign up
+        </Link>
+      </p>
     </div>
   );
 }
 
-LoginPage.displayName = 'LoginPage';
+LoginPage.displayName = "LoginPage";

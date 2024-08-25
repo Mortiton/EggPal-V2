@@ -1,15 +1,14 @@
 const path = require('path');
 
 module.exports = {
-  // Optimize build for production
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
   reactStrictMode: true,
+  compress: true,
+  swcMinify: true,
 
-  // Headers configuration
   async headers() {
     return [
       {
-        // Define security headers
         source: '/(.*)',
         headers: [
           {
@@ -32,25 +31,35 @@ module.exports = {
             key: 'Feature-Policy',
             value: "geolocation 'self'; microphone 'self'; camera 'self'",
           },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://fnjmrcdmectyvrnoxamx.supabase.co;"
+          },
         ],
       },
       {
-        // Define cache-control headers for images and icons
         source: '/_next/image(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=2592000, stale-while-revalidate=604800', // 30 days max-age, 7 days stale-while-revalidate
+            value: 'public, max-age=2592000, stale-while-revalidate=604800',
+          },
+        ],
+      },
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },
     ];
   },
 
-  // Webpack configuration
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     if (!isServer) {
-      // Exclude test files from the client bundle
       config.module.rules.push({
         test: /\.test\.js$/,
         include: path.resolve(__dirname, 'src/app/__tests__'), 
@@ -58,15 +67,18 @@ module.exports = {
       });
     }
 
-    // Alias for cleaner imports
     config.resolve.alias['@components'] = path.join(__dirname, 'src/app/components');
     config.resolve.alias['@styles'] = path.join(__dirname, 'src/app/styles');
     config.resolve.alias['@'] = path.join(__dirname, 'src');
 
+    // Disable Webpack cache in development mode
+    if (dev) {
+      config.cache = false;
+    }
+
     return config;
   },
 
-  // Image configuration
   images: {
     remotePatterns: [
       {
@@ -80,5 +92,8 @@ module.exports = {
         pathname: '/storage/v1/object/public/EggPal/icons/**',
       },
     ],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/webp'],
   },
 };

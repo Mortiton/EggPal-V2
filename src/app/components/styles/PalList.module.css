@@ -26,6 +26,7 @@
   width: 100%;
   padding: 10px 20px;
   box-sizing: border-box;
+  min-height: 75px;
 }
 
 .dropdownButtonsContainer {
@@ -41,27 +42,30 @@
   color: #b27fe5;
 }
 
-.filterContainer {
-  min-height: 75px;
-}
-
 .selectedFiltersContainer {
   display: flex;
   position: fixed;
   top: 110px; 
   left: 20px;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
 }
 
+.selectedFilterWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .selectedFilter {
+  display: flex;
+  align-items: center;
   background-color: #333;
   color: white;
   padding: 5px 10px;
   border-radius: 4px;
-  display: flex;
-  align-items: center;
+  margin-right: 5px;
 }
 
 .clearIndividualFilter {
@@ -71,14 +75,6 @@
   margin-left: 0.5rem;
   cursor: pointer;
   font-weight: bold;
-}
-
-.typeSpan {
-  display: block;
-  cursor: pointer;
-  margin-left: 30%;
-  margin-top: 10px;
-  padding: 5px;
 }
 
 .scrollToTopButton {
@@ -106,6 +102,37 @@
   text-decoration: none;
 }
 
+.sortButtonGroup {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.sortButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #d4a6ff;
+  padding: 5px;
+  margin: 0 2px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sortButton:hover {
+  background-color: rgba(210, 166, 255, 0.2);
+}
+
+.sortButton.active {
+  color: #ffffff; 
+  background-color: #b27fe5; 
+}
+
+.sortButton svg {
+  width: 20px;
+  height: 15px;
+}
+
 @media (max-width: 768px) {
   .filterContainer {
     flex-direction: column;
@@ -118,9 +145,8 @@
     position: relative;
     top: auto;
     left: auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: flex-start;
     width: 100%;
   }
 
@@ -140,7 +166,7 @@
     top: auto;
     left: auto;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
   }
 

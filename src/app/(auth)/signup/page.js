@@ -1,3 +1,4 @@
+import React from "react";
 import SignupForm from "./components/SignupForm";
 import styles from "../../components/styles/FormPage.module.css";
 import Link from "next/link";

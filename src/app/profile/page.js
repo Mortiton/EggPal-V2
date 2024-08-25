@@ -1,9 +1,8 @@
-import { getUser } from '@/app/services/authService';
+import React from 'react';
 import UpdateEmailForm from './components/UpdateEmailForm';
 import UpdatePasswordForm from './components/UpdatePasswordForm';
 import DeleteUserForm from './components/DeleteUserForm';
 import styles from '../components/styles/FormPage.module.css'
-import { redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'Profile',
@@ -20,7 +19,7 @@ export const metadata = {
  * @returns {JSX.Element} A React component.
  */
 export default async function ProfilePage() {
- const user = getUser();
+
   // Render the profile page
   return (
     <div className={styles.container}>

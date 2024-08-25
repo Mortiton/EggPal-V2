@@ -34,19 +34,12 @@ export async function updateSession(request) {
           })
         },
         remove(name, options) {
-          request.cookies.set({
+          request.cookies.delete({
             name,
-            value: '',
             ...options,
           })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          response.cookies.set({
+          response.cookies.delete({
             name,
-            value: '',
             ...options,
           })
         },
@@ -54,8 +47,14 @@ export async function updateSession(request) {
     }
   )
 
-  // refreshing the auth token
-  await supabase.auth.getUser()
+  // Refreshing the auth token and getting user data
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user) {
+    // Set user information in headers
+    response.headers.set('x-user-id', user.id)
+    response.headers.set('x-user-email', user.email)
+  }
 
   return response
 }

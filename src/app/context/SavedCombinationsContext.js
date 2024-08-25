@@ -1,31 +1,24 @@
 "use client";
+
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { createClient } from '@/app/utils/supabase/client';
 
 const SavedCombinationsContext = createContext();
 
-export function SavedCombinationsProvider({ children, initialSession }) {
-  const [session, setSession] = useState(initialSession);
+export function SavedCombinationsProvider({ children, initialUser }) {
+  const [user, setUser] = useState(initialUser);
   const [savedCombinations, setSavedCombinations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, newSession) => {
-      setSession(newSession);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [supabase]);
+    setUser(initialUser);
+  }, [initialUser]);
 
   const loadSavedCombinations = useCallback(async () => {
-    if (session?.user) {
+    if (user?.id) {
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/saved-combinations?userId=${session.user.id}`);
+        const response = await fetch(`/api/saved-combinations?userId=${user.id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch saved combinations');
         }
@@ -41,55 +34,61 @@ export function SavedCombinationsProvider({ children, initialSession }) {
       setSavedCombinations([]);
       setIsLoading(false);
     }
-  }, [session]);
+  }, [user]);
 
   useEffect(() => {
     loadSavedCombinations();
   }, [loadSavedCombinations]);
 
   const addCombination = useCallback(async (breedingComboId) => {
-    if (!session?.user) {
+    if (!user?.id) {
       toast.info('Please log in to save breeding combinations');
       return;
     }
+    // Optimistic update
+    setSavedCombinations(prev => [...prev, { breedingComboId }]);
     try {
       const response = await fetch('/api/saved-combinations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: session.user.id, breedingComboId }),
+        body: JSON.stringify({ userId: user.id, breedingComboId }),
       });
       if (!response.ok) {
         throw new Error('Failed to save breeding combination');
       }
-      await loadSavedCombinations();
       toast.success('Breeding combination saved');
     } catch (error) {
+      // Revert optimistic update on error
+      setSavedCombinations(prev => prev.filter(combo => combo.breedingComboId !== breedingComboId));
       console.error('Failed to add combination:', error);
       toast.error('Failed to save breeding combination');
     }
-  }, [session, loadSavedCombinations]);
+  }, [user]);
 
   const removeCombination = useCallback(async (comboId) => {
-    if (!session?.user) return;
+    if (!user?.id) return;
+    // Optimistic update
+    setSavedCombinations(prev => prev.filter(combo => combo.breedingComboId !== comboId));
     try {
-      const response = await fetch(`/api/saved-combinations?userId=${session.user.id}&comboId=${comboId}`, {
+      const response = await fetch(`/api/saved-combinations?userId=${user.id}&comboId=${comboId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error('Failed to remove breeding combination');
       }
-      setSavedCombinations(prev => prev.filter(combo => combo.breedingComboId !== comboId));
       toast.success('Breeding combination removed');
     } catch (error) {
+      // Revert optimistic update on error
+      setSavedCombinations(prev => [...prev, { breedingComboId: comboId }]);
       console.error('Failed to remove combination:', error);
       toast.error('Failed to remove breeding combination');
     }
-  }, [session]);
+  }, [user]);
 
   return (
-    <SavedCombinationsContext.Provider value={{ savedCombinations, addCombination, removeCombination, session, isLoading }}>
+    <SavedCombinationsContext.Provider value={{ savedCombinations, addCombination, removeCombination, user, isLoading }}>
       {children}
     </SavedCombinationsContext.Provider>
   );

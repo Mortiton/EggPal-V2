@@ -1,92 +1,59 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TypeDropdown from '@/app/components/TypeDropDown';
 
+// Mock the next/image component
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props) => {
+    return <img {...props} />;
+  },
+}));
 
-describe('TypeDropdown component', () => {
-  const types = [
-    { name: "neutral" },
-    { name: "dark" },
-    { name: "dragon" },
-    { name: "electric" },
-    { name: "fire" },
-    { name: "grass" },
-    { name: "ground" },
-    { name: "ice" },
-    { name: "water" },
+describe('TypeDropdown', () => {
+  const mockTypes = [
+    { icon_name: 'type1', icon_url: '/type1.png' },
+    { icon_name: 'type2', icon_url: '/type2.png' },
   ];
+  const mockOnSelectType = jest.fn();
 
-  test('renders the dropdown button', () => {
-    render(<TypeDropdown types={types} onSelectType={() => {}} />);
-    const button = screen.getByRole('button', { name: /Element Type/i });
-    expect(button).toBeInTheDocument();
+  it('renders the dropdown button', () => {
+    render(<TypeDropdown types={mockTypes} onSelectType={mockOnSelectType} />);
+    expect(screen.getByRole('button', { name: 'Element Type' })).toBeInTheDocument();
   });
 
-  test('toggles the dropdown when button is clicked', () => {
-    render(<TypeDropdown types={types} onSelectType={() => {}} />);
-    const button = screen.getByRole('button', { name: /Element Type/i });
-
-    // Open dropdown
+  it('opens the dropdown when button is clicked', () => {
+    render(<TypeDropdown types={mockTypes} onSelectType={mockOnSelectType} />);
+    const button = screen.getByRole('button', { name: 'Element Type' });
     fireEvent.click(button);
-    const dropdownContent = screen.getByRole('listbox', { name: /Element Type/i });
-    expect(dropdownContent).toBeInTheDocument();
-
-    // Close dropdown
-    fireEvent.click(button);
-    expect(dropdownContent).not.toBeInTheDocument();
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
   });
 
-  test('closes the dropdown when clicking outside', () => {
-    render(<TypeDropdown types={types} onSelectType={() => {}} />);
-    const button = screen.getByRole('button', { name: /Element Type/i });
-
-    // Open dropdown
+  it('closes the dropdown when an option is selected', () => {
+    render(<TypeDropdown types={mockTypes} onSelectType={mockOnSelectType} />);
+    const button = screen.getByRole('button', { name: 'Element Type' });
     fireEvent.click(button);
-    const dropdownContent = screen.getByRole('listbox', { name: /Element Type/i });
-    expect(dropdownContent).toBeInTheDocument();
-
-    // Click outside
-    fireEvent.mouseDown(document);
-    waitFor(() => expect(dropdownContent).not.toBeInTheDocument());
-  });
-
-  test('calls onSelectType with the correct type when an option is clicked', () => {
-    const mockOnSelectType = jest.fn();
-    render(<TypeDropdown types={types} onSelectType={mockOnSelectType} />);
-    const button = screen.getByRole('button', { name: /Element Type/i });
-
-    // Open dropdown
-    fireEvent.click(button);
-
-    // Click on an option
-    const option = screen.getByRole('option', { name: /fire/i });
+    const option = screen.getByRole('option', { name: 'type1' });
     fireEvent.click(option);
-    expect(mockOnSelectType).toHaveBeenCalledWith('fire');
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
   });
 
-  test('closes the dropdown when an option is clicked', () => {
-    render(<TypeDropdown types={types} onSelectType={() => {}} />);
-    const button = screen.getByRole('button', { name: /Element Type/i });
-
-    // Open dropdown
+  it('calls onSelectType with the correct type when an option is selected', () => {
+    render(<TypeDropdown types={mockTypes} onSelectType={mockOnSelectType} />);
+    const button = screen.getByRole('button', { name: 'Element Type' });
     fireEvent.click(button);
-
-    // Click on an option
-    const option = screen.getByRole('option', { name: /fire/i });
+    const option = screen.getByRole('option', { name: 'type1' });
     fireEvent.click(option);
-    waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
+    expect(mockOnSelectType).toHaveBeenCalledWith('type1');
   });
 
-  test('handles Escape key to close the dropdown', () => {
-    render(<TypeDropdown types={types} onSelectType={() => {}} />);
-    const button = screen.getByRole('button', { name: /Element Type/i });
-
-    // Open dropdown
+  it('closes the dropdown when Escape key is pressed', () => {
+    render(<TypeDropdown types={mockTypes} onSelectType={mockOnSelectType} />);
+    const button = screen.getByRole('button', { name: 'Element Type' });
     fireEvent.click(button);
-
-    // Press Escape
-    fireEvent.keyDown(button, { key: 'Escape' });
-    waitFor(() => expect(screen.queryByRole('listbox')).not.toBeInTheDocument());
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    fireEvent.keyDown(button, { key: 'Escape', code: 'Escape' });
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
   });
 });

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from "react";
+import Image from 'next/image'
 import styles from "./styles/DropDown.module.css";
 
 /**
@@ -81,9 +82,11 @@ export default function TypeDropdown({ types, onSelectType }) {
               }}
               className={styles.dropdownItem}
             >
-              <img
+              <Image
                 src={type.icon_url}
                 alt={type.icon_name}
+                width={30}
+                height={30}
                 className={styles.icon}
               />
             </button>

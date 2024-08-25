@@ -18,13 +18,19 @@ export async function getFavouritePals(userId) {
     }
 
     const palIds = data.map((fav) => fav.pal_id);
-    
+    console.log('Fetched favourite pal IDs:', palIds); // Debugging output
+
     if (palIds.length === 0) {
       return []; // Return an empty array if no favorites
     }
+
+    // Convert the array of IDs into a comma-separated string
+    const palIdsString = palIds.join(',');
     
-    // Use getPals without caching for favorites
-    return await getPals(palIds);
+    // Fetch detailed Pal data using the palIdsString
+    const pals = await getPals(palIdsString);
+    // console.log('Fetched Pals data:', pals); // Debugging output
+    return pals;
   } catch (error) {
     console.error("Error in getFavouritePals:", error);
     throw error;

@@ -1,5 +1,5 @@
-import { By, until } from 'selenium-webdriver';
-import { initDriver, quitDriver, logError } from '../../utils/webdriverUtil';
+import { By, until, Key } from 'selenium-webdriver';
+import { initDriver, quitDriver, logError } from "../../src/app/utils/webdriverUtil";
 
 jest.setTimeout(60000);
 
@@ -34,7 +34,7 @@ describe('Home Page Functionality Test', () => {
       await driver.wait(until.elementLocated(By.xpath("//h3[contains(text(), 'Killamari')]")), 10000);
       const killamariCard = await driver.findElement(By.xpath("//h3[contains(text(), 'Killamari')]"));
       await killamariCard.click();
-      await driver.wait(until.urlIs('http://localhost:3000/pal/Killamari'), 10000);
+      await driver.wait(until.urlIs('http://localhost:3000/pal/023'), 10000);
       console.log('Navigated to Killamari pal page');
 
       // Step 3: Check the current state of the favourite icon and click it if necessary
@@ -44,15 +44,28 @@ describe('Home Page Functionality Test', () => {
 
       if (isFavourited === 'empty') {
         console.log('Favouriting Killamari pal');
-        await driver.executeScript("arguments[0].click();", favouriteButton);
+        // Try multiple methods to click the button
+        try {
+          await favouriteButton.click();
+        } catch (clickError) {
+          try {
+            await driver.executeScript("arguments[0].click();", favouriteButton);
+          } catch (scriptError) {
+            await favouriteButton.sendKeys(Key.RETURN);
+          }
+        }
         console.log('Killamari pal favourited');
       } else {
         console.log('Killamari pal is already favourited');
       }
 
+      // Wait for any potential state updates
+      await driver.sleep(1000);
+
       // Step 4: Navigate to the favourite pal page
       console.log('Navigating to favourite pals page');
-      await driver.findElement(By.linkText('Favourite Pals')).click();
+      const favouritePalsLink = await driver.findElement(By.linkText('Favourite Pals'));
+      await favouritePalsLink.click();
       await driver.wait(until.urlIs('http://localhost:3000/favourite-pals'), 10000);
       console.log('Navigated to favourite pals page');
 
