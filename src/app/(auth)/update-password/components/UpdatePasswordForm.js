@@ -4,9 +4,13 @@ import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { updateUserPassword } from '@/app/services/authService'
+import { updateUserPassword } from "@/app/services/authService";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
+/**
+ * Yup schema for validating the update password form
+ * @constant {Yup.ObjectSchema}
+ */
 const UpdatePasswordSchema = Yup.object().shape({
   password: Yup.string()
     .required("Required")
@@ -20,43 +24,81 @@ const UpdatePasswordSchema = Yup.object().shape({
     .required("Required"),
 });
 
+/**
+ * @typedef {Object} UpdatePasswordFormProps
+ * @property {string} token - The password reset token
+ */
+
+/**
+ * @component UpdatePasswordForm
+ * @description A form component for updating user password
+ * @param {UpdatePasswordFormProps} props - The component props
+ * @returns {JSX.Element} The rendered update password form
+ */
 const UpdatePasswordForm = ({ token }) => {
   const router = useRouter();
   const [error, setError] = useState("");
 
-  const handleSubmit = useCallback(async (values, { setSubmitting, setFieldError }) => {
-    const { password, confirmPassword } = values;
-    
-    if (!token) {
-      setError("Reset token missing!");
-      setSubmitting(false);
-      return;
-    }
-    
-    if (password !== confirmPassword) {
-      setFieldError("confirmPassword", "Passwords must match!");
-      setSubmitting(false);
-      return;
-    }
-  
-    try {
-      const result = await updateUserPassword({ password, token });
-      
-      if (result.success) {
-        router.push(`/success?title=${encodeURIComponent("Password Updated")}&description=${encodeURIComponent(result.message)}`);
-      } else {
-        if (result.message.includes("New password should be different from the old password")) {
-          setFieldError("password", "New password must be different from your current password.");
-        } else {
-          setError(result.message || "Failed to update password. Please try again.");
-        }
+  /**
+   * Handles the form submission for password update
+   * @function
+   * @async
+   * @param {Object} values - The form values
+   * @param {string} values.password - The new password
+   * @param {string} values.confirmPassword - The confirmed new password
+   * @param {Object} formikHelpers - Formik helper functions
+   * @param {Function} formikHelpers.setSubmitting - Function to set the submitting state
+   * @param {Function} formikHelpers.setFieldError - Function to set field-specific errors
+   */
+  const handleSubmit = useCallback(
+    async (values, { setSubmitting, setFieldError }) => {
+      const { password, confirmPassword } = values;
+
+      if (!token) {
+        setError("Reset token missing!");
+        setSubmitting(false);
+        return;
       }
-    } catch (error) {
-      setError(error.message || "An unexpected error occurred.");
-    } finally {
-      setSubmitting(false);
-    }
-  }, [token, router]);
+
+      if (password !== confirmPassword) {
+        setFieldError("confirmPassword", "Passwords must match!");
+        setSubmitting(false);
+        return;
+      }
+
+      try {
+        const result = await updateUserPassword({ password, token });
+
+        if (result.success) {
+          router.push(
+            `/success?title=${encodeURIComponent(
+              "Password Updated"
+            )}&description=${encodeURIComponent(result.message)}`
+          );
+        } else {
+          if (
+            result.message.includes(
+              "New password should be different from the old password"
+            )
+          ) {
+            setFieldError(
+              "password",
+              "New password must be different from your current password."
+            );
+          } else {
+            setError(
+              result.message || "Failed to update password. Please try again."
+            );
+          }
+        }
+      } catch (error) {
+        setError(error.message || "An unexpected error occurred.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [token, router]
+  );
 
   return (
     <Formik
@@ -104,7 +146,11 @@ const UpdatePasswordForm = ({ token }) => {
             role="alert"
           />
 
-          {error && <div className={styles.error} role="alert">{error}</div>}
+          {error && (
+            <div className={styles.error} role="alert">
+              {error}
+            </div>
+          )}
 
           <button
             type="submit"

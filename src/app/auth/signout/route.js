@@ -2,10 +2,19 @@ import { createClient } from "@/app/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
+/**
+ * Handles POST requests for user logout
+ * @async
+ * @function
+ * @param {Request} req - The incoming request object
+ * @returns {Promise<NextResponse>} A redirect response based on the logout result
+ */
 export async function POST(req) {
-  console.log("Logout route triggered");
+  /**
+   * Creates a Supabase client for authentication
+   * @type {import('@supabase/supabase-js').SupabaseClient}
+   */
   const supabase = createClient();
-  console.log("Supabase client created");
 
   try {
     // Check if a user's logged in

@@ -7,6 +7,35 @@ import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import styles from "./styles/PalDetailsCard.module.css";
 
+/**
+ * @typedef {Object} Skill
+ * @property {string} skill_name - The name of the skill
+ * @property {number} skill_level - The level of the skill
+ * @property {string} skill_icon_url - The URL of the skill's icon
+ */
+
+/**
+ * @typedef {Object} Pal
+ * @property {string} name - The name of the pal
+ * @property {string} image_url - The URL of the pal's image
+ * @property {string} description - A description of the pal
+ * @property {Skill[]} skills - An array of the pal's skills
+ */
+
+/**
+ * @typedef {Object} PalDetailsCardProps
+ * @property {Pal} pal - The pal object containing detailed information
+ * @property {boolean} isFavourited - Whether the pal is currently favourited
+ * @property {Function} onToggleFavourite - Function to toggle the favourite status
+ * @property {Object|null} user - The current user object, or null if not logged in
+ */
+
+/**
+ * @component PalDetailsCard
+ * @description Displays detailed information about a pal, including its skills and favourite status
+ * @param {PalDetailsCardProps} props - The component props
+ * @returns {JSX.Element} The rendered pal details card
+ */
 export default function PalDetailsCard({
   pal,
   isFavourited,
@@ -15,8 +44,13 @@ export default function PalDetailsCard({
 }) {
   const { skills } = pal;
 
+  /**
+   * Handles the click event on the favourite icon
+   * @function
+   */
   const handleFavouriteClick = () => {
-    if (!user) { // Check if the user is authenticated and display a toast if not
+    // Check if the user is authenticated and display a toast if not
+    if (!user) {
       toast.info("Please sign in to favourite pals.");
       return;
     }
@@ -27,7 +61,7 @@ export default function PalDetailsCard({
     <div className={styles.container}>
       <FontAwesomeIcon
         icon={isFavourited ? fasStar : farStar}
-        className={styles.favoriteIcon}
+        className={styles.favouriteIcon}
         aria-label="Toggle Favourite"
         data-favourite={isFavourited ? "filled" : "empty"}
         onClick={handleFavouriteClick}

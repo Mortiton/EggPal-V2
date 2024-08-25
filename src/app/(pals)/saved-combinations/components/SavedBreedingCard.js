@@ -8,6 +8,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
 
+/**
+ * @typedef {Object} Parent
+ * @property {string} id - The unique identifier of the parent pal
+ * @property {string} name - The name of the parent pal
+ * @property {string} image - The image URL of the parent pal
+ */
+
+/**
+ * @typedef {Object} SavedBreedingCardProps
+ * @property {string} breedingComboId - The unique identifier of the breeding combination
+ * @property {Parent} parent1 - The first parent in the breeding combination
+ * @property {Parent} parent2 - The second parent in the breeding combination
+ */
+
+/**
+ * @component SavedBreedingCard
+ * @description Renders a card displaying a saved breeding combination with options to view parent details and remove the combination
+ * @param {SavedBreedingCardProps} props - The component props
+ * @returns {JSX.Element} The rendered saved breeding card
+ */
 export default function SavedBreedingCard({
   breedingComboId,
   parent1,
@@ -15,6 +35,11 @@ export default function SavedBreedingCard({
 }) {
   const { removeCombination, session } = useSavedCombinations();
 
+  /**
+   * Handles the removal of the breeding combination
+   * @async
+   * @function
+   */
   const handleRemove = async () => {
     if (session?.user) {
       await removeCombination(breedingComboId);

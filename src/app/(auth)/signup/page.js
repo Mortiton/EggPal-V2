@@ -3,19 +3,25 @@ import SignupForm from "./components/SignupForm";
 import styles from "../../components/styles/FormPage.module.css";
 import Link from "next/link";
 
+/**
+ * @type {import('next').Metadata}
+ */
 export const metadata = {
   title: "Sign Up",
   description: "Create an account to access EggPal features",
 };
 
 /**
- * SignupPage component that renders a signup page.
- * It displays a heading, a description, an error message (if any), and a SignupForm component.
- *
- * @component
- * @param {Object} props - The props that were defined by the caller of this component.
- * @param {Object} props.searchParams - The search parameters from the URL.
- * @returns {JSX.Element} A React component.
+ * @typedef {Object} SearchParams
+ * @property {string} [error] - Error message passed as a query parameter
+ */
+
+/**
+ * @component SignupPage
+ * @description Renders the signup page with a form for user registration
+ * @param {Object} props - The component props
+ * @param {SearchParams} props.searchParams - The search parameters from the URL
+ * @returns {JSX.Element} The rendered signup page
  */
 export default function SignupPage({ searchParams }) {
   const error = searchParams?.error;
@@ -38,7 +44,7 @@ export default function SignupPage({ searchParams }) {
         <Link className={styles.link} href="./login">
           Sign in
         </Link>
-        </p>
+      </p>
     </div>
   );
 }

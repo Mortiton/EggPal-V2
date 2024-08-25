@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import styles from "@/app/components/styles/FormStyles.module.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { login } from "@/app/services/authService";
 
 /**
- * Validation schema for the login form using Yup.
- * Ensures that email is a valid email format and that both email and password are required fields.
- * @type {Yup.ObjectSchema}
+ * Yup schema for validating the login form
+ * @constant {Yup.ObjectSchema}
  */
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -19,19 +18,24 @@ const LoginSchema = Yup.object().shape({
 });
 
 /**
- * LoginForm component that renders a login form using Formik.
- * Handles user login, form validation, and error display.
- *
- * @component
- * @example
- * return (
- *   <LoginForm />
- * )
+ * @component LoginForm
+ * @description A form component for user authentication
+ * @returns {JSX.Element} The rendered login form
  */
 export default function LoginForm() {
   const router = useRouter();
   const [error, setError] = useState(null);
 
+  /**
+   * Handles the form submission for user login
+   * @async
+   * @function
+   * @param {Object} values - The form values
+   * @param {string} values.email - The user's email address
+   * @param {string} values.password - The user's password
+   * @param {Object} actions - Formik actions object
+   * @param {Function} actions.setSubmitting - Function to set the submitting state
+   */
   const handleSubmit = async (values, { setSubmitting }) => {
     setError(null);
     const formData = new FormData();
@@ -45,9 +49,9 @@ export default function LoginForm() {
         throw new Error(result.error);
       }
 
-      toast.success('Logged in successfully');
+      toast.success("Logged in successfully");
       router.push("/");
-      router.refresh(); 
+      router.refresh();
     } catch (err) {
       setError(err.message);
     } finally {

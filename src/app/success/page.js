@@ -11,8 +11,9 @@ export default function SuccessPage() {
   const description = searchParams.get('description') || 'Operation completed successfully.';
 
   const handleRedirect = () => {
-    router.push('/');
+    window.location.href = '/';
   };
+
 
   return (
     <div className={styles.container}>

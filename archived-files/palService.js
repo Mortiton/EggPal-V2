@@ -39,10 +39,8 @@ export async function getPals(ids = []) {
   const supabase = createClient();
   
   if (ids.length > 0) {
-    // For specific pals (e.g., favorites), don't use cache
     return fetchPalsFromDB(supabase, ids);
   } else {
-    // For all pals (e.g., homepage), use cache
     return getCachedPals(supabase, null);
   }
 }

@@ -10,16 +10,56 @@ import { faHeart as fasHeart, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
 
-export default function BreedingCard({ parent1, parent2, breedingComboId, user }) {
-  const { savedCombinations, addCombination, removeCombination } = useSavedCombinations();
+/**
+ * @typedef {Object} Parent
+ * @property {string} id - The unique identifier of the parent pal
+ * @property {string} name - The name of the parent pal
+ * @property {string} image - The image URL of the parent pal
+ */
 
-  const isSaved = useMemo(() => 
-    savedCombinations.some((combo) => combo.breedingComboId === breedingComboId),
+/**
+ * @typedef {Object} BreedingCardProps
+ * @property {Parent} parent1 - The first parent in the breeding combination
+ * @property {Parent} parent2 - The second parent in the breeding combination
+ * @property {string} breedingComboId - The unique identifier for the breeding combination
+ * @property {Object|null} user - The current user object, or null if not logged in
+ */
+
+/**
+ * @component BreedingCard
+ * @description Displays a breeding combination card with parent information and save functionality
+ * @param {BreedingCardProps} props - The component props
+ * @returns {JSX.Element} The rendered breeding card
+ */
+export default function BreedingCard({
+  parent1,
+  parent2,
+  breedingComboId,
+  user,
+}) {
+  const { savedCombinations, addCombination, removeCombination } =
+    useSavedCombinations();
+
+  /**
+   * Determines if the current breeding combination is saved
+   * @type {boolean}
+   */
+  const isSaved = useMemo(
+    () =>
+      savedCombinations.some(
+        (combo) => combo.breedingComboId === breedingComboId
+      ),
     [savedCombinations, breedingComboId]
   );
 
+  /**
+   * Toggles the saved status of the breeding combination
+   * @async
+   * @function
+   */
   const toggleSaved = useCallback(async () => {
-    if (!user) { // Check if user is authenticated and display toast if not
+    // Check if user is authenticated and display toast if not
+    if (!user) {
       toast.info("Please log in to save breeding combinations.");
       return;
     }
@@ -34,7 +74,6 @@ export default function BreedingCard({ parent1, parent2, breedingComboId, user }
       console.error("Error toggling saved status:", error.message);
     }
   }, [user, isSaved, breedingComboId, addCombination, removeCombination]);
-
 
   return (
     <div className={styles.card}>
@@ -81,7 +120,7 @@ export default function BreedingCard({ parent1, parent2, breedingComboId, user }
         icon={isSaved ? fasHeart : farHeart}
         className={styles.favouriteIcon}
         onClick={toggleSaved}
-        data-favorite={isSaved ? "filled" : "empty"}
+        data-favourite={isSaved ? "filled" : "empty"}
         aria-label={isSaved ? "Remove from saved" : "Save combination"}
       />
     </div>
@@ -89,4 +128,3 @@ export default function BreedingCard({ parent1, parent2, breedingComboId, user }
 }
 
 BreedingCard.displayName = "BreedingCard";
-

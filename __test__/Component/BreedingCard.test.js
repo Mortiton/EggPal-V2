@@ -85,7 +85,7 @@ describe('BreedingCard', () => {
     );
 
     const heartIcon = screen.getByLabelText('Save combination');
-    expect(heartIcon).toHaveAttribute('data-favorite', 'empty');
+    expect(heartIcon).toHaveAttribute('data-favourite', 'empty');
   });
 
   it('displays filled heart icon when combination is saved', () => {
@@ -106,7 +106,7 @@ describe('BreedingCard', () => {
     );
 
     const heartIcon = screen.getByLabelText('Remove from saved');
-    expect(heartIcon).toHaveAttribute('data-favorite', 'filled');
+    expect(heartIcon).toHaveAttribute('data-favourite', 'filled');
   });
 
   it('calls addCombination when clicking the heart icon to save', async () => {

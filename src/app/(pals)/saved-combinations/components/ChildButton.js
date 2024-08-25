@@ -5,17 +5,39 @@ import Image from "next/image";
 import styles from "./styles/ChildButton.module.css";
 
 /**
- * ChildButton component that displays the child image and name and shows the saved breeding combinations on click.
- *
- * @param {{ child: string, combos: Array, userId: string, onClick: function, isSelected: boolean }} props - The properties of the ChildButton component.
- * @returns {JSX.Element} A React component.
+ * @typedef {Object} BreedingCombo
+ * @property {string} id - The unique identifier of the breeding combination
+ * @property {string} breeding_combo_id - The identifier of the breeding combination
+ * @property {string} parent1_id - The ID of the first parent pal
+ * @property {string} parent1_name - The name of the first parent pal
+ * @property {string} parent1_image - The image URL of the first parent pal
+ * @property {string} parent2_id - The ID of the second parent pal
+ * @property {string} parent2_name - The name of the second parent pal
+ * @property {string} parent2_image - The image URL of the second parent pal
+ * @property {string} child_id - The ID of the child pal
+ * @property {string} child_name - The name of the child pal
+ * @property {string} child_image - The image URL of the child pal
  */
-export default function ChildButton({
-  child,
-  combos,
-  onClick,
-  isSelected,
-}) {
+
+/**
+ * @typedef {Object} ChildButtonProps
+ * @property {string} child - The name of the child pal
+ * @property {BreedingCombo[]} combos - Array of breeding combinations for this child
+ * @property {Function} onClick - Callback function to handle button click
+ * @property {boolean} isSelected - Whether this child button is currently selected
+ */
+
+/**
+ * @component ChildButton
+ * @description Renders a button for a child pal in the breeding combinations display
+ * @param {ChildButtonProps} props - The component props
+ * @returns {JSX.Element} The rendered child button
+ */
+export default function ChildButton({ child, combos, onClick, isSelected }) {
+  /**
+   * Handles the click event on the button
+   * @function
+   */
   const handleClick = () => {
     onClick(child, combos);
   };
@@ -44,4 +66,4 @@ export default function ChildButton({
   );
 }
 
-ChildButton.displayName = 'ChildButton'
+ChildButton.displayName = "ChildButton";
