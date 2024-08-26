@@ -1,19 +1,37 @@
-"use client"
-import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+"use client";
+import React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
 
+/**
+ * @component SuccessPage
+ * @description Renders a success page with dynamic content based on URL parameters
+ * @returns {JSX.Element} The rendered success page
+ */
 export default function SuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const title = searchParams.get('title') || 'Success';
-  const description = searchParams.get('description') || 'Operation completed successfully.';
+  /**
+   * @type {string}
+   * @description The title of the success message, retrieved from URL parameters or default
+   */
+  const title = searchParams.get("title") || "Success";
 
+  /**
+   * @type {string}
+   * @description The description of the success message, retrieved from URL parameters or default
+   */
+  const description =
+    searchParams.get("description") || "Operation completed successfully.";
+
+  /**
+   * Handles the redirection to the home page
+   * @function
+   */
   const handleRedirect = () => {
-    window.location.href = '/';
+    window.location.href = "/";
   };
-
 
   return (
     <div className={styles.container}>

@@ -1,30 +1,48 @@
-'use client';
+"use client";
 
 import React, { useState, useCallback } from "react";
 import { deleteUser } from "@/app/services/profileService";
 import styles from "@/app/components/styles/FormStyles.module.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
+/**
+ * @component DeleteUserForm
+ * @description Renders a form for user account deletion with confirmation step
+ * @returns {JSX.Element} The rendered delete user form
+ */
 export default function DeleteUserForm() {
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Handles the user deletion process
+   * @function
+   * @async
+   */
   const handleUserDelete = useCallback(async () => {
     setIsLoading(true);
     try {
       const result = await deleteUser();
-  
+
       if (result.error) {
         toast.error(result.error);
       } else if (result.success) {
-        // Call the logout route with the correct path
-        const logoutResponse = await fetch('/auth/signout', { method: 'POST' });
-        
-        let redirectUrl = '/success?title=' + encodeURIComponent("Account Deleted");
+        const logoutResponse = await fetch("/auth/signout", { method: "POST" });
+
+        let redirectUrl =
+          "/success?title=" + encodeURIComponent("Account Deleted");
         if (logoutResponse.ok) {
-          redirectUrl += '&description=' + encodeURIComponent(result.message || "Your account has been successfully deleted.");
+          redirectUrl +=
+            "&description=" +
+            encodeURIComponent(
+              result.message || "Your account has been successfully deleted."
+            );
         } else {
-          redirectUrl += '&description=' + encodeURIComponent("Account deleted but logout failed. Please manually log out.");
+          redirectUrl +=
+            "&description=" +
+            encodeURIComponent(
+              "Account deleted but logout failed. Please manually log out."
+            );
         }
         window.location.assign(redirectUrl);
       } else {
@@ -70,3 +88,5 @@ export default function DeleteUserForm() {
     </div>
   );
 }
+
+DeleteUserForm.displayName = "DeleteUserForm";

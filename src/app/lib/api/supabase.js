@@ -1,56 +1,61 @@
-/** @type {string} The Supabase URL */
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-
-/** @type {string} The Supabase anonymous key */
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-/** @type {number} Cache duration for general data (30 days in seconds) */
+/** @constant {number} CACHE_DURATION - General cache duration in seconds (30 days) */
 const CACHE_DURATION = 30 * 24 * 60 * 60;
 
-/** @type {number} Cache duration for all pals data (30 days in seconds) */
+/** @constant {number} ALL_PALS_CACHE_DURATION - Cache duration for all pals in seconds (30 days) */
 const ALL_PALS_CACHE_DURATION = 30 * 24 * 60 * 60;
 
-/** @type {number} Cache duration for individual pal data (1 hour in seconds) */
+/** @constant {number} INDIVIDUAL_PAL_CACHE_DURATION - Cache duration for individual pals in seconds (1 hour) */
 const INDIVIDUAL_PAL_CACHE_DURATION = 60 * 60;
 
-/** @type {Object} Headers for database requests */
+/** @constant {Object} headers - HTTP headers for Supabase API requests */
 const headers = {
-  'apikey': supabaseAnonKey,
-  'Authorization': `Bearer ${supabaseAnonKey}`,
-  'Content-Type': 'application/json'
+  apikey: supabaseAnonKey,
+  Authorization: `Bearer ${supabaseAnonKey}`,
+  "Content-Type": "application/json",
 };
 
-
+/**
+ * Fetches pal data from Supabase
+ * @async
+ * @function getPals
+ * @param {(string|string[]|null)} [ids=null] - The ID(s) of the pal(s) to fetch. If null, fetches all pals.
+ * @returns {Promise<Array<Object>>} An array of pal objects
+ * @throws {Error} If the fetch operation fails
+ */
 export async function getPals(ids = null) {
   const url = new URL(`${supabaseUrl}/rest/v1/rpc/get_pals`);
   if (ids !== null) {
-    // Convert ids to a comma-separated string
-    const idsString = Array.isArray(ids) ? ids.join(',') : ids;
-    url.searchParams.append('ids', idsString);
+    const idsString = Array.isArray(ids) ? ids.join(",") : ids;
+    url.searchParams.append("ids", idsString);
   }
 
   try {
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers,
-      next: { 
-        revalidate: ids && ids.length === 1 ? INDIVIDUAL_PAL_CACHE_DURATION : ALL_PALS_CACHE_DURATION 
-      }
+      next: {
+        revalidate:
+          ids && ids.length === 1
+            ? INDIVIDUAL_PAL_CACHE_DURATION
+            : ALL_PALS_CACHE_DURATION,
+      },
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch pals: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch pals: ${response.status} ${response.statusText}`
+      );
     }
 
     const data = await response.json();
 
     if (ids) {
-      // Convert ids to an array if it's a string
       const idArray = Array.isArray(ids) ? ids : [ids];
-      // Filter results if specific ids were requested
-      return data.filter(pal => idArray.includes(pal.id.toString()));
+      return data.filter((pal) => idArray.includes(pal.id.toString()));
     } else {
-      // Return all pals if no ids were specified
       return data;
     }
   } catch (error) {
@@ -60,81 +65,98 @@ export async function getPals(ids = null) {
 }
 
 /**
- * Fetches work types from the database
- * @returns {Promise<Array<Object>>} Array of work type objects
- * @throws {Error} If the database request fails
+ * Fetches work types from Supabase
+ * @async
+ * @function getWorkTypes
+ * @returns {Promise<Array<Object>>} An array of work type objects
+ * @throws {Error} If the fetch operation fails
  */
 export async function getWorkTypes() {
-  // Fetch work types from the database
-  const response = await fetch(`${supabaseUrl}/rest/v1/icons?select=icon_name,icon_url&category=eq.Work&order=work_order.asc`, {
-    headers,
-    next: { revalidate: 3600 }
-  });
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/icons?select=icon_name,icon_url&category=eq.Work&order=work_order.asc`,
+    {
+      headers,
+      next: { revalidate: 3600 },
+    }
+  );
 
-  // Check if the response is successful
   if (!response.ok) {
-    throw new Error('Failed to fetch work types from the database');
+    throw new Error("Failed to fetch work types from the database");
   }
 
   return response.json();
 }
 
 /**
- * Fetches pal types from the database
- * @returns {Promise<Array<Object>>} Array of pal type objects
- * @throws {Error} If the database request fails
+ * Fetches pal types from Supabase
+ * @async
+ * @function getTypes
+ * @returns {Promise<Array<Object>>} An array of pal type objects
+ * @throws {Error} If the fetch operation fails
  */
 export async function getTypes() {
-  // Fetch pal types from the database
-  const response = await fetch(`${supabaseUrl}/rest/v1/icons?select=icon_name,icon_url&category=eq.Type&order=type_order.asc`, {
-    headers,
-    next: { revalidate: 3600 }
-  });
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/icons?select=icon_name,icon_url&category=eq.Type&order=type_order.asc`,
+    {
+      headers,
+      next: { revalidate: 3600 },
+    }
+  );
 
-  // Check if the response is successful
   if (!response.ok) {
-    throw new Error('Failed to fetch pal types from the database');
+    throw new Error("Failed to fetch pal types from the database");
   }
 
   return response.json();
 }
 
 /**
- * Fetches all card data (pals, work types, and pal types) from the database
- * @returns {Promise<Object>} Object containing pals, work types, and pal types
- * @throws {Error} If any of the database requests fail
+ * Fetches all necessary data for the PalCard component
+ * @async
+ * @function getCardData
+ * @returns {Promise<Object>} An object containing pals, work types, and pal types
+ * @throws {Error} If any of the fetch operations fail
  */
 export async function getCardData() {
   try {
-    // Fetch all data concurrently from the database
     const [pals, workTypes, types] = await Promise.all([
       getPals(),
       getWorkTypes(),
-      getTypes()
+      getTypes(),
     ]);
 
     return { pals, workTypes, types };
   } catch (error) {
-    console.error('Error fetching card data from the database:', error);
+    console.error("Error fetching card data from the database:", error);
     throw error;
   }
 }
 
-
+/**
+ * Fetches breeding combinations for a specific pal
+ * @async
+ * @function getBreedingCombinations
+ * @param {string} palName - The name of the pal to fetch breeding combinations for
+ * @returns {Promise<Array<Object>>} An array of breeding combination objects
+ * @throws {Error} If the fetch operation fails
+ */
 export async function getBreedingCombinations(palName) {
-  // Fetch breeding combinations from the database
-  const response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_breeding_combos`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ child_pal_name: palName }),
-    next: { revalidate: CACHE_DURATION }
-  });
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/get_breeding_combos`,
+    {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ child_pal_name: palName }),
+      next: { revalidate: CACHE_DURATION },
+    }
+  );
 
-  // Check if the response is successful
   if (!response.ok) {
     const errorBody = await response.text();
-    console.error(`Error fetching breeding combinations: ${response.status} ${response.statusText} ${errorBody}`);
-    return []; 
+    console.error(
+      `Error fetching breeding combinations: ${response.status} ${response.statusText} ${errorBody}`
+    );
+    return [];
   }
 
   return response.json();

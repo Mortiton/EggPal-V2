@@ -7,11 +7,27 @@ import { updateEmail } from "@/app/services/profileService";
 import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
+/**
+ * Yup schema for validating the email update form
+ * @constant {Yup.ObjectSchema}
+ */
 const UpdateEmailSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
 });
 
+/**
+ * @component UpdateEmailForm
+ * @description Renders a form for updating the user's email address
+ * @returns {JSX.Element} The rendered update email form
+ */
 export default function UpdateEmailForm() {
+  /**
+   * Handles the email update process
+   * @function
+   * @async
+   * @param {Object} values - The form values
+   * @param {string} values.email - The new email address
+   */
   const handleEmailUpdate = useCallback(async (values) => {
     try {
       const result = await updateEmail(values.email);

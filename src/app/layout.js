@@ -10,51 +10,73 @@ import { FavouritesProvider } from "./context/FavouritesContext";
 import { SavedCombinationsProvider } from "./context/SavedCombinationsContext";
 import { getUser } from "./utils/getUser";
 
+/**
+ * @type {import('next').Metadata}
+ */
 export const metadata = {
   title: "EggPal",
   description: "Palworld Breeding Companion",
 };
 
+/**
+ * Custom font configuration using next/font/local
+ * @type {import('next/font/local').LocalFont}
+ */
 const mainFont = localFont({
   src: "./fonts/slkscr.ttf",
   display: "swap",
 });
 
-const RootLayout = async ({ children }) => {
-  const user = await getUser();
-  console.log(user);
+/**
+ * @typedef {Object} User
+ * @property {string} id - The unique identifier of the user
+ * @property {string} email - The email address of the user
+ */
 
+/**
+ * @component RootLayout
+ * @description The root layout component that wraps the entire application
+ * @param {Object} props - The component props
+ * @param {React.ReactNode} props.children - The child components to be rendered within the layout
+ * @returns {Promise<JSX.Element>} The rendered root layout
+ */
+const RootLayout = async ({ children }) => {
+  /**
+   * Fetches the current user data
+   * @type {User|null}
+   */
+  const user = await getUser();
   return (
     <html lang="en">
       <body className={mainFont.className}>
-          <FavouritesProvider initialUser={user}>
-            <SavedCombinationsProvider initialUser={user}>
-              <header>
-                <NavBar user={user} />
-              </header>
-              <div className="page-container">
-                <main className="content-wrap">
-                  {children}
-                  <div
-                    id="modal-root"
-                    style={{ position: "fixed", zIndex: 9999 }}
-                  ></div>
-                  <SpeedInsights />
-                </main>
+        <FavouritesProvider initialUser={user}>
+          <SavedCombinationsProvider initialUser={user}>
+            <header>
+              <NavBar user={user} />
+            </header>
+            <div className="page-container">
+              <main className="content-wrap">
+                {children}
+                <div
+                  id="modal-root"
+                  style={{ position: "fixed", zIndex: 9999 }}
+                ></div>
+                <SpeedInsights />
+              </main>
 
-                <footer>
-                  <Footer />
-                </footer>
-              </div>
-              <ToastContainer
-                theme="dark"
-                style={{ top: "100px" }}
-                autoClose={1000}
-                hideProgressBar={true}
-                position="top-left"
-              />
-            </SavedCombinationsProvider>
-          </FavouritesProvider>
+              <footer>
+                <Footer />
+              </footer>
+            </div>
+            <ToastContainer
+              theme="dark"
+              style={{ top: "100px" }}
+              autoClose={1000}
+              hideProgressBar={true}
+              position="top-left"
+            />
+          </SavedCombinationsProvider>
+        </FavouritesProvider>
       </body>
     </html>
   );

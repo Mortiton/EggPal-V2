@@ -7,7 +7,10 @@ import { updatePassword } from "@/app/services/profileService";
 import { toast } from "react-toastify";
 import styles from "@/app/components/styles/FormStyles.module.css";
 
-// Define the validation schema for updating the password
+/**
+ * Yup schema for validating the password update form
+ * @constant {Yup.ObjectSchema}
+ */
 const UpdatePasswordSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Required"),
   newPassword: Yup.string()
@@ -23,18 +26,18 @@ const UpdatePasswordSchema = Yup.object().shape({
 });
 
 /**
- * UpdatePasswordForm component that renders a form for updating the user's password.
- * It displays a toast notification for success or error after attempting to update the password.
- *
- * @component
- * @returns {JSX.Element} A React component.
+ * @component UpdatePasswordForm
+ * @description Renders a form for updating the user's password
+ * @returns {JSX.Element} The rendered update password form
  */
 export default function UpdatePasswordForm() {
   /**
-   * Function to handle updating the password.
-   * It displays a toast notification for success or error.
-   *
-   * @param {Object} values - The form values.
+   * Handles the password update process
+   * @function
+   * @async
+   * @param {Object} values - The form values
+   * @param {string} values.currentPassword - The user's current password
+   * @param {string} values.newPassword - The new password
    */
   const handlePasswordUpdate = async (values) => {
     try {
@@ -44,14 +47,15 @@ export default function UpdatePasswordForm() {
         closeOnClick: true,
       });
     } catch (err) {
-      toast.error(err.message || "An error occurred while updating the password.", {
-        autoClose: false,
-        closeOnClick: true,
-      });
+      toast.error(
+        err.message || "An error occurred while updating the password.",
+        {
+          autoClose: false,
+          closeOnClick: true,
+        }
+      );
     }
   };
-
-  // Render the form
   return (
     <Formik
       initialValues={{
