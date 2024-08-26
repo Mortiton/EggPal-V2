@@ -4,12 +4,6 @@ import styles from "./page.module.css";
 import { getPals, getBreedingCombinations } from "@/app/lib/api/supabase";
 import { getUser } from "@/app/utils/getUser";
 
-import React from "react";
-import PalDetailsDisplay from "./components/PalDetailsDisplay";
-import styles from "./page.module.css";
-import { getPals, getBreedingCombinations } from "@/app/lib/api/supabase";
-import { getUser } from "@/app/utils/getUser";
-
 /**
  * @typedef {Object} Skill
  * @property {string} skill_name - The name of the skill
