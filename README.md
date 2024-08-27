@@ -32,10 +32,11 @@ Here is the structure of the project directories, explaining the purpose of each
 - **`src/app/`**: Contains folders for each page, each folder includes a `page.js` file and an `action.js` file if applicable.
   - **Page-specific CSS modules reside within the respective page folder.**
 - **`src/app/utils`**: Utility functions and helper scripts, including the database client.
+- -**`src/app/lib`**: Contains the database interactions for fetching data.
 
 ### Data Flow
 
-- **Data Retrieval**: Frontend components use action files to fetch data, this data is fetched using Supabase's API
+- **Data Retrieval**: Frontend components use supabase's REST API for fetching data.
 
 ## Setup Process
 
