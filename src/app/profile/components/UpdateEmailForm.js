@@ -16,8 +16,7 @@ const UpdateEmailSchema = Yup.object().shape({
 });
 
 /**
- * @component UpdateEmailForm
- * @description Renders a form for updating the user's email address
+ * Renders a form for updating the user's email address
  * @returns {JSX.Element} The rendered update email form
  */
 export default function UpdateEmailForm() {

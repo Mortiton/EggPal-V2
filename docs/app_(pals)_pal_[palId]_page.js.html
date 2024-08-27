@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/(pals)/pal/[palId]/page.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/(pals)/pal/[palId]/page.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
+import PalDetailsDisplay from "./components/PalDetailsDisplay";
+import styles from "./page.module.css";
+import { getPals, getBreedingCombinations } from "@/app/lib/api/supabase";
+import { getUser } from "@/app/utils/getUser";
+
+/**
+ * @typedef {Object} Skill
+ * @property {string} skill_name - The name of the skill
+ * @property {number} work_order - The order of the skill in the work list
+ * @property {number} skill_level - The level of the skill
+ * @property {string} skill_icon_url - The URL of the skill's icon
+ */
+
+/**
+ * @typedef {Object} Pal
+ * @property {string} id - The unique identifier of the pal
+ * @property {string} name - The name of the pal
+ * @property {string} type1 - The primary type of the pal
+ * @property {string|null} type2 - The secondary type of the pal, if any
+ * @property {string} description - A description of the pal
+ * @property {string} image_url - The URL of the pal's image
+ * @property {string} type1_icon_url - The URL of the icon for the pal's primary type
+ * @property {string|null} type2_icon_url - The URL of the icon for the pal's secondary type, if any
+ * @property {Skill[]} skills - An array of skills the pal possesses
+ */
+
+/**
+ * @typedef {Object} BreedingCombo
+ * @property {string} id - The unique identifier of the saved breeding combination
+ * @property {string} breeding_combo_id - The identifier of the breeding combination
+ * @property {string} parent1_id - The ID of the first parent pal
+ * @property {string} parent1_name - The name of the first parent pal
+ * @property {string} parent1_image - The image URL of the first parent pal
+ * @property {string} parent2_id - The ID of the second parent pal
+ * @property {string} parent2_name - The name of the second parent pal
+ * @property {string} parent2_image - The image URL of the second parent pal
+ * @property {string} child_id - The ID of the child pal
+ * @property {string} child_name - The name of the child pal
+ * @property {string} child_image - The image URL of the child pal
+ */
+
+/**
+ * Generates metadata for the pal page
+ * @param {Object} params - The params object containing the palId
+ * @param {string} params.palId - The ID of the pal
+ * @returns {Promise&lt;Object>} The metadata object for the page
+ */
+export async function generateMetadata({ params }) {
+  const palId = params.palId;
+  const palData = await getPals([palId]);
+
+  if (!palData || palData.length === 0) {
+    return {
+      title: "Pal not found",
+      description: "No details available",
+    };
+  }
+
+  const pal = palData[0];
+
+  return {
+    title: `${pal.name} - Details and Breeding Combinations`,
+    description: `All about ${pal.name}'s base skills and breeding combinations`,
+  };
+}
+
+/**
+ * Renders a page with detailed information about a specific pal, including breeding combinations
+ * @param {Object} props - The component props
+ * @param {Object} props.params - The route parameters
+ * @param {string} props.params.palId - The ID of the pal to display
+ * @returns {Promise&lt;JSX.Element>} The rendered pal details page
+ */
+export default async function PalPage({ params }) {
+  const user = await getUser();
+
+  const palId = params.palId;
+  //Fetch the palData based on Pal ID within the URL
+  const palData = await getPals([palId]);
+
+  //Display message if no pal data is returned
+  if (!palData || palData.length === 0) {
+    return &lt;div>No Pal information available.&lt;/div>;
+  }
+
+  const pal = palData[0];
+  //Fetch breeding combinations based on the pal name
+  const breedingCombos = await getBreedingCombinations(pal.name);
+
+  return (
+    &lt;div className={styles.mainContainer}>
+      &lt;PalDetailsDisplay
+        pal={pal}
+        breedingCombos={breedingCombos}
+        user={user}
+      />
+    &lt;/div>
+  );
+}
+
+PalPage.displayName = "PalPage";
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ALL_PALS_CACHE_DURATION">ALL_PALS_CACHE_DURATION</a></li><li><a href="global.html#BreedingList">BreedingList</a></li><li><a href="global.html#CACHE_DURATION">CACHE_DURATION</a></li><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#FavouritesContext">FavouritesContext</a></li><li><a href="global.html#FavouritesProvider">FavouritesProvider</a></li><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#ForgotPasswordSchema">ForgotPasswordSchema</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#INDIVIDUAL_PAL_CACHE_DURATION">INDIVIDUAL_PAL_CACHE_DURATION</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PalDetailsDisplay">PalDetailsDisplay</a></li><li><a href="global.html#PalList">PalList</a></li><li><a href="global.html#RootLayout">RootLayout</a></li><li><a href="global.html#SavedCombinationsContext">SavedCombinationsContext</a></li><li><a href="global.html#SavedCombinationsProvider">SavedCombinationsProvider</a></li><li><a href="global.html#SignupSchema">SignupSchema</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdateEmailSchema">UpdateEmailSchema</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#UpdatePasswordSchema">UpdatePasswordSchema</a></li><li><a href="global.html#addFavouritePal">addFavouritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#cookies">cookies</a></li><li><a href="global.html#createClient">createClient</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#driver">driver</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getBlurDataURL">getBlurDataURL</a></li><li><a href="global.html#getBreedingCombinations">getBreedingCombinations</a></li><li><a href="global.html#getCardData">getCardData</a></li><li><a href="global.html#getFavouritePals">getFavouritePals</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getSavedBreedingCombos">getSavedBreedingCombos</a></li><li><a href="global.html#getSavedBreedingCombosWithDetails">getSavedBreedingCombosWithDetails</a></li><li><a href="global.html#getSession">getSession</a></li><li><a href="global.html#getTypes">getTypes</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getWorkTypes">getWorkTypes</a></li><li><a href="global.html#headers">headers</a></li><li><a href="global.html#initDriver">initDriver</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mainFont">mainFont</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#quitDriver">quitDriver</a></li><li><a href="global.html#removeFavouritePal">removeFavouritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#supabaseAdmin">supabaseAdmin</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li><li><a href="global.html#updateSession">updateSession</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useFavourites">useFavourites</a></li><li><a href="global.html#useSavedCombinations">useSavedCombinations</a></li><li><a href="global.html#verifyOtpAndLogSession">verifyOtpAndLogSession</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

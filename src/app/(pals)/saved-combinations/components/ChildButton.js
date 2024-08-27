@@ -28,8 +28,7 @@ import styles from "./styles/ChildButton.module.css";
  */
 
 /**
- * @component ChildButton
- * @description Renders a button for a child pal in the breeding combinations display
+ * Renders a button for a child pal in the breeding combinations display
  * @param {ChildButtonProps} props - The component props
  * @returns {JSX.Element} The rendered child button
  */

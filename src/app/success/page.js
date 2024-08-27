@@ -4,8 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
 
 /**
- * @component SuccessPage
- * @description Renders a success page with dynamic content based on URL parameters
+ * Renders a success page with dynamic content based on URL parameters
  * @returns {JSX.Element} The rendered success page
  */
 export default function SuccessPage() {
@@ -13,14 +12,14 @@ export default function SuccessPage() {
   const searchParams = useSearchParams();
 
   /**
+   * The title of the success message, retrieved from URL parameters or default
    * @type {string}
-   * @description The title of the success message, retrieved from URL parameters or default
    */
   const title = searchParams.get("title") || "Success";
 
   /**
+   * The description of the success message, retrieved from URL parameters or default
    * @type {string}
-   * @description The description of the success message, retrieved from URL parameters or default
    */
   const description =
     searchParams.get("description") || "Operation completed successfully.";

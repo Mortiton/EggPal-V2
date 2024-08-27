@@ -18,8 +18,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 /**
- * @component LoginForm
- * @description A form component for user authentication
+ * A form component for user authentication
  * @returns {JSX.Element} The rendered login form
  */
 export default function LoginForm() {

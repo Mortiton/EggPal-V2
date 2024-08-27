@@ -5,7 +5,7 @@ import { createBrowserClient } from "@supabase/ssr";
 /**
  * Creates a Supabase client for browser-side use
  * @function createClient
- * @returns {import('@supabase/supabase-js').SupabaseClient} A Supabase client instance
+ * @returns {Object} A Supabase client instance
  */
 export function createClient() {
   return createBrowserClient(

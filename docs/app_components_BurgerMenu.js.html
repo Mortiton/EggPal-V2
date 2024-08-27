@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/components/BurgerMenu.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/components/BurgerMenu.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import styles from "./styles/BurgerMenu.module.css";
+
+/**
+ * Custom hook for handling clicks outside of a component.
+ *
+ * @param {React.RefObject} ref - The ref object attached to the component.
+ * @param {Function} callback - The function to be called when a click outside occurs.
+ */
+function useClickOutside(ref, callback) {
+  /**
+   * Handler for the click event.
+   *
+   * @param {MouseEvent} event - The mouse event object.
+   */
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current &amp;&amp; !ref.current.contains(event.target)) {
+        callback();
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, callback]);
+}
+
+/**
+ * BurgerMenu component for displaying a responsive navigation menu.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {boolean} props.isAuthenticated - Indicates whether the user is authenticated.
+ * @returns {JSX.Element} The rendered BurgerMenu component.
+ */
+export default function BurgerMenu({ isAuthenticated }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const menuRef = useRef(null);
+  const firstLinkRef = useRef(null);
+
+  /**
+   * Toggles the menu open/closed state.
+   */
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  useClickOutside(menuRef, () => setIsMenuOpen(false));
+
+  useEffect(() => {
+    if (isMenuOpen &amp;&amp; firstLinkRef.current) {
+      firstLinkRef.current.focus();
+    }
+  }, [isMenuOpen]);
+
+  /**
+   * Handles the logout process.
+   *
+   * @param {React.MouseEvent} e - The click event.
+   */
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    setIsLoggingOut(true);
+    try {
+      const response = await fetch("/auth/signout", { method: "POST" });
+      if (response.ok) {
+        window.location.href = "/";
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  return (
+    &lt;div className={styles.burgerMenu} ref={menuRef}>
+      &lt;button
+        onClick={toggleMenu}
+        className={styles.hamburger}
+        aria-label="Toggle navigation menu"
+        aria-expanded={isMenuOpen}
+      >
+        &lt;FontAwesomeIcon icon={faBars} />
+      &lt;/button>
+      &lt;div
+        className={`${styles.navLinks} ${
+          isMenuOpen ? styles.navLinksActive : ""
+        }`}
+        role="menu"
+      >
+        {isAuthenticated ? (
+          &lt;>
+            &lt;Link
+              href="/favourite-pals"
+              className={styles.link}
+              role="menuitem"
+              ref={firstLinkRef}
+            >
+              Favourite Pals
+            &lt;/Link>
+            &lt;Link
+              href="/saved-combinations"
+              className={styles.link}
+              role="menuitem"
+            >
+              Saved Combinations
+            &lt;/Link>
+            &lt;Link href="/profile" className={styles.link} role="menuitem">
+              Profile
+            &lt;/Link>
+            &lt;button
+              className={styles.logoutBtn}
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              role="menuitem"
+            >
+              {isLoggingOut ? "Logging out..." : "Logout"}
+            &lt;/button>
+          &lt;/>
+        ) : (
+          &lt;>
+            &lt;Link
+              href="/login"
+              className={styles.link}
+              role="menuitem"
+              ref={firstLinkRef}
+            >
+              Login
+            &lt;/Link>
+            &lt;Link href="/signup" className={styles.link} role="menuitem">
+              Signup
+            &lt;/Link>
+          &lt;/>
+        )}
+      &lt;/div>
+    &lt;/div>
+  );
+}
+
+BurgerMenu.displayName = "BurgerMenu";
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ALL_PALS_CACHE_DURATION">ALL_PALS_CACHE_DURATION</a></li><li><a href="global.html#BreedingList">BreedingList</a></li><li><a href="global.html#CACHE_DURATION">CACHE_DURATION</a></li><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#FavouritesContext">FavouritesContext</a></li><li><a href="global.html#FavouritesProvider">FavouritesProvider</a></li><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#ForgotPasswordSchema">ForgotPasswordSchema</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#INDIVIDUAL_PAL_CACHE_DURATION">INDIVIDUAL_PAL_CACHE_DURATION</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PalDetailsDisplay">PalDetailsDisplay</a></li><li><a href="global.html#PalList">PalList</a></li><li><a href="global.html#RootLayout">RootLayout</a></li><li><a href="global.html#SavedCombinationsContext">SavedCombinationsContext</a></li><li><a href="global.html#SavedCombinationsProvider">SavedCombinationsProvider</a></li><li><a href="global.html#SignupSchema">SignupSchema</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdateEmailSchema">UpdateEmailSchema</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#UpdatePasswordSchema">UpdatePasswordSchema</a></li><li><a href="global.html#addFavouritePal">addFavouritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#cookies">cookies</a></li><li><a href="global.html#createClient">createClient</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#driver">driver</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getBlurDataURL">getBlurDataURL</a></li><li><a href="global.html#getBreedingCombinations">getBreedingCombinations</a></li><li><a href="global.html#getCardData">getCardData</a></li><li><a href="global.html#getFavouritePals">getFavouritePals</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getSavedBreedingCombos">getSavedBreedingCombos</a></li><li><a href="global.html#getSavedBreedingCombosWithDetails">getSavedBreedingCombosWithDetails</a></li><li><a href="global.html#getSession">getSession</a></li><li><a href="global.html#getTypes">getTypes</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getWorkTypes">getWorkTypes</a></li><li><a href="global.html#headers">headers</a></li><li><a href="global.html#initDriver">initDriver</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mainFont">mainFont</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#quitDriver">quitDriver</a></li><li><a href="global.html#removeFavouritePal">removeFavouritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#supabaseAdmin">supabaseAdmin</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li><li><a href="global.html#updateSession">updateSession</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useFavourites">useFavourites</a></li><li><a href="global.html#useSavedCombinations">useSavedCombinations</a></li><li><a href="global.html#verifyOtpAndLogSession">verifyOtpAndLogSession</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

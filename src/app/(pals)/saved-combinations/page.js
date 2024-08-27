@@ -3,7 +3,8 @@ import BreedingCombosDisplay from "./components/BreedingCombosDisplay";
 import styles from "./page.module.css";
 
 /**
- * @type {import('next').Metadata}
+ * Metadata for the saved combinations page
+ * @type {Object} Represents the Metadata object from Next.js
  */
 export const metadata = {
   title: "Saved Breeding Combinations",
@@ -11,8 +12,7 @@ export const metadata = {
 };
 
 /**
- * @component SavedBreedingPage
- * @description Renders the page displaying the user's saved breeding combinations
+ * Renders the page displaying the user's saved breeding combinations
  * @returns {JSX.Element} The rendered saved breeding combinations page
  */
 export default function SavedBreedingPage() {

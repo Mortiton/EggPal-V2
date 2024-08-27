@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/components/PalList.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/components/PalList.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUp as upArrow,
+  faArrowDown as downArrow,
+} from "@fortawesome/free-solid-svg-icons";
+import PalCard from "./PalCard";
+import SearchBar from "./SearchBar";
+import TypeDropdown from "./TypeDropDown";
+import WorkDropDown from "./WorkDropDown";
+import styles from "./styles/PalList.module.css";
+
+/**
+ * @typedef {Object} Pal
+ * @property {string} id - The unique identifier of the pal
+ * @property {string} name - The name of the pal
+ * @property {string} type1 - The primary type of the pal
+ * @property {string} [type2] - The secondary type of the pal (if any)
+ * @property {Array&lt;{skill_name: string, skill_level: number}>} skills - The skills of the pal
+ */
+
+/**
+ * PalList component for displaying, filtering, and sorting a list of pals.
+ *
+ * @component
+ * @param {Object} props - The component props
+ * @param {Array&lt;Pal>} props.pals - The array of pal objects to display
+ * @param {Array&lt;string>} props.workTypes - The array of available work types
+ * @param {Array&lt;string>} props.types - The array of available pal types
+ * @returns {JSX.Element} The rendered PalList component
+ */
+const PalList = ({ pals, workTypes, types }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState(null);
+  const [selectedWork, setSelectedWork] = useState(null);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [sortOrder, setSortOrder] = useState(null);
+
+  /**
+   * Effect hook to manage the scroll-to-top button visibility
+   */
+  useEffect(() => {
+    const container = document.querySelector(".page-container");
+
+    /**
+     * Checks the scroll position and updates the scroll button visibility
+     */
+    const checkScroll = () => {
+      const scrollTop = container ? container.scrollTop : 0;
+      if (scrollTop > 300) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+
+    if (container) {
+      container.addEventListener("scroll", checkScroll);
+      checkScroll();
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", checkScroll);
+      }
+    };
+  }, []);
+
+  /**
+   * Scrolls the page to the top smoothly
+   */
+  const scrollToTop = () => {
+    const container = document.querySelector(".page-container");
+    if (container) {
+      container.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  /**
+   * Handles the sort order change when a sort button is clicked
+   *
+   * @param {string} newOrder - The new sort order ('asc' or 'desc')
+   */
+  const handleSortClick = (newOrder) => {
+    setSortOrder((currentOrder) =>
+      currentOrder === newOrder ? null : newOrder
+    );
+  };
+
+  /**
+   * Filters and sorts the pals based on the current search query, selected type, work, and sort order
+   *
+   * @type {Array&lt;Pal>}
+   */
+  const filteredAndSortedPals = pals
+    .filter((pal) => {
+      const matchesSearch = pal.name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const matchesType =
+        !selectedType ||
+        pal.type1 === selectedType ||
+        pal.type2 === selectedType;
+      const matchesWork =
+        !selectedWork ||
+        pal.skills.some((skill) => skill.skill_name === selectedWork);
+      return matchesSearch &amp;&amp; matchesType &amp;&amp; matchesWork;
+    })
+    .sort((a, b) => {
+      if (!selectedWork || !sortOrder) return 0;
+      const skillA =
+        a.skills.find((skill) => skill.skill_name === selectedWork)
+          ?.skill_level || 0;
+      const skillB =
+        b.skills.find((skill) => skill.skill_name === selectedWork)
+          ?.skill_level || 0;
+      return sortOrder === "asc" ? skillA - skillB : skillB - skillA;
+    });
+
+  return (
+    &lt;div className={styles.container}>
+      &lt;SearchBar onSearch={setSearchQuery} />
+      &lt;div className={styles.filterContainer}>
+        &lt;span>Filter by:&lt;/span>
+        &lt;div className={styles.dropdownButtonsContainer}>
+          &lt;TypeDropdown
+            types={types}
+            onSelectType={(typeName) => setSelectedType(typeName)}
+            aria-label="Type filter dropdown"
+          />
+          &lt;WorkDropDown
+            work={workTypes}
+            onSelectWork={(workName) => {
+              setSelectedWork(workName);
+              setSortOrder(null);
+            }}
+            aria-label="Work filter dropdown"
+          />
+        &lt;/div>
+
+        {(selectedType || selectedWork) &amp;&amp; (
+          &lt;span
+            onClick={() => {
+              setSelectedType(null);
+              setSelectedWork(null);
+              setSortOrder(null);
+            }}
+            className={styles.clearFilterSpan}
+            role="button"
+            tabIndex="0"
+            aria-label="Clear filters"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setSelectedType(null);
+                setSelectedWork(null);
+                setSortOrder(null);
+              }
+            }}
+          >
+            X Clear Filters
+          &lt;/span>
+        )}
+      &lt;/div>
+
+      &lt;div className={styles.selectedFiltersContainer}>
+        {selectedType &amp;&amp; (
+          &lt;div className={styles.selectedFilterWrapper}>
+            &lt;div className={styles.selectedFilter}>
+              Type: {selectedType}
+              &lt;button
+                className={styles.clearIndividualFilter}
+                onClick={() => setSelectedType(null)}
+                aria-label={`Clear ${selectedType} filter`}
+              >
+                X
+              &lt;/button>
+            &lt;/div>
+          &lt;/div>
+        )}
+        {selectedWork &amp;&amp; (
+          &lt;div className={styles.selectedFilterWrapper}>
+            &lt;div className={styles.selectedFilter}>
+              Work: {selectedWork.replace("_", " ")}
+              &lt;button
+                className={styles.clearIndividualFilter}
+                onClick={() => {
+                  setSelectedWork(null);
+                  setSortOrder(null);
+                }}
+                aria-label={`Clear ${selectedWork.replace("_", " ")} filter`}
+              >
+                X
+              &lt;/button>
+            &lt;/div>
+            &lt;div className={styles.sortButtonGroup}>
+              &lt;button
+                className={`${styles.sortButton} ${
+                  sortOrder === "asc" ? styles.active : ""
+                }`}
+                onClick={() => handleSortClick("asc")}
+                aria-label={`Sort ${selectedWork.replace(
+                  "_",
+                  " "
+                )} skill level ascending`}
+              >
+                &lt;FontAwesomeIcon icon={upArrow} />
+              &lt;/button>
+              &lt;button
+                className={`${styles.sortButton} ${
+                  sortOrder === "desc" ? styles.active : ""
+                }`}
+                onClick={() => handleSortClick("desc")}
+                aria-label={`Sort ${selectedWork.replace(
+                  "_",
+                  " "
+                )} skill level descending`}
+              >
+                &lt;FontAwesomeIcon icon={downArrow} />
+              &lt;/button>
+            &lt;/div>
+          &lt;/div>
+        )}
+      &lt;/div>
+
+      &lt;div className={styles.cardContainer}>
+        {filteredAndSortedPals.length > 0 ? (
+          filteredAndSortedPals.map((pal) => (
+            &lt;Link
+              className={styles.cardLink}
+              key={pal.id}
+              href={`/pal/${encodeURIComponent(pal.id)}`}
+              aria-label={`View details for ${pal.name}`}
+              passHref
+            >
+              &lt;PalCard pal={pal} />
+            &lt;/Link>
+          ))
+        ) : (
+          &lt;p>No pals found.&lt;/p>
+        )}
+      &lt;/div>
+      {showScrollButton &amp;&amp; (
+        &lt;button
+          onClick={scrollToTop}
+          className={styles.scrollToTopButton}
+          aria-label="Scroll to top"
+        >
+          &lt;FontAwesomeIcon icon={upArrow} />
+        &lt;/button>
+      )}
+    &lt;/div>
+  );
+};
+
+export default React.memo(PalList);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ALL_PALS_CACHE_DURATION">ALL_PALS_CACHE_DURATION</a></li><li><a href="global.html#BreedingList">BreedingList</a></li><li><a href="global.html#CACHE_DURATION">CACHE_DURATION</a></li><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#FavouritesContext">FavouritesContext</a></li><li><a href="global.html#FavouritesProvider">FavouritesProvider</a></li><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#ForgotPasswordSchema">ForgotPasswordSchema</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#INDIVIDUAL_PAL_CACHE_DURATION">INDIVIDUAL_PAL_CACHE_DURATION</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PalDetailsDisplay">PalDetailsDisplay</a></li><li><a href="global.html#PalList">PalList</a></li><li><a href="global.html#RootLayout">RootLayout</a></li><li><a href="global.html#SavedCombinationsContext">SavedCombinationsContext</a></li><li><a href="global.html#SavedCombinationsProvider">SavedCombinationsProvider</a></li><li><a href="global.html#SignupSchema">SignupSchema</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdateEmailSchema">UpdateEmailSchema</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#UpdatePasswordSchema">UpdatePasswordSchema</a></li><li><a href="global.html#addFavouritePal">addFavouritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#cookies">cookies</a></li><li><a href="global.html#createClient">createClient</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#driver">driver</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getBlurDataURL">getBlurDataURL</a></li><li><a href="global.html#getBreedingCombinations">getBreedingCombinations</a></li><li><a href="global.html#getCardData">getCardData</a></li><li><a href="global.html#getFavouritePals">getFavouritePals</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getSavedBreedingCombos">getSavedBreedingCombos</a></li><li><a href="global.html#getSavedBreedingCombosWithDetails">getSavedBreedingCombosWithDetails</a></li><li><a href="global.html#getSession">getSession</a></li><li><a href="global.html#getTypes">getTypes</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getWorkTypes">getWorkTypes</a></li><li><a href="global.html#headers">headers</a></li><li><a href="global.html#initDriver">initDriver</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mainFont">mainFont</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#quitDriver">quitDriver</a></li><li><a href="global.html#removeFavouritePal">removeFavouritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#supabaseAdmin">supabaseAdmin</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li><li><a href="global.html#updateSession">updateSession</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useFavourites">useFavourites</a></li><li><a href="global.html#useSavedCombinations">useSavedCombinations</a></li><li><a href="global.html#verifyOtpAndLogSession">verifyOtpAndLogSession</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

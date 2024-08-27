@@ -11,8 +11,8 @@ import { NextResponse } from "next/server";
  * Middleware function to handle session updates, user authentication, and route protection
  * @async
  * @function middleware
- * @param {import('next/server').NextRequest} request - The incoming request object
- * @returns {Promise<import('next/server').NextResponse>} The response object
+ * @param {Object} request - The incoming request object (NextRequest from next/server)
+ * @returns {Promise<Object>} The response object (NextResponse from next/server)
  */
 export async function middleware(request) {
   // First, update the session

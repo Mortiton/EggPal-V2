@@ -22,19 +22,18 @@ import styles from "./styles/BreedingCombosDisplay.module.css";
  */
 
 /**
- * @component BreedingCombosDisplay
- * @description Displays saved breeding combinations grouped by child pal
+ * Displays saved breeding combinations grouped by child pal
  * @returns {JSX.Element} The rendered breeding combinations display
  */
 export default function BreedingCombosDisplay() {
-  const { savedCombinations, isLoading, refreshSavedCombinations } = useSavedCombinations();
+  const { savedCombinations, isLoading, refreshSavedCombinations } =
+    useSavedCombinations();
   const [selectedChild, setSelectedChild] = useState(null);
   const [groupedCombos, setGroupedCombos] = useState({});
 
   useEffect(() => {
     refreshSavedCombinations();
   }, [refreshSavedCombinations]);
-
 
   useEffect(() => {
     const grouped = savedCombinations.reduce((acc, combo) => {
@@ -50,7 +49,7 @@ export default function BreedingCombosDisplay() {
     setGroupedCombos(grouped);
   }, [savedCombinations]);
 
-  console.log(groupedCombos)
+  console.log(groupedCombos);
   const handleChildClick = (child) => {
     setSelectedChild((prevChild) => (prevChild === child ? null : child));
   };

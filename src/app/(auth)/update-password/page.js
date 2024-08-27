@@ -3,7 +3,8 @@ import UpdatePasswordForm from "./components/UpdatePasswordForm";
 import styles from "../../components/styles/FormPage.module.css";
 
 /**
- * @type {import('next').Metadata}
+ * Metadata for the update password page
+ * @type {Object} Represents the Metadata object from Next.js
  */
 export const metadata = {
   title: "Update Password",
@@ -17,8 +18,7 @@ export const metadata = {
  */
 
 /**
- * @component UpdatePasswordPage
- * @description Renders the update password page, showing either the password update form or an invalid link message
+ * Renders the update password page, showing either the password update form or an invalid link message
  * @param {Object} props - The component props
  * @param {SearchParams} props.searchParams - The search parameters from the URL
  * @returns {JSX.Element} The rendered update password page

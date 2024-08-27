@@ -5,13 +5,12 @@ import styles from "../styles/PrivacyPolicyModal.module.css";
 /**
  * @typedef {Object} TermsOfServiceModalProps
  * @property {boolean} isOpen - Whether the modal is open or closed
- * @property {() => void} onRequestClose - Function to call when the modal should be closed
- * @property {() => void} onAccept - Function to call when the terms are accepted
+ * @property {Function} onRequestClose - Function to call when the modal should be closed
+ * @property {Function} onAccept - Function to call when the terms are accepted
  */
 
 /**
- * @component TermsOfServiceModal
- * @description A modal component that displays the Terms of Service for EggPal
+ * A modal component that displays the Terms of Service for EggPal
  * @param {TermsOfServiceModalProps} props - The component props
  * @returns {JSX.Element} The rendered Terms of Service modal
  */

@@ -2,8 +2,7 @@ import React from "react";
 import styles from "../../components/styles/Terms.module.css";
 
 /**
- * @component PrivacyPolicy
- * @description Renders the Privacy Policy page for EggPal application
+ * Renders the Privacy Policy page for EggPal application
  * @returns {JSX.Element} The rendered Privacy Policy page
  */
 export default function PrivacyPolicy() {

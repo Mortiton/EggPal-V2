@@ -31,8 +31,7 @@ import styles from "./styles/PalDetailsCard.module.css";
  */
 
 /**
- * @component PalDetailsCard
- * @description Displays detailed information about a pal, including its skills and favourite status
+ * Displays detailed information about a pal, including its skills and favourite status
  * @param {PalDetailsCardProps} props - The component props
  * @returns {JSX.Element} The rendered pal details card
  */

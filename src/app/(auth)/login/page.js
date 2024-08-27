@@ -4,7 +4,8 @@ import styles from "../../components/styles/FormPage.module.css";
 import Link from "next/link";
 
 /**
- * @type {import('next').Metadata}
+ * Metadata for the login page
+ * @type {Object} Represents the Metadata object from Next.js
  */
 export const metadata = {
   title: "Login",
@@ -12,9 +13,8 @@ export const metadata = {
 };
 
 /**
- * @component LoginPage
- * @description Renders the login page with a form for user authentication
- * @returns {React.ReactElement} The rendered login page
+ * Renders the login page with a form for user authentication
+ * @returns {React.ReactElement} The rendered forgot password page
  */
 export default function LoginPage() {
   return (

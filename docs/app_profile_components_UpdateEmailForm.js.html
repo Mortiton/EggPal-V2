@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/profile/components/UpdateEmailForm.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/profile/components/UpdateEmailForm.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+
+import React, { useCallback } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { updateEmail } from "@/app/services/profileService";
+import { toast } from "react-toastify";
+import styles from "@/app/components/styles/FormStyles.module.css";
+
+/**
+ * Yup schema for validating the email update form
+ * @constant {Yup.ObjectSchema}
+ */
+const UpdateEmailSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+});
+
+/**
+ * Renders a form for updating the user's email address
+ * @returns {JSX.Element} The rendered update email form
+ */
+export default function UpdateEmailForm() {
+  /**
+   * Handles the email update process
+   * @function
+   * @async
+   * @param {Object} values - The form values
+   * @param {string} values.email - The new email address
+   */
+  const handleEmailUpdate = useCallback(async (values) => {
+    try {
+      const result = await updateEmail(values.email);
+      if (result.error) {
+        toast.error(result.error, {
+          autoClose: false,
+          closeOnClick: true,
+        });
+      } else if (result.success) {
+        toast.success("Please confirm the change on your new email address.", {
+          autoClose: false,
+          closeOnClick: true,
+        });
+      }
+    } catch (err) {
+      toast.error(err.message || "An unexpected error occurred.", {
+        autoClose: false,
+        closeOnClick: true,
+      });
+    }
+  }, []);
+
+  return (
+    &lt;Formik
+      initialValues={{ email: "" }}
+      validationSchema={UpdateEmailSchema}
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        await handleEmailUpdate(values);
+        setSubmitting(false);
+        resetForm();
+      }}
+    >
+      {({ isSubmitting }) => (
+        &lt;Form className={styles.inputContainer}>
+          &lt;label htmlFor="email" className={styles.label}>
+            Email:
+          &lt;/label>
+          &lt;Field
+            id="email"
+            name="email"
+            type="email"
+            className={styles.input}
+            aria-label="Email input field"
+            autoComplete="email"
+          />
+          &lt;ErrorMessage
+            name="email"
+            component="div"
+            className={styles.validation}
+          />
+
+          &lt;button
+            className={styles.button}
+            type="submit"
+            disabled={isSubmitting}
+            aria-label="Update email button"
+          >
+            Update Email
+          &lt;/button>
+        &lt;/Form>
+      )}
+    &lt;/Formik>
+  );
+}
+
+UpdateEmailForm.displayName = "UpdateEmailForm";
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ALL_PALS_CACHE_DURATION">ALL_PALS_CACHE_DURATION</a></li><li><a href="global.html#BreedingList">BreedingList</a></li><li><a href="global.html#CACHE_DURATION">CACHE_DURATION</a></li><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#FavouritesContext">FavouritesContext</a></li><li><a href="global.html#FavouritesProvider">FavouritesProvider</a></li><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#ForgotPasswordSchema">ForgotPasswordSchema</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#INDIVIDUAL_PAL_CACHE_DURATION">INDIVIDUAL_PAL_CACHE_DURATION</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PalDetailsDisplay">PalDetailsDisplay</a></li><li><a href="global.html#PalList">PalList</a></li><li><a href="global.html#RootLayout">RootLayout</a></li><li><a href="global.html#SavedCombinationsContext">SavedCombinationsContext</a></li><li><a href="global.html#SavedCombinationsProvider">SavedCombinationsProvider</a></li><li><a href="global.html#SignupSchema">SignupSchema</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdateEmailSchema">UpdateEmailSchema</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#UpdatePasswordSchema">UpdatePasswordSchema</a></li><li><a href="global.html#addFavouritePal">addFavouritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#cookies">cookies</a></li><li><a href="global.html#createClient">createClient</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#driver">driver</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getBlurDataURL">getBlurDataURL</a></li><li><a href="global.html#getBreedingCombinations">getBreedingCombinations</a></li><li><a href="global.html#getCardData">getCardData</a></li><li><a href="global.html#getFavouritePals">getFavouritePals</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getSavedBreedingCombos">getSavedBreedingCombos</a></li><li><a href="global.html#getSavedBreedingCombosWithDetails">getSavedBreedingCombosWithDetails</a></li><li><a href="global.html#getSession">getSession</a></li><li><a href="global.html#getTypes">getTypes</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getWorkTypes">getWorkTypes</a></li><li><a href="global.html#headers">headers</a></li><li><a href="global.html#initDriver">initDriver</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mainFont">mainFont</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#quitDriver">quitDriver</a></li><li><a href="global.html#removeFavouritePal">removeFavouritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#supabaseAdmin">supabaseAdmin</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li><li><a href="global.html#updateSession">updateSession</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useFavourites">useFavourites</a></li><li><a href="global.html#useSavedCombinations">useSavedCombinations</a></li><li><a href="global.html#verifyOtpAndLogSession">verifyOtpAndLogSession</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

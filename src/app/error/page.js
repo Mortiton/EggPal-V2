@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import styles from "./styles/page.module.css"; // Import specific styles for the page
 
 /**
- * @component ErrorPage
- * @description Renders an error page with a message and a button to return to the home page
+ * Renders an error page with a message and a button to return to the home page
  * @returns {JSX.Element} The rendered error page
  */
 export default function ErrorPage() {

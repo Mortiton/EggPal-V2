@@ -25,13 +25,13 @@ export async function GET(request) {
   if (token_hash && type) {
     /**
      * Creates a Supabase client for authentication
-     * @type {import('@supabase/supabase-js').SupabaseClient}
+     * @type {Object}
      */
     const supabase = createClient();
 
     /**
      * Verifies the OTP using Supabase authentication
-     * @type {import('@supabase/supabase-js').AuthResponse}
+     * @type {Object}
      */
     const { error } = await supabase.auth.verifyOtp({
       type,

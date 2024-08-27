@@ -11,7 +11,8 @@ import { SavedCombinationsProvider } from "./context/SavedCombinationsContext";
 import { getUser } from "./utils/getUser";
 
 /**
- * @type {import('next').Metadata}
+ * Metadata for the layout
+ * @type {Object} Represents the Metadata object from Next.js
  */
 export const metadata = {
   title: "EggPal",
@@ -20,7 +21,7 @@ export const metadata = {
 
 /**
  * Custom font configuration using next/font/local
- * @type {import('next/font/local').LocalFont}
+ * @type {Object}
  */
 const mainFont = localFont({
   src: "./fonts/slkscr.ttf",
@@ -34,8 +35,7 @@ const mainFont = localFont({
  */
 
 /**
- * @component RootLayout
- * @description The root layout component that wraps the entire application
+ * The root layout component that wraps the entire application
  * @param {Object} props - The component props
  * @param {React.ReactNode} props.children - The child components to be rendered within the layout
  * @returns {Promise<JSX.Element>} The rendered root layout

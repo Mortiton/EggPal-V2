@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/(pals)/pal/[palId]/components/BreedingCard.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/(pals)/pal/[palId]/components/BreedingCard.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+
+import React, { useMemo, useCallback } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import styles from "./styles/BreedingCard.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as fasHeart, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
+
+/**
+ * @typedef {Object} Parent
+ * @property {string} id - The unique identifier of the parent pal
+ * @property {string} name - The name of the parent pal
+ * @property {string} image - The image URL of the parent pal
+ */
+
+/**
+ * @typedef {Object} BreedingCardProps
+ * @property {Parent} parent1 - The first parent in the breeding combination
+ * @property {Parent} parent2 - The second parent in the breeding combination
+ * @property {string} breedingComboId - The unique identifier for the breeding combination
+ * @property {Object|null} user - The current user object, or null if not logged in
+ */
+
+/**
+ * Displays a breeding combination card with parent information and save functionality
+ * @param {BreedingCardProps} props - The component props
+ * @returns {JSX.Element} The rendered breeding card
+ */
+export default function BreedingCard({
+  parent1,
+  parent2,
+  breedingComboId,
+  user,
+}) {
+  const { savedCombinations, addCombination, removeCombination } =
+    useSavedCombinations();
+
+  /**
+   * Determines if the current breeding combination is saved
+   * @type {boolean}
+   */
+  const isSaved = useMemo(
+    () =>
+      savedCombinations.some(
+        (combo) => combo.breedingComboId === breedingComboId
+      ),
+    [savedCombinations, breedingComboId]
+  );
+
+  /**
+   * Toggles the saved status of the breeding combination
+   * @async
+   * @function
+   */
+  const toggleSaved = useCallback(async () => {
+    // Check if user is authenticated and display toast if not
+    if (!user) {
+      toast.info("Please log in to save breeding combinations.");
+      return;
+    }
+
+    try {
+      if (isSaved) {
+        await removeCombination(breedingComboId);
+      } else {
+        await addCombination(breedingComboId);
+      }
+    } catch (error) {
+      console.error("Error toggling saved status:", error.message);
+    }
+  }, [user, isSaved, breedingComboId, addCombination, removeCombination]);
+
+  return (
+    &lt;div className={styles.card}>
+      &lt;div className={styles.parent}>
+        &lt;Link
+          href={`/pal/${parent1.id}`}
+          passHref
+          aria-label={`Link to ${parent1.name}`}
+        >
+          &lt;Image
+            src={parent1.image}
+            alt={parent1.name}
+            className={styles.parentImage}
+            height={80}
+            width={80}
+            loading="lazy"
+          />
+        &lt;/Link>
+        &lt;span className={styles.parentName}>{parent1.name}&lt;/span>
+      &lt;/div>
+      &lt;FontAwesomeIcon
+        icon={faPlus}
+        className={styles.plusIcon}
+        aria-label="plus"
+      />
+      &lt;div className={styles.parent}>
+        &lt;Link
+          href={`/pal/${parent2.id}`}
+          passHref
+          aria-label={`Link to ${parent2.name}`}
+        >
+          &lt;Image
+            src={parent2.image}
+            alt={parent2.name}
+            className={styles.parentImage}
+            height={80}
+            width={80}
+            loading="lazy"
+          />
+        &lt;/Link>
+        &lt;span className={styles.parentName}>{parent2.name}&lt;/span>
+      &lt;/div>
+      &lt;FontAwesomeIcon
+        icon={isSaved ? fasHeart : farHeart}
+        className={styles.favouriteIcon}
+        onClick={toggleSaved}
+        data-favourite={isSaved ? "filled" : "empty"}
+        aria-label={isSaved ? "Remove from saved" : "Save combination"}
+      />
+    &lt;/div>
+  );
+}
+
+BreedingCard.displayName = "BreedingCard";
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ALL_PALS_CACHE_DURATION">ALL_PALS_CACHE_DURATION</a></li><li><a href="global.html#BreedingList">BreedingList</a></li><li><a href="global.html#CACHE_DURATION">CACHE_DURATION</a></li><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#FavouritesContext">FavouritesContext</a></li><li><a href="global.html#FavouritesProvider">FavouritesProvider</a></li><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#ForgotPasswordSchema">ForgotPasswordSchema</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#INDIVIDUAL_PAL_CACHE_DURATION">INDIVIDUAL_PAL_CACHE_DURATION</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PalDetailsDisplay">PalDetailsDisplay</a></li><li><a href="global.html#PalList">PalList</a></li><li><a href="global.html#RootLayout">RootLayout</a></li><li><a href="global.html#SavedCombinationsContext">SavedCombinationsContext</a></li><li><a href="global.html#SavedCombinationsProvider">SavedCombinationsProvider</a></li><li><a href="global.html#SignupSchema">SignupSchema</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdateEmailSchema">UpdateEmailSchema</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#UpdatePasswordSchema">UpdatePasswordSchema</a></li><li><a href="global.html#addFavouritePal">addFavouritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#cookies">cookies</a></li><li><a href="global.html#createClient">createClient</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#driver">driver</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getBlurDataURL">getBlurDataURL</a></li><li><a href="global.html#getBreedingCombinations">getBreedingCombinations</a></li><li><a href="global.html#getCardData">getCardData</a></li><li><a href="global.html#getFavouritePals">getFavouritePals</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getSavedBreedingCombos">getSavedBreedingCombos</a></li><li><a href="global.html#getSavedBreedingCombosWithDetails">getSavedBreedingCombosWithDetails</a></li><li><a href="global.html#getSession">getSession</a></li><li><a href="global.html#getTypes">getTypes</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getWorkTypes">getWorkTypes</a></li><li><a href="global.html#headers">headers</a></li><li><a href="global.html#initDriver">initDriver</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mainFont">mainFont</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#quitDriver">quitDriver</a></li><li><a href="global.html#removeFavouritePal">removeFavouritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#supabaseAdmin">supabaseAdmin</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li><li><a href="global.html#updateSession">updateSession</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useFavourites">useFavourites</a></li><li><a href="global.html#useSavedCombinations">useSavedCombinations</a></li><li><a href="global.html#verifyOtpAndLogSession">verifyOtpAndLogSession</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

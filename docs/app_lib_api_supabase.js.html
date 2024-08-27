@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/lib/api/supabase.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/lib/api/supabase.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+/** @constant {number} CACHE_DURATION - General cache duration in seconds (30 days) */
+const CACHE_DURATION = 30 * 24 * 60 * 60;
+
+/** @constant {number} ALL_PALS_CACHE_DURATION - Cache duration for all pals in seconds (30 days) */
+const ALL_PALS_CACHE_DURATION = 30 * 24 * 60 * 60;
+
+/** @constant {number} INDIVIDUAL_PAL_CACHE_DURATION - Cache duration for individual pals in seconds (1 hour) */
+const INDIVIDUAL_PAL_CACHE_DURATION = 60 * 60;
+
+/** @constant {Object} headers - HTTP headers for Supabase API requests */
+const headers = {
+  apikey: supabaseAnonKey,
+  Authorization: `Bearer ${supabaseAnonKey}`,
+  "Content-Type": "application/json",
+};
+
+/**
+ * Fetches pal data from Supabase
+ * @async
+ * @function getPals
+ * @param {(string|string[]|null)} [ids=null] - The ID(s) of the pal(s) to fetch. If null, fetches all pals.
+ * @returns {Promise&lt;Array&lt;Object>>} An array of pal objects
+ * @throws {Error} If the fetch operation fails
+ */
+export async function getPals(ids = null) {
+  const url = new URL(`${supabaseUrl}/rest/v1/rpc/get_pals`);
+  if (ids !== null) {
+    const idsString = Array.isArray(ids) ? ids.join(",") : ids;
+    url.searchParams.append("ids", idsString);
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+      next: {
+        revalidate:
+          ids &amp;&amp; ids.length === 1
+            ? INDIVIDUAL_PAL_CACHE_DURATION
+            : ALL_PALS_CACHE_DURATION,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch pals: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+
+    if (ids) {
+      const idArray = Array.isArray(ids) ? ids : [ids];
+      return data.filter((pal) => idArray.includes(pal.id.toString()));
+    } else {
+      return data;
+    }
+  } catch (error) {
+    console.error(`Error in getPals: ${error.message}`);
+    throw error;
+  }
+}
+
+/**
+ * Fetches work types from Supabase
+ * @async
+ * @function getWorkTypes
+ * @returns {Promise&lt;Array&lt;Object>>} An array of work type objects
+ * @throws {Error} If the fetch operation fails
+ */
+export async function getWorkTypes() {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/icons?select=icon_name,icon_url&amp;category=eq.Work&amp;order=work_order.asc`,
+    {
+      headers,
+      next: { revalidate: 3600 },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch work types from the database");
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetches pal types from Supabase
+ * @async
+ * @function getTypes
+ * @returns {Promise&lt;Array&lt;Object>>} An array of pal type objects
+ * @throws {Error} If the fetch operation fails
+ */
+export async function getTypes() {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/icons?select=icon_name,icon_url&amp;category=eq.Type&amp;order=type_order.asc`,
+    {
+      headers,
+      next: { revalidate: 3600 },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch pal types from the database");
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetches all necessary data for the PalCard component
+ * @async
+ * @function getCardData
+ * @returns {Promise&lt;Object>} An object containing pals, work types, and pal types
+ * @throws {Error} If any of the fetch operations fail
+ */
+export async function getCardData() {
+  try {
+    const [pals, workTypes, types] = await Promise.all([
+      getPals(),
+      getWorkTypes(),
+      getTypes(),
+    ]);
+
+    return { pals, workTypes, types };
+  } catch (error) {
+    console.error("Error fetching card data from the database:", error);
+    throw error;
+  }
+}
+
+/**
+ * Fetches breeding combinations for a specific pal
+ * @async
+ * @function getBreedingCombinations
+ * @param {string} palName - The name of the pal to fetch breeding combinations for
+ * @returns {Promise&lt;Array&lt;Object>>} An array of breeding combination objects
+ * @throws {Error} If the fetch operation fails
+ */
+export async function getBreedingCombinations(palName) {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/get_breeding_combos`,
+    {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ child_pal_name: palName }),
+      next: { revalidate: CACHE_DURATION },
+    }
+  );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    console.error(
+      `Error fetching breeding combinations: ${response.status} ${response.statusText} ${errorBody}`
+    );
+    return [];
+  }
+
+  return response.json();
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ALL_PALS_CACHE_DURATION">ALL_PALS_CACHE_DURATION</a></li><li><a href="global.html#BreedingList">BreedingList</a></li><li><a href="global.html#CACHE_DURATION">CACHE_DURATION</a></li><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#FavouritesContext">FavouritesContext</a></li><li><a href="global.html#FavouritesProvider">FavouritesProvider</a></li><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#ForgotPasswordSchema">ForgotPasswordSchema</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#INDIVIDUAL_PAL_CACHE_DURATION">INDIVIDUAL_PAL_CACHE_DURATION</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PalDetailsDisplay">PalDetailsDisplay</a></li><li><a href="global.html#PalList">PalList</a></li><li><a href="global.html#RootLayout">RootLayout</a></li><li><a href="global.html#SavedCombinationsContext">SavedCombinationsContext</a></li><li><a href="global.html#SavedCombinationsProvider">SavedCombinationsProvider</a></li><li><a href="global.html#SignupSchema">SignupSchema</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdateEmailSchema">UpdateEmailSchema</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#UpdatePasswordSchema">UpdatePasswordSchema</a></li><li><a href="global.html#addFavouritePal">addFavouritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#cookies">cookies</a></li><li><a href="global.html#createClient">createClient</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#driver">driver</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getBlurDataURL">getBlurDataURL</a></li><li><a href="global.html#getBreedingCombinations">getBreedingCombinations</a></li><li><a href="global.html#getCardData">getCardData</a></li><li><a href="global.html#getFavouritePals">getFavouritePals</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getSavedBreedingCombos">getSavedBreedingCombos</a></li><li><a href="global.html#getSavedBreedingCombosWithDetails">getSavedBreedingCombosWithDetails</a></li><li><a href="global.html#getSession">getSession</a></li><li><a href="global.html#getTypes">getTypes</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getWorkTypes">getWorkTypes</a></li><li><a href="global.html#headers">headers</a></li><li><a href="global.html#initDriver">initDriver</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mainFont">mainFont</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#quitDriver">quitDriver</a></li><li><a href="global.html#removeFavouritePal">removeFavouritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#supabaseAdmin">supabaseAdmin</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li><li><a href="global.html#updateSession">updateSession</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useFavourites">useFavourites</a></li><li><a href="global.html#useSavedCombinations">useSavedCombinations</a></li><li><a href="global.html#verifyOtpAndLogSession">verifyOtpAndLogSession</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

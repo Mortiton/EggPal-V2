@@ -30,8 +30,7 @@ const UpdatePasswordSchema = Yup.object().shape({
  */
 
 /**
- * @component UpdatePasswordForm
- * @description A form component for updating user password
+ * A form component for updating user password
  * @param {UpdatePasswordFormProps} props - The component props
  * @returns {JSX.Element} The rendered update password form
  */

@@ -4,7 +4,8 @@ import ForgotPasswordForm from "./components/ForgotPasswordForm";
 import styles from "../../components/styles/FormPage.module.css";
 
 /**
- * @type {import('next').Metadata}
+ * Metadata for the forgot password page
+ * @type {Object} Represents the Metadata object from Next.js
  */
 export const metadata = {
   title: "Forgot Password",
@@ -12,8 +13,7 @@ export const metadata = {
 };
 
 /**
- * @component ForgotPasswordPage
- * @description Renders the forgot password page with a form to reset user password
+ * Renders the forgot password page with a form to reset user password
  * @returns {React.ReactElement} The rendered forgot password page
  */
 const ForgotPasswordPage = () => {

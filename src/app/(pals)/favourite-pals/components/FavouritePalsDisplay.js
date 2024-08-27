@@ -28,8 +28,7 @@ import Link from "next/link";
  */
 
 /**
- * @component FavouritePalsDisplay
- * @description Displays the user's favourite pals. Handles loading states, empty states, and renders a grid of PalCards for favourites.
+ * Displays the user's favourite pals. Handles loading states, empty states, and renders a grid of PalCards for favourites.
  * @returns {JSX.Element} The rendered favourite pals display
  */
 export default function FavouritePalsDisplay() {
@@ -40,9 +39,8 @@ export default function FavouritePalsDisplay() {
   }
 
   /**
-   * @component FavouritePalsDisplay
-   * @description Displays the user's favourite pals. Handles loading states, empty states, and renders a grid of PalCards for favourites.
-   * @returns {JSX.Element} The rendered favourite pals display
+   * Displays the user's favourite pals. Handles loading states, empty states, and renders a grid of PalCards for favourites.
+   * * @returns {JSX.Element} The rendered favourite pals display
    */
   return (
     <div className={styles.container}>

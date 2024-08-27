@@ -4,7 +4,8 @@ import styles from "../../components/styles/FormPage.module.css";
 import Link from "next/link";
 
 /**
- * @type {import('next').Metadata}
+ * Metadata for the sign up page
+ * @type {Object} Represents the Metadata object from Next.js
  */
 export const metadata = {
   title: "Sign Up",
@@ -17,8 +18,7 @@ export const metadata = {
  */
 
 /**
- * @component SignupPage
- * @description Renders the signup page with a form for user registration
+ * Renders the signup page with a form for user registration
  * @param {Object} props - The component props
  * @param {SearchParams} props.searchParams - The search parameters from the URL
  * @returns {JSX.Element} The rendered signup page

@@ -31,11 +31,11 @@ import { toast } from "react-toastify";
 /**
  * @typedef {Object} SavedCombinationsContextType
  * @property {BreedingCombo[]} savedCombinations - Array of saved breeding combinations
- * @property {(breedingComboId: string) => Promise<void>} addCombination - Function to add a breeding combination
- * @property {(comboId: string) => Promise<void>} removeCombination - Function to remove a breeding combination
+ * @property {Function} addCombination - Function to add a breeding combination
+ * @property {Function} removeCombination - Function to remove a breeding combination
  * @property {User|null} user - The current user
  * @property {boolean} isLoading - Whether the saved combinations are currently loading
- * @property {() => Promise<void>} refreshSavedCombinations - Function to refresh the saved combinations
+ * @property {Function} refreshSavedCombinations - Function to refresh the saved combinations
  */
 
 /** @type {React.Context<SavedCombinationsContextType|null>} */
@@ -113,7 +113,7 @@ export function SavedCombinationsProvider({ children, initialUser }) {
           throw new Error("Failed to save breeding combination");
         }
         toast.success("Breeding combination saved");
-        await loadSavedCombinations(); 
+        await loadSavedCombinations();
       } catch (error) {
         console.error("Failed to add combination:", error);
         toast.error("Failed to save breeding combination");
@@ -142,7 +142,7 @@ export function SavedCombinationsProvider({ children, initialUser }) {
           throw new Error("Failed to remove breeding combination");
         }
         toast.success("Breeding combination removed");
-        await loadSavedCombinations(); 
+        await loadSavedCombinations();
       } catch (error) {
         console.error("Failed to remove combination:", error);
         toast.error("Failed to remove breeding combination");

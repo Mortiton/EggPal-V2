@@ -1,14 +1,14 @@
 import { Builder } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome";
 
-/** @type {import('selenium-webdriver').WebDriver|undefined} */
+/** @type {Object|undefined} */
 let driver;
 
 /**
  * Initialises a new Selenium WebDriver instance with Chrome
  * @async
  * @function initDriver
- * @returns {Promise<import('selenium-webdriver').WebDriver|undefined>} The initialised WebDriver instance, or undefined if initialisation fails
+ * @returns {Promise<Object|undefined>} The initialised WebDriver instance, or undefined if initialisation fails
  */
 const initDriver = async () => {
   try {
@@ -44,7 +44,7 @@ const quitDriver = async () => {
  * Logs an error by taking a screenshot and appending to an error log file
  * @async
  * @function logError
- * @param {import('selenium-webdriver').WebDriver} driver - The WebDriver instance
+ * @param {Object} driver - The WebDriver instance (Selenium WebDriver)
  * @param {Error} error - The error object
  * @param {string} step - The step where the error occurred
  * @returns {Promise<void>}

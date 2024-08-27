@@ -21,9 +21,9 @@ const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
 });
 
+
 /**
- * @component ForgotPasswordForm
- * @description A form component for initiating the password reset process
+ * A form component for initiating the password reset process
  * @returns {React.ReactElement} The rendered forgot password form
  */
 const ForgotPasswordForm = () => {

@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 /**
  * Creates a Supabase client for server-side use with custom cookie handling
  * @function createClient
- * @returns {import('@supabase/supabase-js').SupabaseClient} A Supabase client instance configured for server-side use
+ * @returns {Object} A Supabase client instance configured for server-side use
  */
 export function createClient() {
   const cookieStore = cookies();
@@ -15,7 +15,7 @@ export function createClient() {
     {
       /**
        * Custom cookie handling options
-       * @type {import('@supabase/ssr').CookieOptions}
+       * @type {Object}
        */
       cookies: {
         /**
@@ -30,7 +30,7 @@ export function createClient() {
          * Sets a cookie
          * @param {string} name - The name of the cookie
          * @param {string} value - The value to set
-         * @param {import('next/headers').CookieSerializeOptions} options - Cookie options
+         * @param {Object} options - Cookie options
          */
         set(name, value, options) {
           try {
@@ -40,7 +40,7 @@ export function createClient() {
         /**
          * Removes a cookie
          * @param {string} name - The name of the cookie to remove
-         * @param {import('next/headers').CookieSerializeOptions} options - Cookie options
+         * @param {Object} options - Cookie options
          */
         remove(name, options) {
           try {

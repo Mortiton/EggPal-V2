@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/context/SavedCombinationsContext.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/context/SavedCombinationsContext.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use client";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import { toast } from "react-toastify";
+
+/**
+ * @typedef {Object} BreedingCombo
+ * @property {string} id - The unique identifier of the saved breeding combination
+ * @property {string} breeding_combo_id - The identifier of the breeding combination
+ * @property {string} parent1_id - The ID of the first parent pal
+ * @property {string} parent1_name - The name of the first parent pal
+ * @property {string} parent1_image - The image URL of the first parent pal
+ * @property {string} parent2_id - The ID of the second parent pal
+ * @property {string} parent2_name - The name of the second parent pal
+ * @property {string} parent2_image - The image URL of the second parent pal
+ * @property {string} child_id - The ID of the child pal
+ * @property {string} child_name - The name of the child pal
+ * @property {string} child_image - The image URL of the child pal
+ */
+
+/**
+ * @typedef {Object} User
+ * @property {string} id - The unique identifier of the user
+ */
+
+/**
+ * @typedef {Object} SavedCombinationsContextType
+ * @property {BreedingCombo[]} savedCombinations - Array of saved breeding combinations
+ * @property {Function} addCombination - Function to add a breeding combination
+ * @property {Function} removeCombination - Function to remove a breeding combination
+ * @property {User|null} user - The current user
+ * @property {boolean} isLoading - Whether the saved combinations are currently loading
+ * @property {Function} refreshSavedCombinations - Function to refresh the saved combinations
+ */
+
+/** @type {React.Context&lt;SavedCombinationsContextType|null>} */
+const SavedCombinationsContext = createContext(null);
+
+/**
+ * Provider component for managing saved breeding combinations
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Child components
+ * @param {User|null} props.initialUser - Initial user data
+ */
+export function SavedCombinationsProvider({ children, initialUser }) {
+  const [user, setUser] = useState(initialUser);
+  const [savedCombinations, setSavedCombinations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setUser(initialUser);
+  }, [initialUser]);
+
+  /**
+   * Loads saved breeding combinations for the current user
+   * @function
+   * @async
+   */
+  const loadSavedCombinations = useCallback(async () => {
+    if (user?.id) {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `/api/saved-combinations?userId=${user.id}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch saved combinations");
+        }
+        const combos = await response.json();
+        setSavedCombinations(combos);
+      } catch (error) {
+        console.error("Failed to load saved combinations:", error);
+        toast.error("Failed to load saved combinations");
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setSavedCombinations([]);
+      setIsLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    loadSavedCombinations();
+  }, [loadSavedCombinations]);
+
+  /**
+   * Adds a breeding combination to saved combinations
+   * @function
+   * @async
+   * @param {string} breedingComboId - The ID of the breeding combination to save
+   */
+  const addCombination = useCallback(
+    async (breedingComboId) => {
+      if (!user?.id) {
+        toast.info("Please log in to save breeding combinations");
+        return;
+      }
+      try {
+        const response = await fetch("/api/saved-combinations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: user.id, breedingComboId }),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to save breeding combination");
+        }
+        toast.success("Breeding combination saved");
+        await loadSavedCombinations();
+      } catch (error) {
+        console.error("Failed to add combination:", error);
+        toast.error("Failed to save breeding combination");
+      }
+    },
+    [user, loadSavedCombinations]
+  );
+
+  /**
+   * Removes a breeding combination from saved combinations
+   * @function
+   * @async
+   * @param {string} comboId - The ID of the breeding combination to remove
+   */
+  const removeCombination = useCallback(
+    async (comboId) => {
+      if (!user?.id) return;
+      try {
+        const response = await fetch(
+          `/api/saved-combinations?userId=${user.id}&amp;comboId=${comboId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to remove breeding combination");
+        }
+        toast.success("Breeding combination removed");
+        await loadSavedCombinations();
+      } catch (error) {
+        console.error("Failed to remove combination:", error);
+        toast.error("Failed to remove breeding combination");
+      }
+    },
+    [user, loadSavedCombinations]
+  );
+
+  return (
+    &lt;SavedCombinationsContext.Provider
+      value={{
+        savedCombinations,
+        addCombination,
+        removeCombination,
+        user,
+        isLoading,
+        refreshSavedCombinations: loadSavedCombinations,
+      }}
+    >
+      {children}
+    &lt;/SavedCombinationsContext.Provider>
+  );
+}
+
+/**
+ * Hook to access the saved combinations context
+ * @returns {SavedCombinationsContextType} The saved combinations context
+ * @throws {Error} If used outside of SavedCombinationsProvider
+ */
+export const useSavedCombinations = () => {
+  const context = useContext(SavedCombinationsContext);
+  if (context === undefined) {
+    throw new Error(
+      "useSavedCombinations must be used within a SavedCombinationsProvider"
+    );
+  }
+  return context;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ALL_PALS_CACHE_DURATION">ALL_PALS_CACHE_DURATION</a></li><li><a href="global.html#BreedingList">BreedingList</a></li><li><a href="global.html#CACHE_DURATION">CACHE_DURATION</a></li><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#FavouritesContext">FavouritesContext</a></li><li><a href="global.html#FavouritesProvider">FavouritesProvider</a></li><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#ForgotPasswordSchema">ForgotPasswordSchema</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#INDIVIDUAL_PAL_CACHE_DURATION">INDIVIDUAL_PAL_CACHE_DURATION</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PalDetailsDisplay">PalDetailsDisplay</a></li><li><a href="global.html#PalList">PalList</a></li><li><a href="global.html#RootLayout">RootLayout</a></li><li><a href="global.html#SavedCombinationsContext">SavedCombinationsContext</a></li><li><a href="global.html#SavedCombinationsProvider">SavedCombinationsProvider</a></li><li><a href="global.html#SignupSchema">SignupSchema</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdateEmailSchema">UpdateEmailSchema</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#UpdatePasswordSchema">UpdatePasswordSchema</a></li><li><a href="global.html#addFavouritePal">addFavouritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#cookies">cookies</a></li><li><a href="global.html#createClient">createClient</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#driver">driver</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getBlurDataURL">getBlurDataURL</a></li><li><a href="global.html#getBreedingCombinations">getBreedingCombinations</a></li><li><a href="global.html#getCardData">getCardData</a></li><li><a href="global.html#getFavouritePals">getFavouritePals</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getSavedBreedingCombos">getSavedBreedingCombos</a></li><li><a href="global.html#getSavedBreedingCombosWithDetails">getSavedBreedingCombosWithDetails</a></li><li><a href="global.html#getSession">getSession</a></li><li><a href="global.html#getTypes">getTypes</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getWorkTypes">getWorkTypes</a></li><li><a href="global.html#headers">headers</a></li><li><a href="global.html#initDriver">initDriver</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mainFont">mainFont</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#quitDriver">quitDriver</a></li><li><a href="global.html#removeFavouritePal">removeFavouritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#supabaseAdmin">supabaseAdmin</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li><li><a href="global.html#updateSession">updateSession</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useFavourites">useFavourites</a></li><li><a href="global.html#useSavedCombinations">useSavedCombinations</a></li><li><a href="global.html#verifyOtpAndLogSession">verifyOtpAndLogSession</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

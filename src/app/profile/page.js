@@ -1,20 +1,20 @@
-import React from 'react';
-import UpdateEmailForm from './components/UpdateEmailForm';
-import UpdatePasswordForm from './components/UpdatePasswordForm';
-import DeleteUserForm from './components/DeleteUserForm';
-import styles from '../components/styles/FormPage.module.css'
+import React from "react";
+import UpdateEmailForm from "./components/UpdateEmailForm";
+import UpdatePasswordForm from "./components/UpdatePasswordForm";
+import DeleteUserForm from "./components/DeleteUserForm";
+import styles from "../components/styles/FormPage.module.css";
 
 /**
- * @type {import('next').Metadata}
+ * Metadata for the profile page
+ * @type {Object} Represents the Metadata object from Next.js
  */
 export const metadata = {
-  title: 'Profile',
-  description: 'Change your email, password or delete your account here',
+  title: "Profile",
+  description: "Change your email, password or delete your account here",
 };
 
 /**
- * @component ProfilePage
- * @description Renders the user profile page with options to update email, password, and delete account
+ * Renders the user profile page with options to update email, password, and delete account
  * @returns {Promise<JSX.Element>} The rendered profile page
  */
 export default async function ProfilePage() {
@@ -29,4 +29,4 @@ export default async function ProfilePage() {
   );
 }
 
-ProfilePage.displayName = 'ProfilePage'
+ProfilePage.displayName = "ProfilePage";

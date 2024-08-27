@@ -30,9 +30,9 @@ import { toast } from "react-toastify";
 /**
  * @typedef {Object} FavouritesContextType
  * @property {Pal[]} favourites - Array of favourite pals
- * @property {(pal: Pal) => Promise<void>} addFavourite - Function to add a pal to favourites
- * @property {(palId: string) => Promise<void>} removeFavourite - Function to remove a pal from favourites
- * @property {(palId: string) => boolean} isFavourite - Function to check if a pal is a favourite
+ * @property {Function} addFavourite - Function to add a pal to favourites
+ * @property {Function} removeFavourite - Function to remove a pal from favourites
+ * @property {Function} isFavourite - Function to check if a pal is a favourite
  * @property {User|null} user - The current user
  * @property {boolean} isLoading - Whether the favourites are currently loading
  */

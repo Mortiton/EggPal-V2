@@ -6,8 +6,7 @@ import styles from "@/app/components/styles/FormStyles.module.css";
 import { toast } from "react-toastify";
 
 /**
- * @component DeleteUserForm
- * @description Renders a form for user account deletion with confirmation step
+ * Renders a form for user account deletion with confirmation step
  * @returns {JSX.Element} The rendered delete user form
  */
 export default function DeleteUserForm() {

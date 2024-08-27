@@ -26,8 +26,7 @@ import { useSavedCombinations } from "@/app/context/SavedCombinationsContext";
  */
 
 /**
- * @component BreedingCard
- * @description Displays a breeding combination card with parent information and save functionality
+ * Displays a breeding combination card with parent information and save functionality
  * @param {BreedingCardProps} props - The component props
  * @returns {JSX.Element} The rendered breeding card
  */

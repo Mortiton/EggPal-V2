@@ -23,8 +23,7 @@ import styles from "./styles/BreedingList.module.css";
  */
 
 /**
- * @component BreedingList
- * @description Displays a list of breeding combinations with search functionality
+ * Displays a list of breeding combinations with search functionality
  * @param {BreedingListProps} props - The component props
  * @returns {JSX.Element} The rendered breeding list
  */

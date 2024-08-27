@@ -26,8 +26,7 @@ const UpdatePasswordSchema = Yup.object().shape({
 });
 
 /**
- * @component UpdatePasswordForm
- * @description Renders a form for updating the user's password
+ * Renders a form for updating the user's password
  * @returns {JSX.Element} The rendered update password form
  */
 export default function UpdatePasswordForm() {

@@ -25,8 +25,7 @@ import styles from "./styles/SavedBreedingList.module.css";
  */
 
 /**
- * @component SavedBreedingList
- * @description Renders a list of saved breeding combinations
+ * Renders a list of saved breeding combinations
  * @param {SavedBreedingListProps} props - The component props
  * @returns {JSX.Element} The rendered list of saved breeding combinations
  */

@@ -35,8 +35,7 @@ import { toast } from "react-toastify";
  */
 
 /**
- * @component PalDetailsDisplay
- * @description Displays detailed information about a pal, including its details and breeding combinations
+ * Displays detailed information about a pal, including its details and breeding combinations
  * @param {PalDetailsDisplayProps} props - The component props
  * @returns {JSX.Element} The rendered pal details display
  */

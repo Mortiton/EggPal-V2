@@ -2,7 +2,7 @@ import { createClient } from "./server";
 
 /**
  * Supabase admin client with elevated privileges for server-side operations
- * @type {import('@supabase/supabase-js').SupabaseClient}
+ * @type {Object} Represents a SupabaseClient instance from @supabase/ssr
  */
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,

@@ -33,8 +33,7 @@ const SignupSchema = Yup.object().shape({
  */
 
 /**
- * @component SignupForm
- * @description A form component for user registration with terms of service acceptance
+ * A form component for user registration with terms of service acceptance
  * @returns {JSX.Element} The rendered signup form
  */
 export default function SignupForm() {

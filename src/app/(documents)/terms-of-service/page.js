@@ -3,8 +3,7 @@ import Link from "next/link";
 import styles from "../../components/styles/Terms.module.css";
 
 /**
- * @component Terms
- * @description Renders the Terms of Service page for the EggPal application
+ * Renders the Terms of Service page for the EggPal application
  * @returns {JSX.Element} The rendered Terms of Service page
  */
 export default function Terms() {

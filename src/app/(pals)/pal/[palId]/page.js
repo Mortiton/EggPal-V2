@@ -66,8 +66,7 @@ export async function generateMetadata({ params }) {
 }
 
 /**
- * @component PalPage
- * @description Renders a page with detailed information about a specific pal, including breeding combinations
+ * Renders a page with detailed information about a specific pal, including breeding combinations
  * @param {Object} props - The component props
  * @param {Object} props.params - The route parameters
  * @param {string} props.params.palId - The ID of the pal to display

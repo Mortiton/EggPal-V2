@@ -12,7 +12,7 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
   /**
    * Creates a Supabase client for authentication
-   * @type {import('@supabase/supabase-js').SupabaseClient}
+   * @type {Object}
    */
   const supabase = createClient();
 

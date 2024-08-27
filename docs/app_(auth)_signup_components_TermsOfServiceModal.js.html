@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/(auth)/signup/components/TermsOfServiceModal.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/(auth)/signup/components/TermsOfServiceModal.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect } from "react";
+import Modal from "react-modal";
+import styles from "../styles/PrivacyPolicyModal.module.css";
+
+/**
+ * @typedef {Object} TermsOfServiceModalProps
+ * @property {boolean} isOpen - Whether the modal is open or closed
+ * @property {Function} onRequestClose - Function to call when the modal should be closed
+ * @property {Function} onAccept - Function to call when the terms are accepted
+ */
+
+/**
+ * A modal component that displays the Terms of Service for EggPal
+ * @param {TermsOfServiceModalProps} props - The component props
+ * @returns {JSX.Element} The rendered Terms of Service modal
+ */
+const TermsOfServiceModal = ({ isOpen, onRequestClose, onAccept }) => {
+  /**
+   * Sets the app element for react-modal accessibility features
+   */
+  useEffect(() => {
+    Modal.setAppElement("#modal-root");
+  }, []);
+
+  return (
+    &lt;Modal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      contentLabel="Terms of Service"
+      className={styles.modalContent}
+      overlayClassName={styles.modalOverlay}
+      aria={{
+        labelledby: "terms-of-service-title",
+        describedby: "terms-of-service-content",
+      }}
+    >
+      &lt;div className={styles.modalHeader}>
+        &lt;h2>Terms of Service&lt;/h2>
+        &lt;button
+          onClick={onRequestClose}
+          className={styles.closeButton}
+          aria-label="Close terms of service"
+        >
+          ×
+        &lt;/button>
+      &lt;/div>
+      &lt;div className={styles.modalBody}>
+        &lt;p className={styles.text}>
+          Welcome to EggPal, a companion web application for Palworlds that
+          helps users track breeding combinations and save their pals and
+          combinations. By using our service, you agree to these Terms of
+          Service.
+        &lt;/p>
+
+        &lt;h3>Acceptance of Terms&lt;/h3>
+        &lt;p className={styles.text}>
+          By accessing or using EggPal, you agree to be bound by these ToS. If
+          you do not agree to these ToS, please do not use our service.
+        &lt;/p>
+
+        &lt;h3>Changes to Terms&lt;/h3>
+        &lt;p className={styles.text}>
+          We reserve the right to modify these ToS at any time. We will notify
+          you of any significant changes by posting the new ToS on our website.
+          Your continued use of the service after the changes take effect
+          constitutes your acceptance of the new ToS.
+        &lt;/p>
+
+        &lt;h3>User Accounts&lt;/h3>
+        &lt;p className={styles.text}>
+          To use certain features of our service, you must create an account.
+          You are responsible for maintaining the confidentiality of your
+          account information and for all activities that occur under your
+          account. You agree to notify us immediately of any unauthorised use of
+          your account.
+        &lt;/p>
+
+        &lt;h3>User Conduct&lt;/h3>
+        &lt;p className={styles.text}>
+          You agree not to use our service for any unlawful purpose or in any
+          way that could harm others. This includes, but is not limited to,
+          harassment, impersonation, and the distribution of harmful or illegal
+          content.
+        &lt;/p>
+
+        &lt;h3>Intellectual Property&lt;/h3>
+        &lt;p className={styles.text}>
+          All content on EggPal, including text, graphics, logos, and software,
+          is the property of EggPal or its licensors and is protected by
+          copyright and trademark laws. However, EggPal contains images and
+          content from the game Palworlds, which are the property of Pocketpair,
+          Inc. EggPal is not affiliated with or endorsed by Pocketpair, Inc. All
+          rights to the game and related materials are owned by Pocketpair, Inc.
+        &lt;/p>
+
+        &lt;h3>Privacy&lt;/h3>
+        &lt;p className={styles.text}>
+          Your privacy is important to us. Please review our{" "}
+          &lt;a href="/privacy-policy" className={styles.link}>
+            Privacy Policy
+          &lt;/a>{" "}
+          to understand how we collect, use, and protect your personal
+          information.
+        &lt;/p>
+
+        &lt;h3>Limitation of Liability&lt;/h3>
+        &lt;p className={styles.text}>
+          To the fullest extent permitted by law, EggPal shall not be liable for
+          any indirect, incidental, special, or consequential damages arising
+          out of or in connection with the use of our service.
+        &lt;/p>
+
+        &lt;h3>Termination&lt;/h3>
+        &lt;p className={styles.text}>
+          We reserve the right to terminate or suspend your account at any time,
+          with or without notice, for any reason, including if you violate these
+          ToS.
+        &lt;/p>
+
+        &lt;h3>Governing Law&lt;/h3>
+        &lt;p className={styles.text}>
+          These ToS are governed by and construed in accordance with the laws of
+          the United Kingdom. Any disputes arising under these ToS shall be
+          subject to the exclusive jurisdiction of the courts of the United
+          Kingdom.
+        &lt;/p>
+
+        &lt;h3>Contact Us&lt;/h3>
+        &lt;p className={styles.text}>
+          If you have any questions about these ToS, please contact us at{" "}
+          &lt;a href="mailto:support@eggpal.net" className={styles.link}>
+            support@eggpal.net
+          &lt;/a>
+          .
+        &lt;/p>
+      &lt;/div>
+      &lt;div className={styles.modalFooter}>
+        &lt;button
+          onClick={onAccept}
+          className={styles.acceptButton}
+          aria-label="Accept terms of service"
+        >
+          Accept
+        &lt;/button>
+        &lt;button
+          onClick={onRequestClose}
+          className={styles.closeButton}
+          aria-label="Close terms of service"
+        >
+          Close
+        &lt;/button>
+      &lt;/div>
+    &lt;/Modal>
+  );
+};
+
+TermsOfServiceModal.displayName = "TermsOfServiceModal";
+
+export default TermsOfServiceModal;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ALL_PALS_CACHE_DURATION">ALL_PALS_CACHE_DURATION</a></li><li><a href="global.html#BreedingList">BreedingList</a></li><li><a href="global.html#CACHE_DURATION">CACHE_DURATION</a></li><li><a href="global.html#DELETE">DELETE</a></li><li><a href="global.html#FavouritesContext">FavouritesContext</a></li><li><a href="global.html#FavouritesProvider">FavouritesProvider</a></li><li><a href="global.html#ForgotPasswordForm">ForgotPasswordForm</a></li><li><a href="global.html#ForgotPasswordPage">ForgotPasswordPage</a></li><li><a href="global.html#ForgotPasswordSchema">ForgotPasswordSchema</a></li><li><a href="global.html#GET">GET</a></li><li><a href="global.html#INDIVIDUAL_PAL_CACHE_DURATION">INDIVIDUAL_PAL_CACHE_DURATION</a></li><li><a href="global.html#LoginSchema">LoginSchema</a></li><li><a href="global.html#POST">POST</a></li><li><a href="global.html#PalDetailsDisplay">PalDetailsDisplay</a></li><li><a href="global.html#PalList">PalList</a></li><li><a href="global.html#RootLayout">RootLayout</a></li><li><a href="global.html#SavedCombinationsContext">SavedCombinationsContext</a></li><li><a href="global.html#SavedCombinationsProvider">SavedCombinationsProvider</a></li><li><a href="global.html#SignupSchema">SignupSchema</a></li><li><a href="global.html#TermsOfServiceModal">TermsOfServiceModal</a></li><li><a href="global.html#UpdateEmailSchema">UpdateEmailSchema</a></li><li><a href="global.html#UpdatePasswordForm">UpdatePasswordForm</a></li><li><a href="global.html#UpdatePasswordSchema">UpdatePasswordSchema</a></li><li><a href="global.html#addFavouritePal">addFavouritePal</a></li><li><a href="global.html#addSavedBreedingCombo">addSavedBreedingCombo</a></li><li><a href="global.html#checkUserExists">checkUserExists</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#cookies">cookies</a></li><li><a href="global.html#createClient">createClient</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#driver">driver</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getBlurDataURL">getBlurDataURL</a></li><li><a href="global.html#getBreedingCombinations">getBreedingCombinations</a></li><li><a href="global.html#getCardData">getCardData</a></li><li><a href="global.html#getFavouritePals">getFavouritePals</a></li><li><a href="global.html#getPals">getPals</a></li><li><a href="global.html#getSavedBreedingCombos">getSavedBreedingCombos</a></li><li><a href="global.html#getSavedBreedingCombosWithDetails">getSavedBreedingCombosWithDetails</a></li><li><a href="global.html#getSession">getSession</a></li><li><a href="global.html#getTypes">getTypes</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getWorkTypes">getWorkTypes</a></li><li><a href="global.html#headers">headers</a></li><li><a href="global.html#initDriver">initDriver</a></li><li><a href="global.html#logError">logError</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#mainFont">mainFont</a></li><li><a href="global.html#metadata">metadata</a></li><li><a href="global.html#middleware">middleware</a></li><li><a href="global.html#quitDriver">quitDriver</a></li><li><a href="global.html#removeFavouritePal">removeFavouritePal</a></li><li><a href="global.html#removeSavedBreedingCombo">removeSavedBreedingCombo</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#signup">signup</a></li><li><a href="global.html#supabaseAdmin">supabaseAdmin</a></li><li><a href="global.html#updateEmail">updateEmail</a></li><li><a href="global.html#updatePassword">updatePassword</a></li><li><a href="global.html#updateSession">updateSession</a></li><li><a href="global.html#updateUserPassword">updateUserPassword</a></li><li><a href="global.html#useClickOutside">useClickOutside</a></li><li><a href="global.html#useFavourites">useFavourites</a></li><li><a href="global.html#useSavedCombinations">useSavedCombinations</a></li><li><a href="global.html#verifyOtpAndLogSession">verifyOtpAndLogSession</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -4,7 +4,8 @@ import styles from "./page.module.css";
 import { getCardData } from "./lib/api/supabase";
 
 /**
- * @type {import('next').Metadata}
+ * Metadata for the home page
+ * @type {Object} Represents the Metadata object from Next.js
  */
 export const metadata = {
   title: "EggPal",
@@ -46,22 +47,18 @@ export const metadata = {
 
 /**
  * @typedef {Icon} WorkType
- * @description Represents a work type, inheriting properties from Icon
  * @property {'Work'} category - Always 'Work' for work types
  */
 
 /**
  * @typedef {Icon} PalType
- * @description Represents a pal type, inheriting properties from Icon
  * @property {'Type'} category - Always 'Type' for pal types
  */
 
 /**
- * @component HomePage
- * @description Renders the home page with a list of pals
+ * Renders the home page with a list of pals
  * @returns {Promise<JSX.Element>} The rendered home page
  */
-
 export default async function HomePage() {
   /**
    * Fetches the card data for pals, work types, and pal types

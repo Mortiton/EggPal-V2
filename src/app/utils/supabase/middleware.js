@@ -5,8 +5,8 @@ import { NextResponse } from "next/server";
  * Updates the user session and manages authentication state
  * @async
  * @function updateSession
- * @param {import('next/server').NextRequest} request - The incoming request object
- * @returns {Promise<import('next/server').NextResponse>} The response object with updated headers and cookies
+ * @param {Object} request - The incoming request object
+ * @returns {Promise<Object>} The response object with updated headers and cookies
  */
 export async function updateSession(request) {
   let response = NextResponse.next({
@@ -14,9 +14,10 @@ export async function updateSession(request) {
       headers: request.headers,
     },
   });
+
   /**
    * Supabase client instance for server-side operations
-   * @type {import('@supabase/ssr').SupabaseClient}
+   * @type {Object}
    */
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -35,7 +36,7 @@ export async function updateSession(request) {
          * Sets a cookie in both the request and response
          * @param {string} name - The name of the cookie
          * @param {string} value - The value to set
-         * @param {import('next/server').CookieSerializeOptions} options - Cookie options
+         * @param {Object} options - Cookie options (CookieSerializeOptions from next/server)
          */
         set(name, value, options) {
           request.cookies.set({
@@ -57,7 +58,7 @@ export async function updateSession(request) {
         /**
          * Removes a cookie from both the request and response
          * @param {string} name - The name of the cookie to remove
-         * @param {import('next/server').CookieSerializeOptions} options - Cookie options
+         * @param {Object} options - Cookie options (CookieSerializeOptions from next/server)
          */
         remove(name, options) {
           request.cookies.delete({
