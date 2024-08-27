@@ -5,21 +5,47 @@ import WorkIcon from "./WorkIcon";
 import { getBlurDataURL } from "../lib/imageUtils";
 
 /**
- * PalCard component that renders a card for a pal.
- * It displays the pal's types, image, name, and work attributes.
+ * @typedef {Object} Skill
+ * @property {string} skill_name - The name of the skill
+ * @property {number} work_order - The order of the skill in the work list
+ * @property {number} skill_level - The level of the skill
+ * @property {string} skill_icon_url - The URL of the skill's icon
+ */
+
+/**
+ * @typedef {Object} Pal
+ * @property {string} name - The name of the pal
+ * @property {string} type1 - The primary type of the pal
+ * @property {string|null} type2 - The secondary type of the pal, if any
+ * @property {string} image_url - The URL of the pal's image
+ * @property {string} type1_icon_url - The URL of the icon for the pal's primary type
+ * @property {string|null} type2_icon_url - The URL of the icon for the pal's secondary type, if any
+ * @property {Skill[]} skills - An array of skills the pal possesses
+ */
+
+/**
+ * PalCard component for displaying information about a single pal.
  *
  * @component
- * @param {Object} props - The props that were defined by the caller of this component.
- * @param {Object} props.pal - The pal object. It contains the pal's id, name, types, image URL, and work attributes.
- * @returns {JSX.Element} A React component.
+ * @param {Object} props - The component props
+ * @param {Pal} props.pal - The pal object containing all the necessary information
+ * @returns {JSX.Element} The rendered PalCard component
  */
 export default function PalCard({ pal }) {
-  // Sort the skills based on the work_order
+  /**
+   * Sorts the pal's skills based on their work order.
+   *
+   * @type {Skill[]}
+   */
   const sortedSkills = pal.skills.sort((a, b) => a.work_order - b.work_order);
 
+  /**
+   * Gets the blur data URL for the pal's image.
+   *
+   * @type {string}
+   */
   const blurDataURL = getBlurDataURL();
 
-  
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -53,17 +79,26 @@ export default function PalCard({ pal }) {
               alt={`Image of ${pal.name}`}
               width={100}
               height={100}
-              style={{ objectFit: 'cover' }}
-              loading='lazy' 
+              style={{ objectFit: "cover" }}
+              loading="lazy"
               placeholder="blur"
               blurDataURL={blurDataURL}
             />
           )}
         </div>
-        <h3 className={styles.cardTitle} aria-label={pal.name}>{pal.name}</h3>
-        <div className={styles.workIcons} aria-label={`Work attributes of ${pal.name}`}>
+        <h3 className={styles.cardTitle} aria-label={pal.name}>
+          {pal.name}
+        </h3>
+        <div
+          className={styles.workIcons}
+          aria-label={`Work attributes of ${pal.name}`}
+        >
           {sortedSkills.map((skill) => (
-            <WorkIcon key={skill.skill_name} iconUrl={skill.skill_icon_url} value={skill.skill_level} />
+            <WorkIcon
+              key={skill.skill_name}
+              iconUrl={skill.skill_icon_url}
+              value={skill.skill_level}
+            />
           ))}
         </div>
       </div>
@@ -71,4 +106,4 @@ export default function PalCard({ pal }) {
   );
 }
 
-PalCard.displayName = 'PalCard';
+PalCard.displayName = "PalCard";

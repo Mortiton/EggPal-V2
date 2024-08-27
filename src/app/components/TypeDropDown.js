@@ -1,29 +1,45 @@
-'use client';
+"use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Image from 'next/image'
+import Image from "next/image";
 import styles from "./styles/DropDown.module.css";
 
 /**
- * TypeDropdown component that renders a dropdown for selecting a type.
- * It calls the onSelectType function when the user selects a type.
+ * @typedef {Object} PalType
+ * @property {string} icon_name - The name of the icon
+ * @property {string} icon_url - The URL of the icon image
+ * @property {'Type'} category - Always 'Type' for pal types
+ * @property {number} type_order - The order for pal types
+ */
+
+/**
+ * TypeDropdown component for selecting pal types.
  *
  * @component
- * @param {Object[]} types - The types that the user can select.
- * @param {function} onSelectType - The function to call when the user selects a type.
- * @returns {JSX.Element} A React component.
+ * @param {Object} props - The component props
+ * @param {PalType[]} props.types - Array of pal types to display in the dropdown
+ * @param {function} props.onSelectType - Callback function to handle type selection
+ * @returns {JSX.Element} The rendered TypeDropdown component
  */
 export default function TypeDropdown({ types, onSelectType }) {
-  const [isOpen, setIsOpen] = useState(false); 
-  const dropdownRef = useRef(null); 
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
-  const buttonId = 'type-dropdown-button'; 
+  const buttonId = "type-dropdown-button";
 
-  // Function to toggle whether the dropdown is open
+  /**
+   * Toggles the dropdown open/closed state.
+   */
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  // Effect to close the dropdown when the user clicks outside of it
+  /**
+   * Effect hook to close the dropdown when clicking outside.
+   */
   useEffect(() => {
+    /**
+     * Handles click events outside the dropdown.
+     * @param {MouseEvent} event - The mouse event
+     */
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
@@ -39,6 +55,10 @@ export default function TypeDropdown({ types, onSelectType }) {
     };
   }, [isOpen]);
 
+  /**
+   * Handles keydown events for accessibility.
+   * @param {React.KeyboardEvent} event - The keyboard event
+   */
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       setIsOpen(false);
@@ -48,7 +68,6 @@ export default function TypeDropdown({ types, onSelectType }) {
     }
   };
 
-  // Render the dropdown
   return (
     <div ref={dropdownRef} className={styles.dropdown}>
       <button
@@ -97,4 +116,4 @@ export default function TypeDropdown({ types, onSelectType }) {
   );
 }
 
-TypeDropdown.displayName = 'TypeDropdown';
+TypeDropdown.displayName = "TypeDropdown";

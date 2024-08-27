@@ -1,29 +1,45 @@
-'use client';
+"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import styles from "./styles/DropDown.module.css";
 
 /**
- * WorkDropDown component that renders a dropdown for selecting a work.
- * It calls the onSelectWork function when the user selects a work.
+ * @typedef {Object} WorkType
+ * @property {string} icon_name - The name of the work skill icon
+ * @property {string} icon_url - The URL of the work skill icon image
+ * @property {'Work'} category - Always 'Work' for work types
+ * @property {number} work_order - The order for work types
+ */
+
+/**
+ * WorkDropDown component for selecting base skills (work types).
  *
  * @component
- * @param {Object[]} work - The work that the user can select.
- * @param {function} onSelectWork - The function to call when the user selects a work.
- * @returns {JSX.Element} A React component.
+ * @param {Object} props - The component props
+ * @param {WorkType[]} props.work - Array of work types to display in the dropdown
+ * @param {function} props.onSelectWork - Callback function to handle work type selection
+ * @returns {JSX.Element} The rendered WorkDropDown component
  */
 export default function WorkDropDown({ work, onSelectWork }) {
-  const [isOpen, setIsOpen] = useState(false); 
-  const dropdownRef = useRef(null); 
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
-  const buttonId = 'work-dropdown-button'; 
+  const buttonId = "work-dropdown-button";
 
-  // Function to toggle whether the dropdown is open
+  /**
+   * Toggles the dropdown open/closed state.
+   */
   const toggleDropdown = () => setIsOpen(!isOpen);
 
-  // Effect to close the dropdown when the user clicks outside of it
+  /**
+   * Effect hook to close the dropdown when clicking outside.
+   */
   useEffect(() => {
+    /**
+     * Handles click events outside the dropdown.
+     * @param {MouseEvent} event - The mouse event
+     */
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
@@ -39,6 +55,10 @@ export default function WorkDropDown({ work, onSelectWork }) {
     };
   }, [isOpen]);
 
+  /**
+   * Handles keydown events for accessibility.
+   * @param {React.KeyboardEvent} event - The keyboard event
+   */
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
       setIsOpen(false);
@@ -99,4 +119,4 @@ export default function WorkDropDown({ work, onSelectWork }) {
   );
 }
 
-WorkDropDown.displayName = 'WorkDropDown';
+WorkDropDown.displayName = "WorkDropDown";
