@@ -1,5 +1,4 @@
 "use client";
-
 import {
   createContext,
   useContext,
@@ -36,10 +35,11 @@ import { toast } from "react-toastify";
  * @property {(comboId: string) => Promise<void>} removeCombination - Function to remove a breeding combination
  * @property {User|null} user - The current user
  * @property {boolean} isLoading - Whether the saved combinations are currently loading
+ * @property {() => Promise<void>} refreshSavedCombinations - Function to refresh the saved combinations
  */
 
 /** @type {React.Context<SavedCombinationsContextType|null>} */
-const SavedCombinationsContext = createContext();
+const SavedCombinationsContext = createContext(null);
 
 /**
  * Provider component for managing saved breeding combinations
@@ -101,8 +101,6 @@ export function SavedCombinationsProvider({ children, initialUser }) {
         toast.info("Please log in to save breeding combinations");
         return;
       }
-      // Optimistic update
-      setSavedCombinations((prev) => [...prev, { breedingComboId }]);
       try {
         const response = await fetch("/api/saved-combinations", {
           method: "POST",
@@ -115,16 +113,13 @@ export function SavedCombinationsProvider({ children, initialUser }) {
           throw new Error("Failed to save breeding combination");
         }
         toast.success("Breeding combination saved");
+        await loadSavedCombinations(); 
       } catch (error) {
-        // Revert optimistic update on error
-        setSavedCombinations((prev) =>
-          prev.filter((combo) => combo.breedingComboId !== breedingComboId)
-        );
         console.error("Failed to add combination:", error);
         toast.error("Failed to save breeding combination");
       }
     },
-    [user]
+    [user, loadSavedCombinations]
   );
 
   /**
@@ -136,10 +131,6 @@ export function SavedCombinationsProvider({ children, initialUser }) {
   const removeCombination = useCallback(
     async (comboId) => {
       if (!user?.id) return;
-      // Optimistic update
-      setSavedCombinations((prev) =>
-        prev.filter((combo) => combo.breedingComboId !== comboId)
-      );
       try {
         const response = await fetch(
           `/api/saved-combinations?userId=${user.id}&comboId=${comboId}`,
@@ -151,14 +142,13 @@ export function SavedCombinationsProvider({ children, initialUser }) {
           throw new Error("Failed to remove breeding combination");
         }
         toast.success("Breeding combination removed");
+        await loadSavedCombinations(); 
       } catch (error) {
-        // Revert optimistic update on error
-        setSavedCombinations((prev) => [...prev, { breedingComboId: comboId }]);
         console.error("Failed to remove combination:", error);
         toast.error("Failed to remove breeding combination");
       }
     },
-    [user]
+    [user, loadSavedCombinations]
   );
 
   return (
@@ -169,6 +159,7 @@ export function SavedCombinationsProvider({ children, initialUser }) {
         removeCombination,
         user,
         isLoading,
+        refreshSavedCombinations: loadSavedCombinations,
       }}
     >
       {children}

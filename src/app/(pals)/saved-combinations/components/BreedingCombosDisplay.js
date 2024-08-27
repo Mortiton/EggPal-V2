@@ -27,13 +27,15 @@ import styles from "./styles/BreedingCombosDisplay.module.css";
  * @returns {JSX.Element} The rendered breeding combinations display
  */
 export default function BreedingCombosDisplay() {
-  const { savedCombinations, isLoading } = useSavedCombinations();
+  const { savedCombinations, isLoading, refreshSavedCombinations } = useSavedCombinations();
   const [selectedChild, setSelectedChild] = useState(null);
   const [groupedCombos, setGroupedCombos] = useState({});
 
-  /**
-   * Groups saved combinations by child pal
-   */
+  useEffect(() => {
+    refreshSavedCombinations();
+  }, [refreshSavedCombinations]);
+
+
   useEffect(() => {
     const grouped = savedCombinations.reduce((acc, combo) => {
       if (combo && combo.child && combo.child.name) {
@@ -48,10 +50,7 @@ export default function BreedingCombosDisplay() {
     setGroupedCombos(grouped);
   }, [savedCombinations]);
 
-  /**
-   * Handles the click event on a child pal button
-   * @param {string} child - The name of the clicked child pal
-   */
+  console.log(groupedCombos)
   const handleChildClick = (child) => {
     setSelectedChild((prevChild) => (prevChild === child ? null : child));
   };
