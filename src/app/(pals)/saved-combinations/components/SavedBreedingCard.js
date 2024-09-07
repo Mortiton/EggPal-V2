@@ -40,9 +40,7 @@ export default function SavedBreedingCard({
    * @function
    */
   const handleRemove = async () => {
-    if (session?.user) {
       await removeCombination(breedingComboId);
-    }
   };
   return (
     <div className={styles.card}>
