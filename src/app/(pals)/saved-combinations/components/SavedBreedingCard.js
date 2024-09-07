@@ -42,6 +42,7 @@ export default function SavedBreedingCard({
   const handleRemove = async () => {
       await removeCombination(breedingComboId);
   };
+  
   return (
     <div className={styles.card}>
       <div className={styles.parent}>
