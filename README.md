@@ -17,11 +17,11 @@ The application is organised using a modern web application architecture with a 
 #### Backend
 
 - **Node.js**: Provides the runtime environment for the backend logic, leveraging JavaScript for server-side scripting.
-- **Next.js API Routes**: Used to create RESTful API endpoints that the frontend consumes.
+- **Next.js API Routes**: Used to create API endpoints that the frontend uses.
 
 #### Database
 
-- **Supabase (PostgreSQL)**: Manages all application data, including users and breeding data.
+- **Supabase (PostgreSQL)**: Manages all application data, including users, authentication, sessions, and breeding data.
 
 ### Directory Structure
 
@@ -32,11 +32,12 @@ Here is the structure of the project directories, explaining the purpose of each
 - **`src/app/`**: Contains folders for each page, each folder includes a `page.js` file and an `action.js` file if applicable.
   - **Page-specific CSS modules reside within the respective page folder.**
 - **`src/app/utils`**: Utility functions and helper scripts, including the database client.
-- -**`src/app/lib`**: Contains the database interactions for fetching data.
+- **`src/app/lib`**: Contains the database interactions for fetching data.
+- **`src/app/api`**: Contains API routes
 
 ### Data Flow
 
-- **Data Retrieval**: Frontend components use supabase's REST API for fetching data.
+- **Data Retrieval**: Frontend components use supabase's REST API for fetching data. Next.js server actions are used for user-specific actions.
 
 ## Setup Process
 
